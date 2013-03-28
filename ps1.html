@@ -1,0 +1,134 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+<style>
+
+ .a{ width:800px;  margin:0px auto; overflow:hidden}
+ 
+ .a li{ position:relative;width:200px; height:300px; float:left;overflow:hidden; list-style-type:none;border:1px solid #f00; }
+ 
+ .a li span{ width:200px;  background:#ccc; display:block; position:absolute; bottom:-50px; left:0px;  filter:alpha(Opacity=80);-moz-opacity:0.5;opacity: 0.5; height:50px; }
+ 
+
+</style>
+</head>
+
+<body>
+
+<div class="a" id="demo">
+
+  <li><span></span></li>
+  <li><span></span></li>
+  <li><span></span></li>
+  
+
+
+</div>
+
+
+<script language="javascript">
+  
+   
+    
+	var global = function(demo,cdemo){
+  
+  
+                  var maxheight =-50;
+				  var tmpheight = 2; 
+				   
+				 var v1 = null,v2=null;
+				  var c = true;
+					  
+				  var autoheight = maxheight;
+				  
+				   var U = function(){
+					   
+						 // clearInterval(v2);
+							
+					
+						  if(autoheight<0){   
+						  
+								 v1 = setInterval(function(){
+										autoheight+=tmpheight;
+										if(autoheight>0) autoheight = 0;
+										cdemo.style.bottom = autoheight+"px";
+										
+										if(autoheight>=0){
+										
+										   clearInterval(v1);
+										
+										}
+									  
+								   },5);
+						  }
+					 
+					   
+				  }
+				  
+				  var D = function(){  
+						 
+							  // clearInterval(v1);
+								if(autoheight > maxheight){  
+								v2 = setInterval(function(){
+										   
+										   autoheight-=tmpheight;
+										   if(autoheight<maxheight)  autoheight = maxheight;
+										   cdemo.style.bottom=autoheight+"px";
+											
+											if(autoheight<=maxheight){
+											
+											   clearInterval(v2);
+											   
+											}
+								   },5);
+								   
+								}
+						 
+				  }
+				  
+				  
+				 
+				  
+				  
+				  demo.onmouseover=function(){
+						
+						clearInterval(v2);
+						U();
+						
+						
+						 
+						
+							
+				   }
+				  
+				  demo.onmouseout=function(){
+					   clearInterval(v1);
+					   D();
+				  }
+  
+  }
+  
+  
+  
+  
+  var demo =  function(){
+ 
+	    
+	  var demos = document.getElementById("demo").getElementsByTagName('li');
+	  
+	  for(var i =0;i<demos.length;i++){
+		          var dmeo = demos[i]
+				  var cdemo = dmeo.childNodes[0];
+				  new global(dmeo,cdemo);
+	  }
+
+  }
+  
+   new demo();
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,12 @@
+<?PHP exit;?>	1363154642	admin	1	127.0.0.1	thread		128	GET={mod=modcp; fid=128; action=thread; }; POST={};
+<?PHP exit;?>	1363233779	不准口鼻涕	3	127.0.0.1	thread		128	GET={mod=modcp; fid=128; action=thread; }; POST={};
+<?PHP exit;?>	1363242384	不准口鼻涕	3	127.0.0.1	thread		128	GET={mod=modcp; fid=128; action=thread; }; POST={};
+<?PHP exit;?>	1363242396	不准口鼻涕	3	127.0.0.1	forum	editforum	128	GET={mod=modcp; action=forum; op=editforum; fid=128; }; POST={};
+<?PHP exit;?>	1363242402	不准口鼻涕	3	127.0.0.1	forum	editforum	128	GET={mod=modcp; action=forum; op=editforum; fid=128; rulesnew=Q群176459054 (北京) 逍客团购群213257616; editsubmit=true; }; POST={fid=128; rulesnew=Q群176459054 (北京) 逍客团购群213257616; editsubmit=true; };
+<?PHP exit;?>	1363242430	不准口鼻涕	3	127.0.0.1	member	edit	128	GET={mod=modcp; action=member; op=edit; fid=128; }; POST={};
+<?PHP exit;?>	1363242432	不准口鼻涕	3	127.0.0.1	member	sh	128	GET={mod=modcp; action=member; op=sh; fid=128; }; POST={};
+<?PHP exit;?>	1363242434	不准口鼻涕	3	127.0.0.1	thread	thread	128	GET={mod=modcp; action=thread; op=thread; fid=128; }; POST={};
+<?PHP exit;?>	1363242453	不准口鼻涕	3	127.0.0.1	member	edit	128	GET={mod=modcp; action=member; op=edit; fid=128; }; POST={};
+<?PHP exit;?>	1363242803	不准口鼻涕	3	127.0.0.1	thread		128	GET={mod=modcp; fid=128; action=thread; }; POST={};
+<?PHP exit;?>	1363242807	不准口鼻涕	3	127.0.0.1	member	edit	128	GET={mod=modcp; action=member; op=edit; fid=128; }; POST={};
+<?PHP exit;?>	1363242985	不准口鼻涕	3	127.0.0.1	forum	editforum	128	GET={mod=modcp; action=forum; op=editforum; fid=128; }; POST={};

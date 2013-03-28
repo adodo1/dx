@@ -1,0 +1,46 @@
+
+<html>
+<body>
+
+<script>
+
+
+
+var href = 'http://map.baidu.com/';
+var url = location.href.replace(/%25/gi,"%");
+//var url =href.replace(/%25/gi,"%");
+var url=url.slice(url.indexOf("=")+1);
+
+if(typeof(parent.History) !="undefined" ){
+    if(parent.History.nowTpl != url 
+        && parent.History.tplOpts
+        && parent.History.tplOpts[url]){
+
+        parent.History.nowTpl = url;
+        if(url.indexOf("isfullScreen") == -1)
+            parent.History.url = url;	
+
+        var opts = parent.History.tplOpts[url];
+        if(opts == null){opts ={}};
+        if(opts.cinfo == null){
+            opts.cinfo = {cityInit:1};
+        }
+        opts.history = true;
+        parent.searchInViewCtrl && parent.searchInViewCtrl.exit();
+        if(url.indexOf("isfullScreen")>-1){	//全屏
+            if(parent.map.fullScreenMode){
+                parent.fullScreenCtrl.exitFull(true);
+            }else{
+                parent.fullScreenCtrl.toFull(true);
+            }
+        }else{
+            if(opts && opts.dom)
+                opts.dom = null;
+            parent.go(unescape(url), opts);		//正常前进后退
+        }
+    }
+}
+
+</script>
+</body>
+</html>

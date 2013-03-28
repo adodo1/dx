@@ -1,0 +1,298 @@
+@charset "utf-8";
+/* CSS Document */
+
+*{
+	margin:0px;
+	padding:0px;
+}
+
+form{
+	margin:0px;
+	padding:0px;
+}
+
+body{
+	font-family:"宋体",Arial, Helvetica, sans-serif;
+	font-size:12px; 
+	color:#000000;
+	margin:0px;
+}
+
+#zt_div{
+	width:1213px;
+	overflow:hidden; background:url(../images/bg.gif) top left no-repeat;
+	margin:auto auto;
+}
+
+#header{
+	height:260px;
+	width:1000px;
+	margin:56px 0px 0px 208px;
+}
+
+.header_left{
+	width:784px;
+	height:260px;
+	float:left;
+}
+
+.header_right{
+	width:216px;
+	height:260px;
+	float:left;
+}
+
+.header_left .logo{
+	float:left;
+	margin-left:20px;
+	display:inline;
+}
+
+.header_left .top{
+	float:left;
+	width:445px;
+	margin-left:55px;
+	display:inline;
+	overflow:hidden;
+	color:#666;
+	text-align:right;
+}
+
+.header_left .top .link{
+	color:#666;
+	text-decoration:none;
+	font-size:14px;
+}
+
+.header_left .searchtext{
+	line-height:20px;
+	width:445px;
+	text-align:left;
+	margin-top:10px;
+}
+.header_left .searchtext .link{
+	color:#666;
+	text-decoration:none;
+	font-size:12px;
+}
+.searchinfo{ width:445px; height:39px; margin-top:10px; overflow:hidden; text-align:left;}
+.searchinfo .textKyeword{ width:373px; height:37px; line-height:37px; border:1px solid #999; border-right:0px; float:left;}
+.searchinfo .but{ width:70px; height:39px; background:url(../images/pic02.gif); border:none; cursor:pointer; float:right;}
+
+.header_left .dottom{
+	width:784px;
+	height:120px;
+	float:left;
+	margin-top:40px;
+	display:inline;
+}
+.header_left .dottom .gonggao{
+	width:370px;
+	border:1px #000 solid;
+	height:116px;
+	float:left;
+	margin-left:20px;
+	display:inline;
+}
+
+.header_left .dottom .gonggao img{
+	float:left;
+	margin:9px 0px 0px 7px;
+	display:inline;
+}
+
+.content01{
+	width:210px;
+	background-color:#d28d0f;
+	height:116px;
+	float:left;
+}
+
+.content02{
+	width:210px;
+	background-color:#7ecafa;
+	height:116px;
+	float:left;
+}
+
+.weather{
+	width:180px;
+	height:260px;
+	margin:auto auto;
+}
+
+.title_g{
+	width:190px;
+	margin:auto auto;
+	height:40px;
+	line-height:40px;
+	font-size:14px;
+	color:#FFF;
+	border-bottom:1px #FFF solid;
+	font-family:"微软雅黑";
+}
+
+.daohang_table{
+	margin:auto auto; line-height:20px; margin-top:10px; color:#FFF; font-size:13px; width:190px;
+}
+
+.daohang_table input{
+	width:70px;
+}
+
+.daohang_btn{ 
+    width:45px; 
+    height:36px; 
+    background: url(../images/pic08.gif) no-repeat scroll left top transparent;
+	border: medium none; 
+	background-position:center; 
+	cursor:pointer;
+}
+
+.ggdiv{
+	width:190px;
+	margin:auto auto;
+	overflow:hidden;
+}
+	
+.gg_nr{
+	list-style-type:none;
+}
+.gg_nr li{
+	width:190px;  
+	line-height:25px;
+	height:25px;
+}
+
+.gg_nr li a:link{
+	text-decoration:none;
+	font-size:12px;
+	color:#FFF;
+}
+
+.gg_nr li a:visited{
+	text-decoration:none;
+	font-size:12px;
+	color:#FFF;
+}
+
+.gg_nr li a:hover{
+	text-decoration:none;
+	font-size:12px;
+	color:#FFF;
+}
+
+#main{
+	overflow:hidden;
+	width:1000px;
+	margin-left:208px;
+}
+
+.index_picdiv{
+	float:left; overflow:hidden; width:179px; border:1px #999 solid; margin:20px 0px 0px 18px; display:inline;
+}
+
+.index_picdiv .imgdiv{
+	margin:2px; position:relative;
+}
+
+.index_picdiv img{
+	display:block;
+	height:163px;
+	width:175px;
+}
+
+.index_picdiv .title{
+	position:absolute;
+	height:30px;
+	line-height:30px;
+	background:#000;
+	width:175px;
+	top:133px;
+	z-index:10;
+	filter:alpha(opacity=60);   /* IE 5-7 */
+    -moz-opacity:0.60;   /* Netscape/Phoenix/FireBird/FireFox */
+    opacity:0.60;  /* Modern Browsers/以及支持CSS3的所有浏览器 */
+	-ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=60)";  /* IE 8 */
+	-khtml-opacity:0.60;   /* Safari 1/MacOS */
+	
+}
+
+.index_picdiv .title a{
+	font-size:14px;
+	color:#FFF;
+	text-decoration:none;
+	font-family:"微软雅黑";
+}
+
+#footer{
+	overflow:hidden;
+	width:1000px;
+	margin-left:208px;
+	margin-top:20px;
+	margin-bottom:20px;
+}
+
+.foot_content{
+	color:#666;
+	width:700px;
+	margin-left:100px;
+	line-height:30px;
+	text-align:center;
+	float:left;
+	display:inline;
+}
+
+.foot_content .link{
+	color:#666;
+	text-decoration:none;
+	font-size:12px;
+}
+
+.foot_text{
+	color:#666;
+	font-family:Arial, Helvetica, sans-serif;
+}
+
+.foot_pliceman{
+	width:180px;
+	height:200px;
+	float:left;
+	display:inline;
+	margin:20px 0px 0px 20px;
+}
+
+.foot_pliceman img{
+	float:left;
+	margin-right:10px;
+}
+
+.foot_pliceman a{
+	color:#000;
+	text-decoration:none;
+	line-height:15px;
+}
+
+.dangqian_div{
+	float:left;
+	margin-left:20px;
+	margin-top:20px;
+	line-height:30px;
+	color:#666;
+	width:300px;
+	display:inline;
+}
+
+.mylove_carcontent{
+	width:1000px;
+	overflow:hidden;
+	float:left;
+}
+
+.mylove_cardiv{
+	width:78px;
+	height:77px;
+	float:left;
+	margin:20px 0px 0px 20px;
+	display:inline;
+}

@@ -1,0 +1,461 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>首页</title>
+<link href="$_G['setting']['csspath']template/eis_y_car/portal/css/com.css" rel="stylesheet" type="text/css" />
+<link href="$_G['setting']['csspath']template/eis_y_car/portal/css/js.css" rel="stylesheet" type="text/css" />
+<style id="diy_style" type="text/css"></style>
+<!--[name]汽车门户首页频道模板[/name]-->
+<script type="text/javascript" src="$_G['setting']['csspath']template/eis_y_car/portal/js/jquery.js"></script>
+<script type="text/javascript" src="$_G['setting']['csspath']template/eis_y_car/portal/js/DD_belatedPNG.js"></script>
+<!--[if IE 7]><style>
+#Menu li img{
+    border:0px;
+    margin-left:2px;
+    margin-right:2px;
+    margin-top:5px;
+}
+</style><![endif]-->
+<script type="text/javascript">  
+    DD_belatedPNG.fix('.deal_buy');   
+</script>
+</head>
+
+<body>
+
+<script language="javascript">
+        han_kefu=function (id,_top){
+        var me=id.charAt?document.getElementById(id):id, d1=document.body, d2=document.documentElement;
+        d1.style.height=d2.style.height='100%';me.style.top=_top?_top+'px':0;//[(_left>0?'left':'left')]=_left?Math.abs(_left)+'px':0;
+        me.style.position='absolute';
+        setInterval(function (){me.style.top=parseInt(me.style.top)+(Math.max(d1.scrollTop,d2.scrollTop)+_top-parseInt(me.style.top))*0.1+'px';},10+parseInt(Math.random()*20));
+        return arguments.callee;
+        };
+        window.onload=function (){
+        han_kefu
+        ('han_box',230)
+        }
+</script>
+
+<div class="go_top" id="goTopBtn">
+  <a href="#" class="go_topa"></a>
+    <div class="wzcx" id="han_box">
+        <a href="#"><img src="template/eis_y_car/portal/images/wz.png"></a>
+    </div>
+</div>
+<script>
+
+    han_kefua=function (ida,_top){
+        var mea=ida.charAt?document.getElementById(ida):ida, d1a=document.body, d2a=document.documentElement;
+        d1a.style.height=d2a.style.height='100%';mea.style.top=_top?_top+'px':0;//[(_left>0?'left':'left')]=_left?Math.abs(_left)+'px':0;
+        mea.style.position='absolute';
+        setInterval(function (){mea.style.top=parseInt(mea.style.top)+(Math.max(d1a.scrollTop,d2a.scrollTop)+_top-parseInt(mea.style.top))*0.1+'px';},10+parseInt(Math.random()*20));
+        return arguments.callee;
+        };
+        window.onload=function (){
+        han_kefua
+        ('goTopBtn',370)
+        }
+</script>
+
+<!--头部开始-->
+<div  class="header w1002 mb15">
+   <div class="ht-ban">
+     <img src="template/eis_y_car/portal/images/001.png">
+   </div>
+   <div class="hd-m w1002"><a href="#">注册</a>|<a href="#">登录</a>|<a href="#">帮助</a>|<a href="#">建议</a>|<a href="#">设为首页</a>|<a href="#">收藏我们</a></div>
+   <div class="hd-b">
+     <div class="logo fl"><a href="#"><img src="template/eis_y_car/portal/images/002.png"></a></div><div class="fl" style=" margin-top:30px">中国SUV专业信息交流平台</div>
+     <div class="hd-br fr"><img src="template/eis_y_car/portal/images/013.png"></div>
+   </div>
+</div>
+<!--头部结束-->
+
+
+<!--导航开始-->
+<div class="nav-box mb15">
+<div class=" w1002">
+ <div class="navlinks">
+  <ul>
+    <li><a href="index.html">首页</a></li>
+    <li><img src="template/eis_y_car/portal/images/line.png"></li>
+    <li><a href="list_news.html">资讯</a></li>
+    <li><img src="template/eis_y_car/portal/images/line.png"></li>
+    <li><a href="list_suv.html">SUV大全</a></li>
+    <li><img src="template/eis_y_car/portal/images/line.png"></li>
+    <li><a href="list_wxby.html">维修保养</a></li>
+    <li><img src="template/eis_y_car/portal/images/line.png"></li>
+    <li><a href="list_zsgz.html">装饰改装</a></li>
+    <li><img src="template/eis_y_car/portal/images/line.png"></li>
+    <li><a href="list_ts.html">汽车投诉</a></li>
+    <li><img src="template/eis_y_car/portal/images/line.png"></li>
+    <li><a href="#">车友会</a></li></ul>
+  </div>
+  <div class="search_box fr"><input type="text" class="ser_bg fl" value="请输入关键字"><input type="submit" class="sbt fr" value=""></div>
+  </div>
+</div>
+
+<!--导航结束-->
+<style>
+/**index_Picture carousel**/
+.demoa{ width:1000px; height:235px; position:relative; overflow:hidden;}
+.numa{ position:absolute;left:800px; top:209px; z-index:10;}
+.numa .cura{ background:#FFF; color:#666}
+.demoa ul{ position:relative; z-index:5;}
+.demoa ul li{ position:absolute; display:none;}
+.numa a{width: 18px;background: #0369B0;float: left;height: 18px;cursor: pointer; text-align:center; line-height:18px; margin-left:5px; color:#FFF}
+</style>
+<!--banner 开始-->
+<div class="banner clear mb15">
+    <div class="demoa">
+    <div class="numa"><a class="cura">1</a><a class="">2</a><a class="">3</a><a class="">4</a></div>
+        <ul>
+            <li><a href="#" target="_blank"><img src="template/eis_y_car/portal/images/005.png" width="1000" height="235"></a></li>
+            <li><a href="#" target="_blank"><img src="template/eis_y_car/portal/images/005.png" width="1000" height="235"></a></li>
+            <li><a href="#" target="_blank"><img src="template/eis_y_car/portal/images/005.png" width="1000" height="235"></a></li>
+            <li><a href="#" target="_blank"><img src="template/eis_y_car/portal/images/005.png" width="1000" height="235"></a></li>
+        </ul>
+    </div>
+<script type="text/javascript">
+$(function(){
+            $(".demoa ul li").first().css("display","list-item");
+            })
+    $(function(){
+        var sw = 0;
+        $(".demoa .numa a").mouseover(function(){
+            sw = $(".numa a").index(this);
+            myShow(sw);
+    
+        });
+        function myShow(i){
+            $(".demoa .numa a").eq(i).addClass("cura").siblings("a").removeClass("cura");
+            $(".demoa ul li").eq(i).stop(true,true).fadeIn(600).siblings("li").fadeOut(600);
+        }
+        //滑入停止动画，滑出开始动画
+        $(".demoa").hover(function(){
+            if(myTime){
+               clearInterval(myTime);
+            }
+        },function(){
+            myTime = setInterval(function(){
+              myShow(sw)
+              sw++;
+              if(sw==8){sw=0;}
+            } , 2500);
+        });
+        //自动开始
+        var myTime = setInterval(function(){
+           myShow(sw)
+           sw++;
+           if(sw==8){sw=0;}
+        } , 2500);
+    })
+</script>
+</div>
+<!--banner 结束-->
+<!--term-1 开始-->
+<div class="term-1 w1002">
+  <div class="term-1L fl">
+    <div class="tit"><h2>图片热点</h2><a href="#">更多>></a></div>
+    <div class="term-1L-i">
+        <div class="demo">
+            <div class="num">
+                <a class=""></a>
+                <a class=""></a>
+                <a class=""></a>
+                <a class=""></a>
+            </div>
+            <ul>
+                <li><a href="#" target="_blank"><img src="template/eis_y_car/portal/images/007.png" width="322" height="180"></a></li>
+                <li><a href="#" target="_blank"><img src="template/eis_y_car/portal/images/007.png" width="322" height="180"></a></li>
+                <li><a href="#" target="_blank"><img src="template/eis_y_car/portal/images/007.png" width="322" height="180"></a></li>
+                <li><a href="#" target="_blank"><img src="template/eis_y_car/portal/images/007.png" width="322" height="180"></a></li>
+            </ul>
+        </div>
+<script type="text/javascript">
+    $(function(){
+        $(".demo ul li").first().css("display","list-item");
+        $(".num a").first().addClass("cur");
+    });
+    $(function(){
+        var sw = 0;
+        var Size = $(".demo ul li").size();
+        $(".demo .num a").mouseover(function(){
+            sw = $(".num a").index(this);
+            myShow(sw);
+        });
+        function myShow(i){
+            $(".demo .num a").eq(i).addClass("cur").siblings("a").removeClass("cur");
+            $(".demo ul li").eq(i).stop(true,true).fadeIn(600).siblings("li").fadeOut(600);
+        }
+        //滑入停止动画，滑出开始动画
+        $(".demo").hover(function(){
+            if(myTime){
+               clearInterval(myTime);
+            }
+        },function(){
+            myTime = setInterval(function(){
+              myShow(sw)
+              sw++;
+              if(sw==Size){sw=0;}
+            } , 2500);
+        });
+        //自动开始
+        var myTime = setInterval(function(){
+           myShow(sw)
+           sw++;
+           if(sw==Size){sw=0;}
+        } , 2500);
+    })
+</script>
+
+    </div>
+    
+  </div>  
+  <div class="term-1C fl">
+    <div class="tit">
+      <h2>今日要闻</h2><a href="news-index.html">更多>></a>
+    </div>
+<!--[diy=diy1]--><div id="diy1" class="area"></div><!--[/diy]-->
+<!--{block/19}-->
+  </div>  
+  <div class="term-1R fr">
+    <div class="tit"><h2>新车专题</h2><a href="#">更多>></a></div>
+<!--[diy=diy2]--><div id="diy2" class="area"></div><!--[/diy]-->
+<!--{block/20}-->
+  </div>
+</div>
+
+<!--term-1 结束-->
+
+<!--s-banner 开始-->
+<div class="s-banner mb15 mt15"><img src="template/eis_y_car/portal/images/009.png"></div>
+<!--s-banner 结束-->
+
+
+<!--term-2 开始-->
+
+    
+<div class="term-2i w1002 clear">
+
+ <div class="term-2iL fl">
+    <div class="tit"><h2>SUV行情</h2><a href="#">更多>></a></div>
+
+    <div class="t2L-l">
+    <div class="pic mb10">
+    <img src="template/eis_y_car/portal/images/010.png"></div>
+    <div class="pic"><img src="template/eis_y_car/portal/images/010.png"></div>
+    </div> 
+    <!--[diy=diy3]--><div id="diy3" class="area"></div><!--[/diy]-->
+    <!--{block/21}-->
+ </div> 
+ <div class="term-2iL fl pdl-15">
+     <div class="tit"><h2>SUV评测</h2><a href="#">更多>></a></div>
+
+    <div class="t2L-l"><div class="pic mb10"><img src="template/eis_y_car/portal/images/010.png"></div><div class="pic"><img src="template/eis_y_car/portal/images/010.png"></div></div> 
+        <div class="t2L-r"><h3>Grand VQ-R即将上市</h3><div class="t2L-ri"><ul><li><a href="#">进口起亚夏季免费检测启</a></li><li><a href="#">进口起亚夏季免费检测启</a></li><li><a href="#">进口起亚夏季免费检测启</a></li><li><a href="#">进口起亚夏季免费检测启</a></li><li><a href="#">进口起亚夏季免费检测启</a></li></ul></div></div> 
+
+ </div>
+ <div class="term-2iL fr">
+    <div class="tit"><h2>团车资讯</h2><a href="#">更多>></a></div>
+
+    <div class="t2L-l"><div class="pic mb10"><img src="template/eis_y_car/portal/images/010.png"></div><div class="pic"><img src="template/eis_y_car/portal/images/010.png"></div></div> 
+        <div class="t2L-r"><h3>Grand VQ-R即将上市</h3><div class="t2L-ri"><ul><li><a href="#">进口起亚夏季免费检测启</a></li><li><a href="#">进口起亚夏季免费检测启</a></li><li><a href="#">进口起亚夏季免费检测启</a></li><li><a href="#">进口起亚夏季免费检测启</a></li><li><a href="#">进口起亚夏季免费检测启</a></li></ul></div></div> 
+
+ </div>
+</div>
+
+<!--term-2 结束-->
+
+<!--term-3 开始-->
+<div class="term-3 w1002 pdt-15 mb15 clear">
+  <div class="term-3L fl">  
+         <div class="tit"><h2>精彩活动</h2><a href="#">更多>></a></div>
+
+     <div class="term-3Li">
+        <div class="fla fl"><img src="template/eis_y_car/portal/images/007.png"></div>
+        <div class="tmLr fr">
+          <ul>
+            <li><a href="#">Grand VQ-R即 进口起亚将上市 进口起亚...</a></li>
+            <li><a href="#">Grand VQ-R即 进口起亚将上市 进口起亚...</a></li>
+            <li><a href="#">Grand VQ-R即 进口起亚将上市 进口起亚...</a></li>
+            <li><a href="#">Grand VQ-R即 进口起亚将上市 进口起亚...</a></li>
+            <li><a href="#">Grand VQ-R即 进口起亚将上市 进口起亚...</a></li>
+            <li><a href="#">Grand VQ-R即 进口起亚将上市 进口起亚...</a></li>
+            <li><a href="#">Grand VQ-R即 进口起亚将上市 进口起亚...</a></li>
+            <li><a href="#">Grand VQ-R即 进口起亚将上市 进口起亚...</a></li>
+          </ul>
+        </div>
+     </div>
+  </div>
+  <div class="term-1R fr">
+    <div class="tit"><h2>汽车服务/用品</h2><a href="#">更多>></a></div>
+    <div class="term-1R-i">
+
+       <div class="newcar">
+         <div class="newcarl fl"><img src="template/eis_y_car/portal/images/008.png"></div>
+         <div class="newcarl fr"><img src="template/eis_y_car/portal/images/008.png"></div>
+       </div>
+           <div class="term-1R-ib clear">
+    <h3>Grand VQ-R即将上市即将即将进...</h3><ul class="mt5"><li><a href="#">Grand VQ-R即将上市即将即将即即将即即将即即将进</a></li><li><a href="#">Grand VQ-R即将上市即将即将即即将即即将即即将进</a></li></ul></div>
+
+   
+    </div>
+  </div>
+</div>
+<!--term-3 结束-->
+
+<!--s-banner 开始-->
+<div class="s-banner mb15 clear"><img src="template/eis_y_car/portal/images/009.png"></div>
+<!--s-banner 结束-->
+
+<!--论坛精选开始-->
+<div class="ltjx w1002 mb15 clear">
+  <h2>论坛精选</h2>
+  <div class="ltjx-r">
+     <a href="#" class="now">美女车模</a>
+     <a href="#">购车用车</a>
+     <a href="#">维修保养</a>
+     <a href="#">装饰改装</a>
+     <a href="#">海外游记</a>
+     <a href="#">车祸纪实</a>
+     <a href="#">网友试驾</a>
+  </div>
+</div>
+<!--论坛精选结束-->
+<!--term-4 开始-->
+<div class="term-4 w1002 clear">
+  <div class="term-4i fl mr27">
+        <div class="tit"><h2>车主作业</h2><a href="#">更多>></a></div>
+        <div class="term-4iL">
+          <ul>
+            <li><em>(09/21)</em><a href="#">江铃汽车开发右盘型盘</a></li>
+             <li><em>(09/21)</em><a href="#">江铃汽车开发右盘型盘</a></li>
+             <li><em>(09/21)</em><a href="#">江铃汽车开发右盘型盘</a></li>
+             <li><em>(09/21)</em><a href="#">江铃汽车开发右盘型盘</a></li>
+             <li><em>(09/21)</em><a href="#">江铃汽车开发右盘型盘</a></li>
+             <li><em>(09/21)</em><a href="#">江铃汽车开发右盘型盘</a></li>
+             <li><em>(09/21)</em><a href="#">江铃汽车开发右盘型盘</a></li>
+             <li><em>(09/21)</em><a href="#">江铃汽车开发右盘型盘</a></li>
+          </ul>
+        </div>
+  </div>
+  <div class="term-4i fl mr27">
+        <div class="tit"><h2>车友活动</h2><a href="#">更多>></a></div>
+        <div class="term-4iL">
+          <ul>
+            <li><em>(09/21)</em><a href="#">江铃汽车开发右盘型盘</a></li>
+             <li><em>(09/21)</em><a href="#">江铃汽车开发右盘型盘</a></li>
+             <li><em>(09/21)</em><a href="#">江铃汽车开发右盘型盘</a></li>
+             <li><em>(09/21)</em><a href="#">江铃汽车开发右盘型盘</a></li>
+             <li><em>(09/21)</em><a href="#">江铃汽车开发右盘型盘</a></li>
+             <li><em>(09/21)</em><a href="#">江铃汽车开发右盘型盘</a></li>
+             <li><em>(09/21)</em><a href="#">江铃汽车开发右盘型盘</a></li>
+             <li><em>(09/21)</em><a href="#">江铃汽车开发右盘型盘</a></li>
+          </ul>
+        </div>
+  </div>
+    <div class="term-4i fl mr27">
+        <div class="tit"><h2>自驾游记</h2><a href="#">更多>></a></div>
+        <div class="term-4iL">
+          <ul>
+            <li><em>(09/21)</em><a href="#">江铃汽车开发右盘型盘</a></li>
+             <li><em>(09/21)</em><a href="#">江铃汽车开发右盘型盘</a></li>
+             <li><em>(09/21)</em><a href="#">江铃汽车开发右盘型盘</a></li>
+             <li><em>(09/21)</em><a href="#">江铃汽车开发右盘型盘</a></li>
+             <li><em>(09/21)</em><a href="#">江铃汽车开发右盘型盘</a></li>
+             <li><em>(09/21)</em><a href="#">江铃汽车开发右盘型盘</a></li>
+             <li><em>(09/21)</em><a href="#">江铃汽车开发右盘型盘</a></li>
+             <li><em>(09/21)</em><a href="#">江铃汽车开发右盘型盘</a></li>
+          </ul>
+        </div>
+  </div>
+  
+  <div class="term-4i fr">
+        <div class="tit"><h2>昨日精华帖浏览数排行</h2></div>
+        <div class="term-4ir">
+          <ul class="order">
+            <li><em>(09/21)</em><a href="#">江铃汽车开发右盘型盘</a></li>
+             <li><em>(09/21)</em><a href="#">江铃汽车开发右盘型盘</a></li>
+             <li><em>(09/21)</em><a href="#">江铃汽车开发右盘型盘</a></li>
+             <li><em>(09/21)</em><a href="#">江铃汽车开发右盘型盘</a></li>
+             <li><em>(09/21)</em><a href="#">江铃汽车开发右盘型盘</a></li>
+             <li><em>(09/21)</em><a href="#">江铃汽车开发右盘型盘</a></li>
+             <li><em>(09/21)</em><a href="#">江铃汽车开发右盘型盘</a></li>
+             <li><em>(09/21)</em><a href="#">江铃汽车开发右盘型盘</a></li>
+          </ul>
+        </div>
+  </div>
+
+  
+  
+</div>
+<!--term-4 结束-->
+
+<!--热门服务开始-->
+<div class="service w1002 clear mt15">
+        <h2>热门服务</h2>
+        <div class="service-i">
+           <ul>
+             <li><div class="si-pic"><a href="#"><img src="template/eis_y_car/portal/images/sss.png"></a></div><a href="#">奥迪四轮定位服务</a></li>
+             <li><div class="si-pic"><a href="#"><img src="template/eis_y_car/portal/images/sss.png"></a></div><a href="#">奥迪四轮定位服务</a></li>
+             <li><div class="si-pic"><a href="#"><img src="template/eis_y_car/portal/images/sss.png"></a></div><a href="#">奥迪四轮定位服务</a></li>
+             <li><div class="si-pic"><a href="#"><img src="template/eis_y_car/portal/images/sss.png"></a></div><a href="#">奥迪四轮定位服务</a></li>
+
+             <li><div class="si-pic"><a href="#"><img src="template/eis_y_car/portal/images/sss.png"></a></div><a href="#">奥迪四轮定位服务</a></li>
+             <li><div class="si-pic"><a href="#"><img src="template/eis_y_car/portal/images/sss.png"></a></div><a href="#">奥迪四轮定位服务</a></li>
+              <li><div class="si-pic"><a href="#"><img src="template/eis_y_car/portal/images/sss.png"></a></div><a href="#">奥迪四轮定位服务</a></li>
+             <li><div class="si-pic"><a href="#"><img src="template/eis_y_car/portal/images/sss.png"></a></div><a href="#">奥迪四轮定位服务</a></li>
+             <li><div class="si-pic"><a href="#"><img src="template/eis_y_car/portal/images/sss.png"></a></div><a href="#">奥迪四轮定位服务</a></li>
+             <li><div class="si-pic"><a href="#"><img src="template/eis_y_car/portal/images/sss.png"></a></div><a href="#">奥迪四轮定位服务</a></li>
+
+             <li><div class="si-pic"><a href="#"><img src="template/eis_y_car/portal/images/sss.png"></a></div><a href="#">奥迪四轮定位服务</a></li>
+             <li><div class="si-pic"><a href="#"><img src="template/eis_y_car/portal/images/sss.png"></a></div><a href="#">奥迪四轮定位服务</a></li>
+           </ul>
+        </div>
+</div>
+<!--热门服务结束-->
+<!--carlogos 开始-->
+
+<div class="carlogos w1002 mt15 mb15 clear">
+        <div class="tit"><h2>热门品牌</h2></div>
+
+ <ul><li><a href="#"><img src="template/eis_y_car/portal/images/011.png"></a></li><li><a href="#"><img src="template/eis_y_car/portal/images/011.png"></a></li><li><a href="#"><img src="template/eis_y_car/portal/images/011.png"></a></li><li><a href="#"><img src="template/eis_y_car/portal/images/011.png"></a></li><li><a href="#"><img src="template/eis_y_car/portal/images/011.png"></a></li><li><a href="#"><img src="template/eis_y_car/portal/images/011.png"></a></li><li><a href="#"><img src="template/eis_y_car/portal/images/011.png"></a></li><li><a href="#"><img src="template/eis_y_car/portal/images/011.png"></a></li><li><a href="#"><img src="template/eis_y_car/portal/images/011.png"></a></li><li><a href="#"><img src="template/eis_y_car/portal/images/011.png"></a></li><li><a href="#"><img src="template/eis_y_car/portal/images/011.png"></a></li></ul>
+</div>
+<!--carlogos 结束-->
+
+<!--carlogos 开始-->
+
+<div class="carlogos w1002 mt15 mb15 clear">
+        <div class="tit"><h2>热门车会</h2></div>
+
+ <ul><li><a href="#"><img src="template/eis_y_car/portal/images/011.png"></a></li><li><a href="#"><img src="template/eis_y_car/portal/images/011.png"></a></li><li><a href="#"><img src="template/eis_y_car/portal/images/011.png"></a></li><li><a href="#"><img src="template/eis_y_car/portal/images/011.png"></a></li><li><a href="#"><img src="template/eis_y_car/portal/images/011.png"></a></li><li><a href="#"><img src="template/eis_y_car/portal/images/011.png"></a></li><li><a href="#"><img src="template/eis_y_car/portal/images/011.png"></a></li><li><a href="#"><img src="template/eis_y_car/portal/images/011.png"></a></li><li><a href="#"><img src="template/eis_y_car/portal/images/011.png"></a></li><li><a href="#"><img src="template/eis_y_car/portal/images/011.png"></a></li><li><a href="#"><img src="template/eis_y_car/portal/images/011.png"></a></li></ul>
+</div>
+<!--carlogos 结束-->
+
+
+<!--partner 开始-->
+<div class="partner w1002 mb15 clear">
+          <div class="tit"><h2>合作媒体</h2></div>
+          
+          <ul><li><a href="#"><img src="template/eis_y_car/portal/images/012.png"></a></li><li><a href="#"><img src="template/eis_y_car/portal/images/012.png"></a></li><li><a href="#"><img src="template/eis_y_car/portal/images/012.png"></a></li><li><a href="#"><img src="template/eis_y_car/portal/images/012.png"></a></li><li><a href="#"><img src="template/eis_y_car/portal/images/012.png"></a></li><li><a href="#"><img src="template/eis_y_car/portal/images/012.png"></a></li><li><a href="#"><img src="template/eis_y_car/portal/images/012.png"></a></li><li><a href="#"><img src="template/eis_y_car/portal/images/012.png"></a></li><li><a href="#"><img src="template/eis_y_car/portal/images/012.png"></a></li><li><a href="#"><img src="template/eis_y_car/portal/images/012.png"></a></li><li><a href="#"><img src="template/eis_y_car/portal/images/012.png"></a></li></ul>
+
+</div>
+<!--partner 结束-->
+
+<!--frilinks 开始-->
+<div class="frilinks w1002 mb15 clear">
+          <div class="tit"><h2>友情链接</h2></div>
+          
+          <p><a href="#">全国乘联会</a><a href="#">全国乘联会</a><a href="#">全国乘联会</a><a href="#">全国乘联会</a><a href="#">全国乘联会</a><a href="#">全国乘联会</a><a href="#">全国乘联会</a><a href="#">全国乘联会</a><a href="#">全国乘联会</a><a href="#">全国乘联会</a><a href="#">全国乘联会</a><a href="#">全国乘联会</a></p>
+
+</div>
+<!--frilinks 结束-->
+
+<div class="footer w1002">
+ <p><a href="#">关于车影</a>|<a href="#">招贤纳士</a>|<a href="#">车影论坛</a>|<a href="#">广告服务</a>|<a href="#">联系我们</a></p>
+ Copyright © 2011 Sohu.com Inc. All Rights Reserved. 车影公司 版权所有 
+</div>
+</body>
+</html>

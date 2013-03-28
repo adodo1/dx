@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+<!--STATUS OK-->
+<meta charset="utf-8" />
+<meta name="description" content="浏览地图、搜索地点、查询公交驾车线路，您的出行指南、生活助手。">
+<meta http-equiv="imagetoolbar" content="no" />
+<title>易格时空网络地图</title>
+<link href='bmap.css?v=201210111817' rel="stylesheet" type="text/css">
+
+<script language="javascript">
+  var globalhref='http://map.baidu.com/';
+</script>
+<script type="text/javascript" src="monitor/pdc.js"></script><script type="text/javascript">(function() {var A = window.navigator.userAgent.toLowerCase();if ((/iphone/.test(A) || /ipad/.test(A) || /ipod/.test(A) || /android/.test(A)) && /safari/.test(A)) {location.href = "/mobile/"}})();var _OLR = {"index":"{\"content\":{\"baike\":0,\"city_type\":2,\"cname\":\"\\u5317\\u4eac\\u5e02\",\"code\":131,\"geo\":\"1|12958160.97,4825907.72;12958160.97,4825907.72|12958160.97,4825907.72;\",\"if_current\":1,\"level\":12,\"sample\":{\"poi\":\"\\u4e2d\\u5173\\u6751\\u5927\\u53a6\",\"route\":\"\\u4ece\\u9890\\u548c\\u56ed\\u5230\\u897f\\u5355\"},\"sup\":1,\"sup_bus\":1,\"sup_business_area\":1,\"sup_lukuang\":1,\"sup_subway\":1,\"tips\":\"\\u5317\\u4eac\",\"uid\":\"7af0a1acefe223dd0a1cc7f3\"},\"special\":{\"data\":{\"top\":[],\"bottom\":[{\"type\":\"image\",\"title\":\"\\u624b\\u673a\\u5730\\u56fe\\u4e0b\\u8f7d\",\"pic_url\":\"http:\\\/\\\/map.baidu.com\\\/fwmap\\\/upload\\\/r\\\/image\\\/2012-09-27\\\/4ca9db2330d64de856531423d3634dec.jpg\",\"href\":\"http:\\\/\\\/shouji.baidu.com\\\/map\\\/\",\"stat_code\":\"296\",\"style\":\"1\",\"show_prom\":\"0\"}],\"banner\":[{\"type\":\"image\",\"title\":\"LBD\\u53d1\\u5e03\\u4f1a\\u4e13\\u9898\",\"pic_url\":\"http:\\\/\\\/map.baidu.com\\\/fwmap\\\/upload\\\/r\\\/image\\\/2012-10-15\\\/54d0e1dfabdf0ade5832b236e429dafb.jpg\",\"href\":\"http:\\\/\\\/map.baidu.com\\\/zt\\\/open\\\/\",\"stat_code\":\"265\",\"style\":\"1\",\"show_prom\":\"0\"}],\"richbanner\":[],\"top_html\":\"\",\"bottom_html\":\"\",\"banner_html\":\"\"}},\"result\":{\"jump_back\":0,\"qid\":\"\",\"time\":0,\"type\":1},\"current_city\":{\"code\":131,\"sup\":1,\"sup_bus\":1,\"sup_business_area\":1,\"sup_lukuang\":1,\"sup_subway\":1,\"type\":2,\"up_province_name\":\"\\u5317\\u4eac\\u5e02\"},\"hot_city\":[\"\\u5317\\u4eac\\u5e02|131\",\"\\u4e0a\\u6d77\\u5e02|289\",\"\\u5e7f\\u5dde\\u5e02|257\",\"\\u6df1\\u5733\\u5e02|340\",\"\\u6210\\u90fd\\u5e02|75\",\"\\u5929\\u6d25\\u5e02|332\",\"\\u5357\\u4eac\\u5e02|315\",\"\\u676d\\u5dde\\u5e02|179\",\"\\u6b66\\u6c49\\u5e02|218\",\"\\u91cd\\u5e86\\u5e02|132\"]}","loopindex":-1};</script>
+</head>
+<body onResize="mapResize()">
+<div id="searchWrapper" style="position:relative ; height:105px; overflow:hidden">
+  <div id="declare" style="display:none"></div>
+  
+  <div id="user_info">
+    <div id="login_user_info" style="display:none"></div>
+    <div id="logout_user_info" style="display:none">
+      
+    </div>
+  </div>
+  <div id="search" style=" margin:0px auto; margin-top:10px; padding-bottom:0px; margin-bottom:0px; padding:0px; width:664px; margin-top:20px">
+    
+    <div class="index_search_right">
+   
+      <div class="search_box" style=" width:524px; margin:0px auto">
+        <form id="form1" name="fmwd" onSubmit="window.qSearch && qSearch(this,'loc','',{from:'button'});return false">
+          <div class="search_input" style=" position:relative;  padding-top:24px; padding-bottom:5px;background-position:0px 24px"><span class="input_span1" id="PoiSearchSpan">
+            <input type="text" name="word" class="input1" maxlength="256" id="PoiSearch"autocomplete="off">
+            <span class="smp_poi_btn" title="常用地点" onclick="SmpMgr.openList('PoiSearch', event)"></span></span>
+            <input type="hidden" name="ft" value="tab">
+            <ul class="tab" style="position:absolute; top:0px; left:0px;">
+              <li id="tab1" class="on" onClick="switchTab(1,'','',{from:'button'});addStat(STAT_INDEX_ONSEA)">搜索</li>
+              <li id="tab2" onClick="switchTab(2,'','',{from:'button'});switchTabQuery(2);addStat(STAT_INDEX_ONBUS)" onmouseover="this.className='other_on'" onmouseout="this.className=''">公交</li>
+              <li id="tab3" onClick="switchTab(3,'','',{from:'button'});switchTabQuery(3);addStat(STAT_INDEX_ONNAV)" onmouseover="this.className='other_on'" onmouseout="this.className=''">驾车</li>
+            </ul>
+          </div>
+          <div class="search_input1"><span class="input_span" style="padding-top:24px ;padding-bottom:5px; background-position:right 24px">
+            <input value="搜索" id="poiSearchBtn" title="" type="submit" onmouseout="this.className=''" onmousedown="this.className='down'" onmouseup="this.className=''">
+            </span></div>
+        </form>
+        <form id="form2" name="fmbus" onSubmit="window.qSearch && qSearch(this,'bt','',{from:'button'});return false" style="display:none">
+          <div class="search_input"  style=" position:relative;  padding-top:24px;  padding-bottom:5px;  background-position:0px 24px"><span class="input_span2" id="BusSearchStaSpan">
+            <input type="text" name="word_from" class="input2 input_start" maxlength="256" id="BusSearchSta"autocomplete="off" _from="start">
+            <span class="smp_navs_btn" title="常用地点" onclick="SmpMgr.openList('BusSearchSta', event)"></span></span><span class="return_icon" id="busReturnIcon" title="切换起终点"></span><span class="input_span3" id="BusSearchEndSpan">
+            <input type="text" name="word_to" class="input3 input_end" maxlength="256" id="BusSearchEnd"autocomplete="off" _from="end">
+            <span class="smp_nave_btn" title="常用地点" onclick="SmpMgr.openList('BusSearchEnd', event)"></span></span>
+            <ul class="tab" style="position:absolute; top:0px; left:0px;">
+              <li id="tab1" onClick="switchTab(1,'','',{from:'button'});addStat(STAT_INDEX_ONSEA)" onmouseover="this.className='other_on'" onmouseout="this.className=''">搜索</li>
+              <li id="tab2" class="on" onClick="switchTab(2,'','',{from:'button'});switchTabQuery(2);addStat(STAT_INDEX_ONBUS)">公交</li>
+              <li id="tab3" onClick="switchTab(3,'','',{from:'button'});switchTabQuery(3);addStat(STAT_INDEX_ONNAV)" onmouseover="this.className='other_on'" onmouseout="this.className=''">驾车</li>
+            </ul>
+          </div>
+          <div class="search_input1"><span class="input_span" style="padding-top:24px;background-position:right 24px">
+            <input value="搜索" id="busSearchBtn" title="" type="submit" onmouseout="this.className=''" onmousedown="this.className='down'" onmouseup="this.className=''">
+            </span></div>
+        </form>
+        <form id="form3" name="fmnav" onSubmit="window.qSearch && qSearch(this,'nav','',{from:'button'});return false" style="display:none">
+          <div class="search_input"  style=" position:relative;  padding-top:24px;  padding-bottom:5px;  background-position:0px 24px"><span class="input_span2" id="DriveSearchStaSpan">
+            <input type="text" name="word_from" class="input2 input_start" maxlength="256" id="DriveSearchSta"autocomplete="off" _from="start" value="大望路">
+            <span class="smp_navs_btn" title="常用地点" onclick="SmpMgr.openList('DriveSearchSta', event)"></span></span><span class="return_icon" id="navReturnIcon" title="切换起终点"></span><span class="input_span3" id="DriveSearchEndSpan">
+            <input type="text" name="word_to" class="input3 input_end" maxlength="256" id="DriveSearchEnd"autocomplete="off" _from="end" value="大胡同">
+            <span class="smp_nave_btn" title="常用地点" onclick="SmpMgr.openList('DriveSearchEnd', event)"></span></span>
+            <ul class="tab" style="position:absolute; top:0px; left:0px;">
+              <li id="tab1" onClick="switchTab(1,'','',{from:'button'});addStat(STAT_INDEX_ONSEA)" onmouseover="this.className='other_on'" onmouseout="this.className=''">搜索</li>
+              <li id="tab2" onClick="switchTab(2,'','',{from:'button'});switchTabQuery(2);addStat(STAT_INDEX_ONBUS)" onmouseover="this.className='other_on'" onmouseout="this.className=''">公交</li>
+              <li id="tab3" class="on" onClick="switchTab(3,'','',{from:'button'});switchTabQuery(3);addStat(STAT_INDEX_ONNAV)">驾车</li>
+            </ul>
+          </div>
+          <div class="search_input1"><span class="input_span" style="padding-top:24px; background-position:right 24px">
+            <input value="搜索" id="driveSearchBtn" title="" type="submit" onmouseout="this.className=''" onmousedown="this.className='down'" onmouseup="this.className=''">
+            </span></div>
+        </form>
+      
+      </div>
+    </div>
+    <div class="search_clear"></div>
+  </div>
+</div>
+<div id="tools">
+  <div class="tools_l" id="citytools">
+    <div id="selCity">
+      <div class="sel_container"><a href="javascript:void(0)" id="curCity" class="curcity-expand" title="修改城市" onClick="selectCity(this, {styleSwitch:true});return false">北京市</a></div>
+      <font id="GR_Select" style="display:none"></font><font id="supBus" style="display:none;color:#e60000;position:absolute;*top:5px;padding-left:20px;font-size:14px"></font></div>
+    <div id="tools_search" style="display:none;">
+      <form onSubmit="toolbarSubmit();return false" name="tsform">
+        <div class="tstext">
+          <input type="text" maxlength="256" id="ToolPoiSearch" autocomplete="off" class="tools_search_input">
+        </div>
+        <div class="tsbutton">
+          <input type="button" value="搜索" onmouseover="this.className='tools_search_submit tools_search_submit_over'" onmouseout="this.className='tools_search_submit'" onmousedown="this.className='tools_search_submit tools_search_submit_down'" onClick="toolbarSubmit()" class="tools_search_submit"/>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div id="tool_container" class="tools_r">
+    <div class="tools_r_con" id="tool_container_con">
+      <div class="span_l sehinv_icon" id="tool_sehInView"><span class="span_r"><b></b>视野内搜索</span></div>
+      <div class="span_l traf_icon" id="tool_tarffic"><span class="span_r"><b></b>路况信息</span></div>
+      <div class="span_l tool_icon" id="tool_tollCon"><span class="span_r"><b class="tool_icon2"></b><span>工具</span><b class="tool_icon1"></b></span>
+        <div class="tool_box" id="tools_box" style="top:-2000px;"><span class="measure" id="measure"><b></b>测距</span><span class="capwrap" id="capwrap"><b></b>截图</span><span class="signwrap" id="signwrap"><b></b>标记</span><span class="link" id="link"><b></b>分享</span><a class="print" id="print" target="Print"><b></b>打印</a></div>
+      </div>
+      <div class="span_l full_icon" id="tool_fullScr"><span class="span_r"><b></b><span id="tool_fullScrF">全屏</span></span></div>
+    </div>
+  </div>
+  <div id="MapInfoNav" class="tools_r">
+    <div class="span_l fav_icon" id="favBtn" ><span class="span_r">线路</span></div>
+    <div class="span_l subway_icon" id="specialBtn" style="display:none"><span class="span_r"><b></b><span id="specInner"></span></span></div>
+    <div class="span_l box_icon" id="boxBtn"><span class="span_r"><b></b><span id="boxInner"></span></span></div>
+    <em style="position:absolute;top:-8px;left:55px;z-index:300001;" id="favBtn_icon"></em></div>
+</div>
+<div id="wrapper">
+  <div id="MapHolder"></div>
+  <div id="MapInfoCon">
+    <div id="ToolsCon">
+      <div class='toolsTitle'>
+        <div class='titleL' id="ToolsTitle"></div>
+        <div class='titleR' id="ToolsCloseBtn"></div>
+      </div>
+      <div id='toolsContent' class='toolsContent'></div>
+    </div>
+    <div id="MapInfo"></div>
+  </div>
+  <div id="shad">
+    <div id="shad_v"></div>
+    <div id="shad_h"></div>
+    <div id="MapInfoTab" class="mapinfo_but" title="收起左栏">
+      <div class="mapinfo_but_con">
+        <div class="mapinfo_but_div"><span class="mapinfo_but_span"></span></div>
+      </div>
+    </div>
+  </div>
+</div>
+<iframe id="wHistory" name="wHistory" style="width:100%;display:none" src="about:blank"></iframe>
+<form method="get" target="wHistory" name="fmHistory" action="history.html">
+  <input type="hidden" name="url" />
+</form>
+<img id="statImg" src="img/transparent.gif" style="display:none" />
+<div id="monitor" class="monitor"></div>
+</body>
+<script>with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://img.baidu.com/hunter/map.js?st='+~(new Date()/864e5)];</script><script type="text/javascript" src='init.js?v=201210111817'></script><script type="text/javascript">var srUrl = {bmap  : 'bmap.js?v=201210111817',bctrl : 'bctrl.js?v=201210111817',bpack : 'bpack.js?v=201210111817'};Monitor.gp(PDC.DICT.INDEX_TILES_LOAD).start_send();scriptRequest(srUrl.bmap,function() {Monitor.gp(PDC.DICT.INDEX_TILES_LOAD).transfer_time();loadBody();AsynLoader.get(srUrl.bctrl);AsynLoader.get(srUrl.bpack);},null, null, true);</script>
+</html>

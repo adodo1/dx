@@ -1,0 +1,492 @@
+<!--{subtemplate portal/header}-->
+
+<body>
+
+<!--头部开始-->
+<div  class="header w1002 mb15">
+   <div class="ht-ban">
+     <img src="template/eis_y_car/portal/images/001.png">
+   </div>
+   <div class="hd-m w1002"><a href="#">注册</a>|<a href="#">登录</a>|<a href="#">帮助</a>|<a href="#">建议</a>|<a href="#">设为首页</a>|<a href="#">收藏我们</a></div>
+   <div class="hd-b">
+     <div class="logo fl"><a href="#"><img src="template/eis_y_car/portal/images/002.png"></a></div>
+     <div class="hd-br fr"><img src="template/eis_y_car/portal/images/013.png"></div>
+   </div>
+</div>
+<!--头部结束-->
+
+
+<!--导航开始-->
+<div class="nav-box mb15">
+<div class=" w1002">
+ <div class="navlinks">
+  <ul>
+  <!--{loop $_G[setting][navs] $key $value}-->
+  <!--{if $value[available]==1}-->
+    <li><img src="{$_G[style][styleimgdir]}/line.png"></li>
+    <li><a href="$value[filename]">$value[navname]</a></li>
+   <!--{/if}-->
+  <!--{/loop}-->
+    </ul>
+  </div>
+<div class="search_box fr"><form id="scbar_form" method="post" autocomplete="off" onsubmit="searchFocus($('scbar_txt'))" action="search.php?searchsubmit=yes" target="_blank">
+<input type="hidden" name="mod" id="scbar_mod" value="search" />
+<input type="hidden" name="formhash" value="7e950784" />
+<input type="hidden" name="srchtype" value="title" />
+<input type="hidden" name="srhfid" value="0" />
+<input type="hidden" name="srhlocality" value="portal::index" />
+<input type="text" name="srchtxt" id="scbar_txt" value="请输入搜索内容" autocomplete="off" x-webkit-speech speech />
+<button type="submit" name="searchsubmit" id="scbar_btn" sc="1" class="pn pnc" value="true"><strong class="xi2 xs2">搜索</strong></button>
+</table>
+</form></div>
+  </div>
+</div>
+<!--导航结束-->
+
+<style>
+/**index_Picture carousel**/
+.demoa{ width:1000px; height:235px; position:relative; overflow:hidden;}
+.numa{ position:absolute;left:800px; top:209px; z-index:10;}
+.numa .cura{ background:#FFF; color:#666}
+.demoa ul{ position:relative; z-index:5;}
+.demoa ul li{ position:absolute; display:none;}
+.numa a{width: 18px;background: #0369B0;float: left;height: 18px;cursor: pointer; text-align:center; line-height:18px; margin-left:5px; color:#FFF}
+</style>
+<!--banner 开始-->
+<div class="banner clear mb15">
+    <div class="demoa">
+    <div class="numa"><a class="cura">1</a><a class="">2</a><a class="">3</a><a class="">4</a></div>
+        <ul>
+            <li><a href="#" target="_blank"><img src="template/eis_y_car/portal/images/005.png" width="1000" height="235"></a></li>
+            <li><a href="#" target="_blank"><img src="template/eis_y_car/portal/images/005.png" width="1000" height="235"></a></li>
+            <li><a href="#" target="_blank"><img src="template/eis_y_car/portal/images/005.png" width="1000" height="235"></a></li>
+            <li><a href="#" target="_blank"><img src="template/eis_y_car/portal/images/005.png" width="1000" height="235"></a></li>
+        </ul>
+    </div>
+<script type="text/javascript">
+$(function(){
+            $(".demoa ul li").first().css("display","list-item");
+            })
+    $(function(){
+        var sw = 0;
+        $(".demoa .numa a").mouseover(function(){
+            sw = $(".numa a").index(this);
+            myShow(sw);
+    
+        });
+        function myShow(i){
+            $(".demoa .numa a").eq(i).addClass("cura").siblings("a").removeClass("cura");
+            $(".demoa ul li").eq(i).stop(true,true).fadeIn(600).siblings("li").fadeOut(600);
+        }
+        //滑入停止动画，滑出开始动画
+        $(".demoa").hover(function(){
+            if(myTime){
+               clearInterval(myTime);
+            }
+        },function(){
+            myTime = setInterval(function(){
+              myShow(sw)
+              sw++;
+              if(sw==8){sw=0;}
+            } , 2500);
+        });
+        //自动开始
+        var myTime = setInterval(function(){
+           myShow(sw)
+           sw++;
+           if(sw==8){sw=0;}
+        } , 2500);
+    })
+</script>
+</div>
+<!--banner 结束-->
+
+<div class="site-map w1002 clear">
+  您的位置：<a href="#">首页</a> > <a href="#" class="blue">SUV大全</a>
+</div>
+
+<!--banner 结束-->
+<!--车型展示开始-->
+<div class="cxzs w1002">
+  <div class="tit">
+    <h2>车型展示</h2>
+  </div>
+  <div class="sc-box w1000">
+    <div class="findCY_ABC"><span>按品牌拼音检索></span>
+      <div class="csps">
+      <a href="#letter_A" id="a1" class="reda">A</a>
+      <a href="#letter_B" id="a2">B</a>
+      <a href="#letter_C" id="a3">C</a>
+      <a href="#letter_D" id="a4">D</a>
+      <a href="#letter_E" id="a5a" class="graya">E</a>
+      <a href="#letter_F" id="a6">F</a>
+      <a href="#letter_G" id="a7">G</a>
+      <a href="#letter_H" id="a8">H</a>
+      <a href="#letter_I" id="a9a" class="graya">I</a>
+      <a href="#letter_J" id="a10">J</a>
+      <a href="#letter_K" id="a11">K</a>
+      <a href="#letter_L" id="a12">L</a>
+      <a href="#letter_M" id="a13">M</a>
+      <a href="#letter_N" id="a14">N</a>
+      <a href="#letter_O" id="a15">O</a>
+      <a href="#letter_P" id="a16a" class="graya">P</a>
+      <a href="#letter_Q" id="a17">Q</a>
+      <a href="#letter_R" id="a18">R</a>
+      <a href="#letter_S" id="a19">S</a>
+      <a href="#letter_T" id="a20a" class="graya">T</a>
+      <a href="#letter_U" id="a21a" class="graya">U</a>
+      <a href="#letter_V" id="a22a" class="graya">V</a>
+      <a href="#letter_W" id="a23">W</a>
+      <a href="#letter_X" id="a24">X</a>
+      <a href="#letter_Y" id="a25">Y</a>
+      <a href="#letter_Z" id="a26">Z</a>
+      </div>
+      
+      <div class="sed_cx a1" style=" padding-left:120px;">
+        <a href="#">阿斯顿马丁</a>
+        <a href="#">奥迪</a>
+      </div>
+      <div class="sed_cx a2" style=" padding-left:120px;">
+        <a href="#">宝马</a>
+        <a href="#">保时捷</a>
+        <a href="#">北京汽车</a>
+        <a href="#">北汽制造</a>
+        <a href="#">奔驰</a>
+        <a href="#">本田</a>
+        <a href="#">比亚迪</a>
+        <a href="#">标致</a>
+        <a href="#">别克</a>
+        <a href="#">宾利</a>
+        <a href="#">布加迪</a>
+        <a href="#">奔腾</a>
+      </div>
+      <div class="sed_cx a3" style=" padding-left:120px;">
+        <a href="#">长安</a>
+        <a href="#">长城</a>
+        <a href="#">川汽野马</a>
+        <a href="#">昌河</a>
+        <a href="#">长丰</a>
+        <a href="#">长安商用</a>
+      </div>
+      <div class="sed_cx a4" style=" padding-left:120px;">
+        <a href="#">大众</a>
+        <a href="#">道奇</a>
+        <a href="#">东风</a>
+        <a href="#">东风风行</a>
+      </div>
+      <div class="sed_cx a5" style=" padding-left:120px;">eeee</div>
+      <div class="sed_cx a6" style=" padding-left:120px;">
+        <a href="#">菲亚特</a>
+        <a href="#">丰田</a>
+        <a href="#">风行</a>
+        <a href="#">福迪</a>
+        <a href="#">福特</a>
+      </div>
+      <div class="sed_cx a7" style=" padding-left:120px;">
+        <a href="#">广汽传祺</a>
+      </div>
+      <div class="sed_cx a8" style=" padding-left:120px;">
+        <a href="#">海马</a>
+        <a href="#">悍马</a>
+        <a href="#">华泰</a>
+        <a href="#">黄海</a>
+      </div>
+      <div class="sed_cx a9" style=" padding-left:120px;">iiiii</div>
+      <div class="sed_cx a10" style=" padding-left:120px;">
+        <a href="#">吉普</a>
+        <a href="#">吉奥</a>
+        <a href="#">吉利帝豪</a>
+        <a href="#">吉利全球鹰</a>
+        <a href="#">吉利英伦</a>
+        <a href="#">江淮</a>
+        <a href="#">江铃</a>
+        <a href="#">金杯</a>
+      </div>
+      <div class="sed_cx a11" style=" padding-left:120px;">
+        <a href="#">凯佰赫</a>
+        <a href="#">凯迪拉克</a>
+      </div>
+      <div class="sed_cx a12" style=" padding-left:120px;">
+        <a href="#">兰博基尼</a>
+        <a href="#">雷克萨斯</a>
+        <a href="#">雷诺</a>
+        <a href="#">力帆</a>
+        <a href="#">莲花汽车</a>
+        <a href="#">猎豹汽车</a>
+        <a href="#">林肯</a>
+        <a href="#">铃木</a>
+        <a href="#">陆风</a>
+        <a href="#">路虎</a>
+      </div>
+      <div class="sed_cx a13" style=" padding-left:120px;">
+        <a href="#">MG</a>
+        <a href="#">MINI</a>
+        <a href="#">马自达</a>
+        <a href="#">玛莎拉蒂</a>
+      </div>
+      <div class="sed_cx a14" style=" padding-left:120px;">
+        <a href="#">纳智捷</a>
+      </div>
+      <div class="sed_cx a15" style=" padding-left:120px;">
+        <a href="#">讴歌</a>
+        <a href="#">欧宝</a>
+      </div>
+      <div class="sed_cx a16" style=" padding-left:120px;">ppp</div>
+      <div class="sed_cx a17" style=" padding-left:120px;">
+        <a href="#">奇瑞</a>
+        <a href="#">起亚</a>
+      </div>
+      <div class="sed_cx a18" style=" padding-left:120px;">
+        <a href="#">日产</a>
+        <a href="#">荣威</a>
+        <a href="#">瑞麒</a>
+      </div>
+      <div class="sed_cx a19" style=" padding-left:120px;">
+        <a href="#">萨博</a>
+        <a href="#">三菱</a>
+        <a href="#">双环</a>
+        <a href="#">双龙</a>
+        <a href="#">斯巴鲁</a>
+        <a href="#">斯柯达</a>
+      </div>
+      <div class="sed_cx a20" style=" padding-left:120px;">ttt</div>
+      <div class="sed_cx a21" style=" padding-left:120px;">uuu</div>
+      <div class="sed_cx a22" style=" padding-left:120px;">vvv</div>
+      <div class="sed_cx a23" style=" padding-left:120px;">
+        <a href="#">威麟</a>
+        <a href="#">沃尔沃</a>
+      </div>
+      <div class="sed_cx a24" style=" padding-left:120px;">
+        <a href="#">现代</a>
+        <a href="#">雪弗兰</a>
+        <a href="#">雪铁龙</a>
+      </div>
+      <div class="sed_cx a25" style=" padding-left:120px;">
+        <a href="#">一汽</a>
+        <a href="#">英菲尼迪</a>
+        <a href="#">永源</a>
+      </div>
+      <div class="sed_cx a26" style=" padding-left:120px;">
+        <a href="#">中华</a>
+        <a href="#">中兴</a>
+        <a href="#">众泰</a>
+      </div>
+    </div>
+    <script>
+        $('.findCY_ABC .sed_cx').eq(0).show();
+        $('.findCY_ABC .csps a').mouseover(function(){
+            $(this).addClass('reda').siblings().removeClass('reda');
+            F_eq = $(this).attr('id');
+            $('.findCY_ABC').find('.'+F_eq).show().siblings('.sed_cx').hide();
+            })
+    </script>
+    <div class="zs-car">
+        <div class="zs-carbox">
+            <div class="car-box">
+            <h1 class="redh" id="letter_A">A</h1>
+            <div class="car-logo"><img src="template/eis_y_car/portal/images/011.png"></div>
+            <h2>阿斯顿马丁</h2>
+            </div>
+            <div class="car-fl">
+               <p> 
+                  <a href="cxjs.html"><span>阿斯顿马丁</span><div class="fd-car"><img src="template/eis_y_car/portal/images/000000.png"></div></a>
+               </p>
+            </div>
+        </div>
+        <div class="clear"></div>
+    <div class="zs-carbox">
+        <div class="car-box">
+            <h1></h1>
+            <div class="car-logo"><img src="template/eis_y_car/portal/images/011.png"></div>
+            <h2>奥迪</h2>
+        </div>
+        <div class="car-fl">
+            <p>
+                <a href="cxjs.html">一汽奥迪<div class="fd-car"><img src="template/eis_y_car/portal/images/000000.png"></div></a>
+                    (
+                          <a href="cxjs.html"><span>A4L</span><div class="fd-car"><img src="template/eis_y_car/portal/images/000000.png"></div></a>
+                    )
+            </p>         
+        </div>
+     </div>
+    </div>
+    <div class="zs-car clear">
+      <div class="zs-carbox">   
+       <div class="car-box">
+      <h1 id="letter_B">B</h1>
+      <div class="car-logo"><img src="template/eis_y_car/portal/images/011.png"></div>
+      <h2>宝马</h2>
+     </div>
+       <div class="car-fl">
+              <a href="#">宝马<div class="fd-car"><img src="template/eis_y_car/portal/images/000000.png"></div></a>
+              （
+              <a href="#"><span>宝马1</span><div class="fd-car"><img src="template/eis_y_car/portal/images/000000.png"></div></a>
+              ）
+     </div>
+     </div>
+    <div class="zs-carbox clear">
+       <div class="car-box">
+      <h1></h1>
+      <div class="car-logo"><img src="template/eis_y_car/portal/images/011.png"></div>
+      <h2>保时捷</h2>
+     </div>
+       <div class="car-fl">
+              <p>
+              <a href="cxjs.html">保时捷<div class="fd-car"><img src="template/eis_y_car/portal/images/000000.png"></div></a>
+              (
+              <a href="cxjs.html"><span>保时捷1</span><div class="fd-car"><img src="template/eis_y_car/portal/images/000000.png"></div></a>
+              <a href="cxjs.html"><span>保时捷2</span><div class="fd-car"><img src="template/eis_y_car/portal/images/000000.png"></div></a>
+              <a href="cxjs.html"><span>保时捷3</span><div class="fd-car"><img src="template/eis_y_car/portal/images/000000.png"></div></a>
+              )
+              </p>         
+     </div>
+     </div>
+    <div class="zs-carbox clear">
+       <div class="car-box">
+      <h1></h1>
+      <div class="car-logo"><img src="template/eis_y_car/portal/images/011.png"></div>
+      <h2>北京汽车</h2>
+     </div>
+       <div class="car-fl">
+              <p>
+              <a href="cxjs.html"><span>北京汽车1</span><div class="fd-car"><img src="template/eis_y_car/portal/images/000000.png"></div></a>
+              <a href="cxjs.html"><span>北京汽车2</span><div class="fd-car"><img src="template/eis_y_car/portal/images/000000.png"></div></a>
+              <a href="cxjs.html"><span>北京汽车3</span><div class="fd-car"><img src="template/eis_y_car/portal/images/000000.png"></div></a>
+              </p>         
+     </div>
+    </div>
+    <div class="zs-carbox clear">
+       <div class="car-box">
+      <h1></h1>
+      <div class="car-logo"><img src="template/eis_y_car/portal/images/011.png"></div>
+      <h2>北汽制造</h2>
+     </div>
+       <div class="car-fl">
+              <p>
+              <a href="cxjs.html"><span>北汽制造1</span><div class="fd-car"><img src="template/eis_y_car/portal/images/000000.png"></div></a>
+              <a href="cxjs.html"><span>北汽制造2</span><div class="fd-car"><img src="template/eis_y_car/portal/images/000000.png"></div></a>
+              <a href="cxjs.html"><span>北汽制造3</span><div class="fd-car"><img src="template/eis_y_car/portal/images/000000.png"></div></a>
+              </p>         
+     </div>
+    </div>
+    <div class="zs-carbox clear">
+       <div class="car-box">
+      <h1></h1>
+      <div class="car-logo"><img src="template/eis_y_car/portal/images/011.png"></div>
+      <h2>奔驰</h2>
+     </div>
+       <div class="car-fl">
+              <p>
+              <a href="cxjs.html"><span>奔驰</span><div class="fd-car"><img src="template/eis_y_car/portal/images/000000.png"></div></a>
+              </p>         
+     </div>
+    </div>
+    <div class="zs-carbox clear">
+       <div class="car-box">
+      <h1></h1>
+      <div class="car-logo"><img src="template/eis_y_car/portal/images/011.png"></div>
+      <h2>本田</h2>
+     </div>
+       <div class="car-fl">
+              <p>
+              <a href="cxjs.html"><span>本田</span><div class="fd-car"><img src="template/eis_y_car/portal/images/000000.png"></div></a>
+              </p>         
+     </div>
+    </div>
+    <div class="zs-carbox clear">
+       <div class="car-box">
+      <h1></h1>
+      <div class="car-logo"><img src="template/eis_y_car/portal/images/011.png"></div>
+      <h2>比亚迪</h2>
+     </div>
+       <div class="car-fl">
+              <p>
+              <a href="cxjs.html"><span>比亚迪</span><div class="fd-car"><img src="template/eis_y_car/portal/images/000000.png"></div></a>
+              </p>         
+     </div>
+    </div>
+    <div class="zs-carbox clear">
+       <div class="car-box">
+      <h1></h1>
+      <div class="car-logo"><img src="template/eis_y_car/portal/images/011.png"></div>
+      <h2>标致</h2>
+     </div>
+       <div class="car-fl">
+              <p>
+              <a href="cxjs.html"><span>标致</span><div class="fd-car"><img src="template/eis_y_car/portal/images/000000.png"></div></a>
+              </p>         
+     </div>
+    </div>
+    <div class="zs-carbox clear">
+       <div class="car-box">
+      <h1></h1>
+      <div class="car-logo"><img src="template/eis_y_car/portal/images/011.png"></div>
+      <h2>别克</h2>
+     </div>
+       <div class="car-fl">
+              <p>
+              <a href="cxjs.html"><span>别克</span><div class="fd-car"><img src="template/eis_y_car/portal/images/000000.png"></div></a>
+              </p>         
+     </div>
+    </div>
+    <div class="zs-carbox clear">
+       <div class="car-box">
+      <h1></h1>
+      <div class="car-logo"><img src="template/eis_y_car/portal/images/011.png"></div>
+      <h2>宾利</h2>
+     </div>
+       <div class="car-fl">
+              <p>
+              <a href="cxjs.html"><span>宾利</span><div class="fd-car"><img src="template/eis_y_car/portal/images/000000.png"></div></a>
+              </p>         
+     </div>
+    </div>
+    <div class="zs-carbox clear">
+       <div class="car-box">
+      <h1></h1>
+      <div class="car-logo"><img src="template/eis_y_car/portal/images/011.png"></div>
+      <h2>宾利</h2>
+     </div>
+       <div class="car-fl">
+              <p>
+              <a href="cxjs.html"><span>宾利</span><div class="fd-car"><img src="template/eis_y_car/portal/images/000000.png"></div></a>
+              </p>         
+     </div>
+    </div>
+    <div class="zs-carbox clear">
+       <div class="car-box">
+      <h1></h1>
+      <div class="car-logo"><img src="template/eis_y_car/portal/images/011.png"></div>
+      <h2>布加迪</h2>
+     </div>
+       <div class="car-fl">
+              <p>
+              <a href="cxjs.html"><span>布加迪</span><div class="fd-car"><img src="template/eis_y_car/portal/images/000000.png"></div></a>
+              </p>         
+     </div>
+    </div>
+    
+    </div>
+    
+    <script>
+        $('.sc-box .zs-car .car-fl a span').mouseover(function(){
+            $(this).parent().css('position','relative');
+            h_width = $(this).parent().width();
+            $(this).siblings('.fd-car').css('left',h_width);
+            $(this).siblings('.fd-car').show();
+            }).mouseout(function(){
+                $(this).siblings('.fd-car').hide();
+                $(this).parent('position','static');
+                })
+                $('.sc-box .zs-car .car-fl a .fd-car').mouseover(function(){
+                    $(this).hide();
+                    })
+    </script>
+  </div>
+</div>
+<!--车型展示结束-->
+
+<a id="goTopBtn" title="返回顶部" style="display:none;"></a>
+<SCRIPT type=text/javascript>goTopEx();</SCRIPT>
+
+<!--{subtemplate portal/footer}-->

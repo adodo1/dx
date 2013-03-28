@@ -1,0 +1,429 @@
+
+<div class="smp_wrap">
+    <div id="smp_tip" class="smp_tip">没有找到该地点，重新输入地址或拖动图区图标定位</div>
+    <ul class="smp_form">
+        <li>
+            <form id="form_smp_addr">
+                <label>地　址：</label><input type="text" tabindex="1" class="smp_txt_addr" id="smp_txt_addr" value='#addr_value#' /><input type="submit" id="smp_btn_search" class="iw_bt" onfocus='this.blur()' onmouseover='this.className="iw_bt_over"' onmouseout='this.className="iw_bt"' onmousedown='this.className="iw_bt_down"' onmouseup='this.className="iw_bt_over"' value="搜索" />
+            </form>
+        </li>
+        <li>
+            <label>备注名：</label><input type="text" tabindex="2" class="smp_txt_note" maxlength="20" id="smp_txt_note" value="#note_value#" />
+        </li>
+    </ul>
+    <div id="smp_error" class="smp_error fail">
+        <span id="smp_error_txt"></span><a href="javascript:void(0)" id="smp_error_close" class="smp_error_close"></a>
+    </div>
+    <div id="smp_map" class="smp_map"></div>
+    <div class="smp_submit">
+        <input type="button" id="smp_btn_sure" class="iw_bt" onfocus='this.blur()' onmouseover='this.className="iw_bt_over"' onmouseout='this.className="iw_bt"' onmousedown='this.className="iw_bt_down"' onmouseup='this.className="iw_bt_over"' value="确定" />&nbsp;<input type="button" id="smp_btn_cancel" class="iw_bt" onfocus='this.blur()' onmouseover='this.className="iw_bt_over"' onmouseout='this.className="iw_bt"' onmousedown='this.className="iw_bt_down"' onmouseup='this.className="iw_bt_over"' value="取消" />
+    </div>
+</div>
+
+<script>
+    (function() {
+        var SMP_CONST_TXT = {
+            ADDR_DEFAULT: "例如 北京市海淀区上地十街10号",
+            ADDR_EMPTY: "请输入地址",
+            NOTE_EMPTY: "请输入备注名",
+            NOTE_ERROR: "不能包含特殊符号",
+            NOTE_REPEAT: "备注名重复，请重新输入",
+            NOTE_OVERLONG: "您最多可输入10个字",
+            LABEL_OK: "就这里了",
+            LABEL_INIT: "拖动此图标到准确位置"
+        };
+        function SetMyPlace() {
+            T.lang.Class.call(this);
+            this.smp_map = null;
+            this.smp_mkr = null;
+            this.smp_lab = null;
+            this.city_code = null;
+            this.searchRes = null;
+            this.saveJson = null;
+            this._lastAction = ""
+        }
+        T.lang.inherits(SetMyPlace, T.lang.Class, "SetMyPlace");
+        T.object.extend(SetMyPlace.prototype, {
+            render: function(html) {
+                SmpMgr.component = this;
+                var json = this.json = this.cinfo || {},
+                note = json.note || "",
+                addr = json.addr || SMP_CONST_TXT.ADDR_DEFAULT;
+                html = html.replace(/#note_value#/gi, note);
+                html = html.replace(/#addr_value#/gi, addr);
+                return html
+            },
+            initialize: function() {
+                var _this = this;
+                if (T.g("smp_txt_addr").value == SMP_CONST_TXT.ADDR_DEFAULT) {
+                    T.addClass(T.g("smp_txt_addr"), "blank")
+                }
+                var smp_map = this.smp_map = SmpMgr.smp_map = new BMap.Map("smp_map", {
+                    coordType: BMAP_COORD_MERCATOR,
+                    zoomLevelMin: 3
+                });
+                map.disableScrollWheelZoom();
+                smp_map.enableScrollWheelZoom();
+                smp_map.enableInertialDragging();
+                window.setTimeout(function() {
+                    _this.initSmpMap();
+                    _this.bindEvent()
+                },
+                100)
+            },
+            initSmpMap: function() {
+                var _this = this;
+                var json = this.json;
+                var smp_map = this.smp_map;
+                var point = json.point ? getPoiPoint(json.point) : map.getCenter();
+                var level = json.level || map.getZoom();
+                smp_map.centerAndZoom(point, level);
+                smp_map.addControl(new BMap.NavigationControl({
+                    type: BMAP_NAVIGATION_CONTROL_ZOOM
+                }));
+                var ico = new BMap.Icon(A_J_MARKER_IMG, new BMap.Size(27, 31), {
+                    offset: new BMap.Size(11, 31),
+                    imageOffset: new BMap.Size(0, -116),
+                    infoWindowOffset: A_J_MARKER_INFOWND_OFFSET
+                });
+                var labelConent = "<div class='smp_label'><span id='smp_label_content'>" + SMP_CONST_TXT.LABEL_INIT + "</span><span id='smp_label_close'></span></div>";
+                var lab = new BMap.Label(labelConent, {
+                    offset: new BMap.Size(16, -27)
+                });
+                lab.setStyle({
+                    padding: "0",
+                    border: "none"
+                });
+                lab._showTipText = function(txt) {
+                    lab.show();
+                    T.g("smp_label_content").innerHTML = txt
+                };
+                var mkr = new BMap.Marker(smp_map.getCenter(), {
+                    icon: ico,
+                    enableDragging: true
+                });
+                mkr.addEventListener("dragstart",
+                function() {
+                    T.G("smp_tip").style.display = "none";
+                    lab.hide()
+                });
+                mkr.addEventListener("dragend",
+                function() {
+                    lab.show();
+                    lab._showTipText(SMP_CONST_TXT.LABEL_OK);
+                    _this.rgcSearch(this.getPoint(),
+                    function(json) {
+                        _this.rgcCBK(json)
+                    })
+                });
+                mkr.setLabel(lab);
+                smp_map.addOverlay(mkr);
+                this.smp_mkr = mkr;
+                this.smp_lab = lab;
+                this.city_code = modelConfig.cityCode || 1
+            },
+            bindEvent: function() {
+                var _this = this;
+                var smp_txt_note = T.g("smp_txt_note"),
+                smp_txt_addr = T.g("smp_txt_addr"),
+                smp_btn_search = T.g("smp_btn_search"),
+                smp_btn_cancel = T.g("smp_btn_cancel"),
+                smp_btn_sure = T.g("smp_btn_sure"),
+                smp_label_content = T.g("smp_label_content"),
+                smp_label_close = T.g("smp_label_close");
+                T.on(smp_txt_note, "change",
+                function() {
+                    return _this.checkNote(this)
+                });
+                T.on(smp_txt_addr, "change",
+                function() {
+                    T.G("smp_tip").style.display = "none"
+                });
+                T.on(smp_txt_addr, "focus",
+                function() {
+                    if (window.smp_addr_timer) {
+                        window.clearTimeout(window.smp_addr_timer)
+                    }
+                    if (this.value == SMP_CONST_TXT.ADDR_DEFAULT) {
+                        T.removeClass(this, "blank");
+                        this.value = ""
+                    }
+                });
+                T.on(smp_txt_addr, "blur",
+                function() {
+                    var _this = this;
+                    window.smp_addr_timer = window.setTimeout(function() {
+                        if (SmpMgr.helper.isEmpty(_this.value)) {
+                            T.addClass(_this, "blank");
+                            _this.value = SMP_CONST_TXT.ADDR_DEFAULT
+                        }
+                        T.rc(_this, "txt_smp_error")
+                    },
+                    50)
+                });
+                T.on(T.G("form_smp_addr"), "submit",
+                function(e) {
+                    e = window.event || e;
+                    if (_this.checkAddr(smp_txt_addr)) {
+                        var value = T.string.trim(smp_txt_addr.value);
+                        _this.localSearch(value,
+                        function(json) {
+                            _this.showSearchRes(json)
+                        })
+                    }
+                    e.returnValue = false
+                });
+                smp_btn_sure.onclick = function() {
+                    if (_this.checkInfo()) {
+                        var data = _this.getSaveJson(function(data) {
+                            SmpMgr.storer.set(data);
+                            SmpMgr.updateOverLay(data);
+                            SmpMgr.popup.close();
+                            addStat(STAT_SMP_SAVE_OK);
+                            if (_this._lastAction == "drag") {
+                                addStat(STAT_SMP_DRAG_OK)
+                            } else {
+                                if (_this._lastAction == "search") {
+                                    addStat(STAT_SMP_SEARCH_OK)
+                                }
+                            }
+                        })
+                    }
+                };
+                smp_label_close.onclick = function() {
+                    _this.smp_lab.hide()
+                };
+                smp_btn_cancel.onclick = function() {
+                    SmpMgr.popup.close()
+                }
+            },
+            checkInfo: function() {
+                return this.checkNote(T.g("smp_txt_note"))
+            },
+            checkRepeat: function(txt) {
+                if (!txt) {
+                    return
+                }
+                var value = T.string.trim(txt.value);
+                var data = SmpMgr.storer.arr;
+                var uid = this.json.uid;
+                for (var i = 0,
+                len = data.length; i < len; i++) {
+                    if (value == data[i].note && value != "" && uid != data[i].uid) {
+                        return true
+                    }
+                }
+                return false
+            },
+            checkAddr: function(txt) {
+                if (!txt) {
+                    return
+                }
+                var value = T.string.trim(txt.value);
+                return this.showError(txt, SmpMgr.helper.isEmpty(value), "ADDR_EMPTY") && this.showError(txt, value == SMP_CONST_TXT.ADDR_DEFAULT, "ADDR_EMPTY")
+            },
+            checkNote: function(txt) {
+                if (!txt) {
+                    return
+                }
+                var value = T.string.trim(txt.value);
+                return this.showError(txt, SmpMgr.helper.isEmpty(value), "NOTE_EMPTY") && this.showError(txt, SmpMgr.helper.isNotWord(value), "NOTE_ERROR") && this.showError(txt, SmpMgr.helper.isOverLong(value, 20), "NOTE_OVERLONG") && this.showError(txt, this.checkRepeat(txt), "NOTE_REPEAT")
+            },
+            showError: function(txtInput, display, type) {
+                var _this = this,
+                smp_error = T.g("smp_error"),
+                smp_error_txt = T.g("smp_error_txt"),
+                smp_error_close = T.g("smp_error_close");
+                if (display) {
+                    T.ac(txtInput, "txt_smp_error");
+                    smp_error.style.display = "block";
+                    var left = txtInput.offsetLeft;
+                    var top = txtInput.offsetTop + 26;
+                    if (T.browser.ie <= 7) {
+                        left -= 10
+                    }
+                    smp_error.style.left = left + "px";
+                    smp_error.style.top = top + "px";
+                    smp_error_txt.innerHTML = SMP_CONST_TXT[type] ? SMP_CONST_TXT[type] : type;
+                    if (_this._errorTimer) {
+                        window.clearTimeout(_this._errorTimer)
+                    }
+                    _this._errorTimer = window.setTimeout(smp_error_close.onclick = function() {
+                        smp_error.style.display = "none";
+                        if (_this._errorTimer) {
+                            window.clearTimeout(_this._errorTimer)
+                        }
+                    },
+                    3000);
+                    window.setTimeout(function() {
+                        txtInput.focus()
+                    },
+                    10);
+                    return false
+                } else {
+                    smp_error.style.display = "none";
+                    T.rc(txtInput, "txt_smp_error");
+                    return true
+                }
+            },
+            getSaveJson: function(cbk) {
+                var _this = this,
+                uid = this.json.uid,
+                point = this.smp_mkr.getPoint(),
+                note = T.string.trim(T.g("smp_txt_note").value),
+                exts = this.searchRes || this.json,
+                level = this.smp_map.getZoom();
+                note = T.string.filterFormat.escapeString(note);
+                var json = {
+                    point: point.lng + "," + point.lat,
+                    uid: uid || new Date().getTime(),
+                    note: note,
+                    level: level,
+                    ccode: exts.ccode || modelConfig.cityCode,
+                    name: exts.name || "",
+                    addr: exts.addr || ""
+                };
+                if (json.addr) {
+                    cbk && cbk(json);
+                    this.saveJson = json
+                } else {
+                    this.rgcSearch(point,
+                    function(data) {
+                        if (data.content && data.content.address) {
+                            json.addr = data.content.address;
+                            cbk && cbk(json);
+                            _this.saveJson = json
+                        }
+                    })
+                }
+            },
+            showSearchRes: function(json) {
+                var _this = this,
+                smp_tip = T.G("smp_tip");
+                if (json && json.name && json.point && json.addr) {
+                    var point = getPoiPoint(json.point),
+                    level = json.level || 16;
+                    _this.smp_mkr.setPoint(point);
+                    _this.smp_map.centerAndZoom(point, level);
+                    _this.city_code = json.ccode;
+                    _this.smp_lab._showTipText(SMP_CONST_TXT.LABEL_OK);
+                    _this.searchRes = json;
+                    _this._lastAction = "search";
+                    smp_tip.style.display = "none"
+                } else {
+                    smp_tip.style.display = "block";
+                    _this.smp_lab._showTipText(SMP_CONST_TXT.LABEL_INIT);
+                    addStat(STAT_SMP_SEARCH_FAIL)
+                }
+            },
+            rgcSearch: function(point, cbk) {
+                if (!point) {
+                    return
+                }
+                SmpMgr._rgcCBK = cbk ||
+                function() {};
+                scriptRequest("http://api.map.baidu.com/?qt=rgc&x=" + point.lng + "&y=" + point.lat + "&dis_poi=100&poi_num=10&ie=utf-8&oue=1&res=webmap&callback=SmpMgr._rgcCBK")
+            },
+            rgcCBK: function(json) {
+                if (!json) {
+                    return
+                }
+                var content = json.content,
+                txtbox = T.g("smp_txt_addr");
+                if (content && content.address && content.address_detail && txtbox) {
+                    txtbox.value = content.address;
+                    T.removeClass(txtbox, "blank");
+                    var city_code = content.address_detail.city_code;
+                    this.searchRes = {
+                        addr: content.address,
+                        ccode: city_code
+                    };
+                    this.city_code = city_code;
+                    this._lastAction = "drag"
+                }
+            },
+            localSearch: function(query, cbk) {
+                var _this = this,
+                word = query,
+                ccode = this.city_code || 1,
+                level = map.zoomLevel,
+                bounds = foramtBounds(map.getBounds());
+                var param = {
+                    qt: "s",
+                    src: "0",
+                    ie: "utf-8",
+                    wd: word,
+                    c: ccode,
+                    l: level,
+                    b: bounds
+                };
+                var url = "/?" + jsonToQuery(param, encodeURIComponent);
+                T.Ajax.request(url,
+                function(req) {
+                    var json = null;
+                    try {
+                        eval("json=" + req.responseText);
+                        cbk && cbk(_this.filterJson(json))
+                    } catch(e) {
+                        cbk && cbk(e);
+                        return
+                    }
+                })
+            },
+            filterJson: function(json) {
+                if (!json) {
+                    return
+                }
+                var result = json.result,
+                content = json.content,
+                addrs = json.addrs;
+                var name = "",
+                addr = "",
+                geo = "",
+                level = "",
+                ccode = json.current_city.code || this.city_code;
+                if (isActiveCity("smp", result.type)) {
+                    if (result.type == 41 && addrs) {
+                        name = addrs[0].name;
+                        geo = addrs[0].geo;
+                        addr = addrs[0].addr
+                    } else {
+                        if (result.type == 1 || result.type == 2) {
+                            name = content.cname;
+                            geo = content.geo;
+                            addr = content.cname;
+                            level = content.level
+                        } else {
+                            if (!content) {
+                                return
+                            }
+                            for (var i = 0,
+                            len = content.length; i < len; i++) {
+                                var c = content[i];
+                                if (c && c.poiType != POI_TYPE_BUSLINE && c.poiType != POI_TYPE_SUBLINE) {
+                                    name = c.name;
+                                    addr = c.addr;
+                                    geo = c.geo;
+                                    break
+                                }
+                            }
+                        }
+                    }
+                }
+                return {
+                    name: name,
+                    addr: addr,
+                    point: (geo ? parseGeo(geo).points: ""),
+                    ccode: ccode,
+                    level: level
+                }
+            },
+            dispose: function() {
+                this.smp_mkr = null;
+                this.smp_lab = null;
+                this.smp_map = null
+            }
+        });
+        window.SetMyPlace = SetMyPlace
+    })();
+</script>

@@ -1,0 +1,17 @@
+<?PHP exit;?>	1354797261	admin	1	192.168.1.175	thread		2	GET={mod=modcp; fid=2; action=thread; }; POST={};
+<?PHP exit;?>	1354797264	admin	1	192.168.1.175	forum	editforum	2	GET={mod=modcp; action=forum; op=editforum; fid=2; }; POST={};
+<?PHP exit;?>	1354797266	admin	1	192.168.1.175	member	edit	2	GET={mod=modcp; action=member; op=edit; fid=2; }; POST={};
+<?PHP exit;?>	1354797268	admin	1	192.168.1.175	member	sh	2	GET={mod=modcp; action=member; op=sh; fid=2; }; POST={};
+<?PHP exit;?>	1354797273	admin	1	192.168.1.175	thread	thread	2	GET={mod=modcp; action=thread; op=thread; fid=2; }; POST={};
+<?PHP exit;?>	1354797277	admin	1	192.168.1.175	home		2	GET={mod=modcp; action=home; fid=2; }; POST={};
+<?PHP exit;?>	1354797279	admin	1	192.168.1.175	moderate	threads	2	GET={mod=modcp; action=moderate; op=threads; fid=2; }; POST={};
+<?PHP exit;?>	1354797280	admin	1	192.168.1.175	member	ban	2	GET={mod=modcp; action=member; op=ban; fid=2; }; POST={};
+<?PHP exit;?>	1354797281	admin	1	192.168.1.175	member	ipban	2	GET={mod=modcp; action=member; op=ipban; fid=2; }; POST={};
+<?PHP exit;?>	1354797282	admin	1	192.168.1.175	forumaccess		2	GET={mod=modcp; action=forumaccess; fid=2; }; POST={};
+<?PHP exit;?>	1354797283	admin	1	192.168.1.175	forum	recommend	2	GET={mod=modcp; action=forum; op=recommend; show=all; fid=2; }; POST={};
+<?PHP exit;?>	1354797289	admin	1	192.168.1.175	report		2	GET={mod=modcp; action=report; fid=2; }; POST={};
+<?PHP exit;?>	1354797292	admin	1	192.168.1.175	forum	editforum	2	GET={mod=modcp; action=forum; op=editforum; fid=2; }; POST={};
+<?PHP exit;?>	1354797321	admin	1	192.168.1.175	member	edit	2	GET={mod=modcp; action=member; op=edit; fid=2; }; POST={};
+<?PHP exit;?>	1354797329	admin	1	192.168.1.175	member	sh	2	GET={mod=modcp; action=member; op=sh; fid=2; }; POST={};
+<?PHP exit;?>	1354797331	admin	1	192.168.1.175	thread	thread	2	GET={mod=modcp; action=thread; op=thread; fid=2; }; POST={};
+<?PHP exit;?>	1354797332	admin	1	192.168.1.175	home		2	GET={mod=modcp; action=home; fid=2; }; POST={};

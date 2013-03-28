@@ -1,0 +1,176 @@
+<!--{subtemplate common/header}-->
+<style>
+#submit_fid tr{ line-height:30px; }
+.class1{width:300px; text-align:right}
+.class2{width:400px; text-align:left}
+.h_px {
+	font-size: 20px;
+	color: #000;
+
+}
+.h_width1{ width:150px; height:18px; line-height:18px; border:1px solid #ccc;}
+.h_width2{ width:210px; height:18px; line-height:18px; border:1px solid #ccc;}
+.h_width3{ width:50px; height:18px; line-height:18px; border:1px solid #ccc;}
+.h_width4{ width:400px; height:50px; border:1px solid #ccc;}
+</style>
+<form action="forum.php?mod=moderator" method="POST">
+<div  align="center" style="width:980px; height:auto; border:1px solid #ccc; margin-top:30px;"> 
+<table cellspacing="0" cellpadding="0" id="submit_fid" style="margin-top:20px; margin-bottom:50px;">
+			<tr>
+				<td colspan="2" align="center"  style="color:#F00">
+                    <span class="h_px">申请板块</span>
+<input type="hidden" name="sectionname" value="{$sectionname}"  />	
+					<span class="h_px">《{$sectionname}》</span>
+				</td>
+            </tr>
+            <tr>
+				<td height="41" colspan="2" align="right">
+                    申请人 ：
+				
+                	<input type="hidden" name="username" value="{$username}" class="" />	
+					{$username}
+				</td>
+            </tr>
+			<tr>
+				<td width="300" height="37" class="class1">
+					<input type="hidden" name="bid" id="bid" value="{$fid}" />
+                    <input type="hidden" name="username" id="username" value="{$username}" />
+                    <input type="hidden" name="uid" id="uid" value="{$uid}" />
+                    <span style="color:#F00; font-size:14px; line-height:27px;"> * </span>真实姓名 ：
+                    
+				</td>
+                <td width="584" class="class2">
+                	<input type="text" name="name"  value="{$name}" class="h_width1" />	
+
+				</td>
+			</tr>
+            <tr>
+				<td height="41" class="class1">
+                    <span style="color:#F00; font-size:14px; line-height:27px;"> * </span>身份证号 ：
+				</td>
+                <td class="class2">
+                	<input type="text" name="number" value="{$number}"  class="h_width1" />	
+				</td>
+			</tr>
+            <tr>
+				<td height="36" class="class1">
+                    <span style="color:#F00; font-size:14px; line-height:27px;"> * </span>手机号码 ：
+				</td>
+                <td class="class2">
+                	<input type="text" name="tel"  value="{$tel}"  class="h_width1" />	
+				</td>
+			</tr>
+            <tr>
+				<td height="35" class="class1">
+                    <span style="color:#F00; font-size:14px; line-height:27px;"> * </span>生    日 ：
+				</td>
+                <td class="class2">
+                	<input type="text" name="birthday"  value="{$birthday}"  class="h_width1" />	
+				</td>
+			</tr>
+            <tr>
+				<td class="class1">
+                    <span style="color:#F00; font-size:14px; line-height:27px;"> * </span>性    别 ：
+				</td>
+                <td class="class2">
+                	<input type="radio" id="gender" name="gender" value="0" {if $gender==0} checked="checked" {/if}/><em>男</em> 
+					<input type="radio" id="gender" name="gender" value="1"  {if $gender<>0} checked="checked" {/if}/><em>女&nbsp;&nbsp;</em>
+	
+				</td>
+			</tr>
+            <tr>
+				<td height="36" class="class1">
+                    <span style="color:#F00; font-size:14px; line-height:27px;"> * </span>通讯地址 ：
+				</td>
+                <td class="class2">
+                	<input type="text" name="address"  value="{$address}"  class="h_width2" />	
+	
+				</td>
+			</tr>
+            <tr>
+				<td height="39" class="class1">
+                    <span style="color:#F00; font-size:14px; line-height:27px;"> * </span>邮    编 ：
+				</td>
+                <td class="class2">
+                	<input type="text" name="psotsum"  value="{$address}" class="h_width1" />	
+	
+				</td>
+			</tr>
+            <tr>
+				<td height="35" class="class1">
+                   <span style="color:#F00; font-size:14px; line-height:27px;"> * </span> 电子邮件 ：
+				</td>
+                <td class="class2">
+                	<input type="text" name="email"  value="{$address}"  class="h_width1" />	
+	
+				</td>
+			</tr>
+            <tr>
+				<td height="34" class="class1">
+                    QQ ：
+				</td>
+                <td class="class2">
+                	<input type="text" name="qq" value="{$address}"  class="h_width1" />	
+	
+				</td>
+			</tr>
+            
+            <tr>
+				<td height="36" class="class1">
+                    <span style="color:#F00; font-size:14px; line-height:27px;"> * </span>所在城市：
+				</td>
+                <td class="class2">
+                	<input type="text" name="city" value="{$address}"  class="h_width2"  />	
+	
+				</td>
+			</tr>
+            <tr>
+				<td class="class1">
+                <span style="color:#F00; font-size:14px; line-height:27px;"> * </span>是否有驾照：
+				</td>
+                <td class="class2">
+					<input type="radio" id="license" name="license" value="0" {if $license==0} checked="checked" {/if} /><em>有</em> 
+					<input type="radio" id="license" name="license" value="1" {if $license<>0} checked="checked" {/if} /><em>否&nbsp;&nbsp;</em>
+                 </td> 
+			</tr>
+            <tr>
+				<td class="class1">
+                <span style="color:#F00; font-size:14px; line-height:27px;"> * </span>是否拥有车：
+				</td>
+                <td class="class2">
+					<input type="radio" id="car" name="car" value="0"  {if $car==0} checked="checked" {/if} /><em>是</em> 
+					<input type="radio" id="car" name="car" value="1"  {if $license<>0} checked="checked" {/if} /><em>否&nbsp;&nbsp;</em>
+                 </td> 
+			</tr>
+            <tr>
+				<td height="37" class="class1">
+                <span style="color:#F00; font-size:14px; line-height:27px;"> * </span>平均上网时间：
+				</td>
+                <td class="class2">
+					<input type="text" name="internettime" value="{$address}" class="h_width3" /><span>&nbsp;小时</span>	
+                 </td> 
+			</tr>
+            <tr>
+				<td height="74" class="class1">
+                申请简述：
+				</td>
+                <td class="class2">
+                    <textarea name="content" cols="" rows="" style="height:50px; width:400px; border:1px solid #ccc;">{$content}</textarea>
+                 </td> 
+			</tr>
+           <tr>
+				<td colspan="2" align="center">
+				   <input type="hidden" name="submit_id" id="submit_id" value="0" />
+                   {if $see=="see"}
+                   <input  type="submit" value="关闭"  onclick="javascript:window.close(); " /> 
+                   {else}
+                   <input  type="submit" value="提交资料" /> 
+                   {/if}
+				</td>
+                
+			</tr>
+		</table>
+        
+   </div>     
+</form>
+<!--{subtemplate common/footer}-->

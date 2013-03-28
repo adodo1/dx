@@ -1,0 +1,270 @@
+<!--{subtemplate portal/header}-->
+
+<body>
+<style id="diy_style" type="text/css"></style>
+<!--[name]装饰改装-列表[/name]-->
+<!--头部开始-->
+
+<div  class="header w1002 mb15">
+   <div class="ht-ban">
+     <img src="template/eis_y_car/portal/images/001.png">
+   </div>
+   <div class="hd-m w1002"><a href="#">注册</a>|<a href="#">登录</a>|<a href="#">帮助</a>|<a href="#">建议</a>|<a href="#">设为首页</a>|<a href="#">收藏我们</a></div>
+   <div class="hd-b">
+     <div class="logo fl"><a href="#"><img src="template/eis_y_car/portal/images/002.png"></a></div>
+     <div class="hd-br fr"><img src="template/eis_y_car/portal/images/013.png"></div>
+   </div>
+</div>
+<!--头部结束-->
+
+
+<!--导航开始-->
+<div class="nav-box mb15">
+<div class=" w1002">
+ <div class="navlinks">
+  <ul>
+  <!--{loop $_G[setting][navs] $key $value}-->
+  <!--{if $value[available]==1}-->
+    <li><img src="{$_G[style][styleimgdir]}/line.png"></li>
+    <li><a href="$value[filename]">$value[navname]</a></li>
+   <!--{/if}-->
+  <!--{/loop}-->
+    </ul>
+  </div>
+<div class="search_box fr"><form id="scbar_form" method="post" autocomplete="off" onsubmit="searchFocus($('scbar_txt'))" action="search.php?searchsubmit=yes" target="_blank">
+<input type="hidden" name="mod" id="scbar_mod" value="search" />
+<input type="hidden" name="formhash" value="7e950784" />
+<input type="hidden" name="srchtype" value="title" />
+<input type="hidden" name="srhfid" value="0" />
+<input type="hidden" name="srhlocality" value="portal::index" />
+<input type="text" name="srchtxt" id="scbar_txt" value="请输入搜索内容" autocomplete="off" x-webkit-speech speech />
+<button type="submit" name="searchsubmit" id="scbar_btn" sc="1" class="pn pnc" value="true"><strong class="xi2 xs2">搜索</strong></button>
+</table>
+</form></div>
+  </div>
+</div>
+<!--导航结束-->
+
+<style>
+/**index_Picture carousel**/
+.demoa{ width:1000px; height:235px; position:relative; overflow:hidden;}
+.numa{ position:absolute;left:800px; top:209px; z-index:10;}
+.numa .cura{ background:#FFF; color:#666}
+.demoa ul{ position:relative; z-index:5;}
+.demoa ul li{ position:absolute; display:none;}
+.numa a{width: 18px;background: #0369B0;float: left;height: 18px;cursor: pointer; text-align:center; line-height:18px; margin-left:5px; color:#FFF}
+</style>
+<!--banner 开始-->
+<div class="banner clear mb15">
+    <div class="demoa">
+    <div class="numa"><a class="cura">1</a><a class="">2</a><a class="">3</a><a class="">4</a></div>
+        <ul>
+            <li><a href="#" target="_blank"><img src="template/eis_y_car/portal/images/005.png" width="1000" height="235"></a></li>
+            <li><a href="#" target="_blank"><img src="template/eis_y_car/portal/images/005.png" width="1000" height="235"></a></li>
+            <li><a href="#" target="_blank"><img src="template/eis_y_car/portal/images/005.png" width="1000" height="235"></a></li>
+            <li><a href="#" target="_blank"><img src="template/eis_y_car/portal/images/005.png" width="1000" height="235"></a></li>
+        </ul>
+    </div>
+<script type="text/javascript">
+$(function(){
+            $(".demoa ul li").first().css("display","list-item");
+            })
+    $(function(){
+        var sw = 0;
+        $(".demoa .numa a").mouseover(function(){
+            sw = $(".numa a").index(this);
+            myShow(sw);
+    
+        });
+        function myShow(i){
+            $(".demoa .numa a").eq(i).addClass("cura").siblings("a").removeClass("cura");
+            $(".demoa ul li").eq(i).stop(true,true).fadeIn(600).siblings("li").fadeOut(600);
+        }
+        //滑入停止动画，滑出开始动画
+        $(".demoa").hover(function(){
+            if(myTime){
+               clearInterval(myTime);
+            }
+        },function(){
+            myTime = setInterval(function(){
+              myShow(sw)
+              sw++;
+              if(sw==8){sw=0;}
+            } , 2500);
+        });
+        //自动开始
+        var myTime = setInterval(function(){
+           myShow(sw)
+           sw++;
+           if(sw==8){sw=0;}
+        } , 2500);
+    })
+</script>
+</div>
+<!--banner 结束-->
+
+<div class="site-map w1002 clear">
+  您的位置：<a href="#">首页</a> > <a href="#" class="blue">装饰改装</a>
+</div>
+<!--term-1 开始-->
+<div class="term-1 w1002">
+  <div class="term-1L fl">
+    <div class="tit"><h2>图片热点</h2><a href="#">更多>></a></div>
+    <div class="term-1L-i">
+        <div class="demo">
+            <div class="num">
+                <a class=""></a>
+                <a class=""></a>
+                <a class=""></a>
+                <a class=""></a>
+            </div>
+            <ul>
+                <li><a href="#" target="_blank"><img src="template/eis_y_car/portal/images/007.png" width="322" height="180"></a></li>
+                <li><a href="#" target="_blank"><img src="template/eis_y_car/portal/images/007.png" width="322" height="180"></a></li>
+                <li><a href="#" target="_blank"><img src="template/eis_y_car/portal/images/007.png" width="322" height="180"></a></li>
+                <li><a href="#" target="_blank"><img src="template/eis_y_car/portal/images/007.png" width="322" height="180"></a></li>
+            </ul>
+        </div>
+<script type="text/javascript">
+    $(function(){
+        $(".demo ul li").first().css("display","list-item");
+        $(".num a").first().addClass("cur");
+    });
+    $(function(){
+        var sw = 0;
+        var Size = $(".demo ul li").size();
+        $(".demo .num a").mouseover(function(){
+            sw = $(".num a").index(this);
+            myShow(sw);
+        });
+        function myShow(i){
+            $(".demo .num a").eq(i).addClass("cur").siblings("a").removeClass("cur");
+            $(".demo ul li").eq(i).stop(true,true).fadeIn(600).siblings("li").fadeOut(600);
+        }
+        //滑入停止动画，滑出开始动画
+        $(".demo").hover(function(){
+            if(myTime){
+               clearInterval(myTime);
+            }
+        },function(){
+            myTime = setInterval(function(){
+              myShow(sw)
+              sw++;
+              if(sw==Size){sw=0;}
+            } , 2500);
+        });
+        //自动开始
+        var myTime = setInterval(function(){
+           myShow(sw)
+           sw++;
+           if(sw==Size){sw=0;}
+        } , 2500);
+    })
+</script>
+
+    </div>
+    
+  </div>  
+  <div class="term-1C fl">
+    <div class="tit">
+      <h2>汽车改装资讯</h2><a href="portal.php?mod=list&catid=16">更多>></a></div>
+            <!--[diy=diy2]--><div id="diy2" class="area"></div><!--[/diy]-->
+            <!--{block/40}-->
+            <!--调用 汽车装饰资讯 的数据-->
+  </div>  
+  <div class="term-1R fr">
+    <div class="tit"><h2>新手推荐</h2><a href="#">更多>></a></div>
+    <div class="term-1R-i">
+
+       <div class="newcar">
+         <div class="newcarl fl"><img src="template/eis_y_car/portal/images/008.png"></div>
+         <div class="newcarl fr"><img src="template/eis_y_car/portal/images/008.png"></div>
+       </div>
+           <div class="nt-ir clear">
+             <p>10月26日在北京国际展览中心（老馆）举办了第六届中国国际汽车改装博览会
+             。此次展会云集了各种改装风格，很多大牌厂家与改装品牌都参与进来。其实，不乏改装...  <a href="#">更多>></a></p>
+          </div>
+
+   
+    </div>
+  </div>
+</div>
+
+<!--term-1 结束-->
+
+<!--热门服务开始-->
+<div class="service w1002 clear mt15">
+    <div class="tit" style="margin:0px; border:0px;"><h2>改装图库</h2><a href="portal.php?mod=list&catid=18">更多>></a></div>
+        <!--[diy=diy3]--><div id="diy3" class="area"></div><!--[/diy]-->
+        <!--{block/41}-->
+        <!--调用 改装图库 的数据-->
+</div>
+<!--热门服务结束-->
+<!--news_sec 开始-->
+<div class="news_sec w1002 clear mt15">
+     <div class="ns_l fl">
+      <div class="tit"><h2>精品导购</h2><a href="portal.php?mod=list&catid=19">更多>></a></div>
+      <div class="ns_li">
+        <!--[diy=diy4]--><div id="diy4" class="area"></div><!--[/diy]-->
+        <!--{block/43}-->
+        <!--调用 精品导购 的数据-->
+      </div>
+     </div>
+     <div class="ns_l fl pdl-15">
+      <div class="tit"><h2>车主改装</h2><a href="portal.php?mod=list&catid=20">更多>></a></div>
+      <div class="ns_li">
+        <!--[diy=diy5]--><div id="diy5" class="area"></div><!--[/diy]-->
+        <!--{block/44}-->
+        <!--调用 车主改装 的数据-->
+      </div>
+     </div>
+     <div class="ns_l fr">
+      <div class="tit"><h2>热门车型改装</h2><a href="portal.php?mod=list&catid=21">更多>></a></div>
+      <div class="ns_li">
+        <!--[diy=diy6]--><div id="diy6" class="area"></div><!--[/diy]-->
+        <!--{block/45}-->
+        <!--调用 车主改装 的数据-->
+      </div>
+     </div>
+</div>
+<!--news_sec 结束-->
+
+
+<!--s-banner 开始-->
+<div class="s-banner mb15 mt15"><img src="template/eis_y_car/portal/images/009.png"></div>
+<!--s-banner 结束-->
+
+
+<!--news_sec 开始-->
+<div class="news_sec w1002 clear mt15">
+     <div class="ns_l fl">
+      <div class="tit">
+        <h2>改装新品发布</h2><a href="portal.php?mod=list&catid=22">更多>></a></div>
+      <div class="ns_li">
+        <!--[diy=diy7]--><div id="diy7" class="area"></div><!--[/diy]-->
+        <!--{block/46}-->
+        <!--调用 改装新品发布 的数据-->
+      </div>
+     </div>
+     <div class="ns_l fl pdl-15">
+      <div class="tit"><h2>七嘴八舌话改装</h2>
+        <a href="portal.php?mod=list&catid=23">更多>></a></div>
+      <div class="ns_li">
+        <!--[diy=diy81]--><div id="diy81" class="area"></div><!--[/diy]-->
+        <!--{block/47}-->
+        <!--调用 七嘴八舌话改装 的数据-->
+      </div>
+     </div>
+     <div class="ns_l fr">
+      <div class="tit">
+        <h2>改装合作伙伴</h2><a href="portal.php?mod=list&catid=24">更多>></a></div>
+      <div class="ns_li">
+        <!--[diy=diy82]--><div id="diy82" class="area"></div><!--[/diy]-->
+        <!--{block/48}-->
+        <!--调用 改装合作伙伴 的数据-->
+      </div>
+     </div>
+</div>
+<!--news_sec 结束-->
+
+<!--{subtemplate portal/footer}-->

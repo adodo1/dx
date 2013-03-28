@@ -1,0 +1,173 @@
+<!--{subtemplate portal/header}-->
+
+<body>
+<style id="diy_style" type="text/css"></style>
+<!--[name]汽车投诉-列表[/name]-->
+
+<!--头部开始-->
+<div  class="header w1002 mb15">
+   <div class="ht-ban">
+     <img src="template/eis_y_car/portal/images/001.png">
+   </div>
+   <div class="hd-m w1002"><a href="#">注册</a>|<a href="#">登录</a>|<a href="#">帮助</a>|<a href="#">建议</a>|<a href="#">设为首页</a>|<a href="#">收藏我们</a></div>
+   <div class="hd-b">
+     <div class="logo fl"><a href="#"><img src="template/eis_y_car/portal/images/002.png"></a></div>
+     <div class="hd-br fr"><img src="template/eis_y_car/portal/images/013.png"></div>
+   </div>
+</div>
+<!--头部结束-->
+
+
+<!--导航开始-->
+<div class="nav-box mb15">
+<div class=" w1002">
+ <div class="navlinks">
+  <ul>
+  <!--{loop $_G[setting][navs] $key $value}-->
+  <!--{if $value[available]==1}-->
+    <li><img src="{$_G[style][styleimgdir]}/line.png"></li>
+    <li><a href="$value[filename]">$value[navname]</a></li>
+   <!--{/if}-->
+  <!--{/loop}-->
+    </ul>
+  </div>
+<div class="search_box fr"><form id="scbar_form" method="post" autocomplete="off" onsubmit="searchFocus($('scbar_txt'))" action="search.php?searchsubmit=yes" target="_blank">
+<input type="hidden" name="mod" id="scbar_mod" value="search" />
+<input type="hidden" name="formhash" value="7e950784" />
+<input type="hidden" name="srchtype" value="title" />
+<input type="hidden" name="srhfid" value="0" />
+<input type="hidden" name="srhlocality" value="portal::index" />
+<input type="text" name="srchtxt" id="scbar_txt" value="请输入搜索内容" autocomplete="off" x-webkit-speech speech />
+<button type="submit" name="searchsubmit" id="scbar_btn" sc="1" class="pn pnc" value="true"><strong class="xi2 xs2">搜索</strong></button>
+</table>
+</form></div>
+  </div>
+</div>
+<!--导航结束-->
+
+<style>
+/**index_Picture carousel**/
+.demoa{ width:1000px; height:235px; position:relative; overflow:hidden;}
+.numa{ position:absolute;left:800px; top:209px; z-index:10;}
+.numa .cura{ background:#FFF; color:#666}
+.demoa ul{ position:relative; z-index:5;}
+.demoa ul li{ position:absolute; display:none;}
+.numa a{width: 18px;background: #0369B0;float: left;height: 18px;cursor: pointer; text-align:center; line-height:18px; margin-left:5px; color:#FFF}
+</style>
+<!--banner 开始-->
+<div class="banner clear mb15">
+    <div class="demoa">
+    <div class="numa"><a class="cura">1</a><a class="">2</a><a class="">3</a><a class="">4</a></div>
+        <ul>
+            <li><a href="#" target="_blank"><img src="template/eis_y_car/portal/images/005.png" width="1000" height="235"></a></li>
+            <li><a href="#" target="_blank"><img src="template/eis_y_car/portal/images/005.png" width="1000" height="235"></a></li>
+            <li><a href="#" target="_blank"><img src="template/eis_y_car/portal/images/005.png" width="1000" height="235"></a></li>
+            <li><a href="#" target="_blank"><img src="template/eis_y_car/portal/images/005.png" width="1000" height="235"></a></li>
+        </ul>
+    </div>
+<script type="text/javascript">
+$(function(){
+            $(".demoa ul li").first().css("display","list-item");
+            })
+    $(function(){
+        var sw = 0;
+        $(".demoa .numa a").mouseover(function(){
+            sw = $(".numa a").index(this);
+            myShow(sw);
+    
+        });
+        function myShow(i){
+            $(".demoa .numa a").eq(i).addClass("cura").siblings("a").removeClass("cura");
+            $(".demoa ul li").eq(i).stop(true,true).fadeIn(600).siblings("li").fadeOut(600);
+        }
+        //滑入停止动画，滑出开始动画
+        $(".demoa").hover(function(){
+            if(myTime){
+               clearInterval(myTime);
+            }
+        },function(){
+            myTime = setInterval(function(){
+              myShow(sw)
+              sw++;
+              if(sw==8){sw=0;}
+            } , 2500);
+        });
+        //自动开始
+        var myTime = setInterval(function(){
+           myShow(sw)
+           sw++;
+           if(sw==8){sw=0;}
+        } , 2500);
+    })
+</script>
+</div>
+<!--banner 结束-->
+<!--{eval $list = array();}-->
+<!--{eval $wheresql = category_get_wheresql($cat);}-->
+<!--{eval $list = category_get_list($cat, $wheresql, $page);}-->
+
+<div class="site-map w1002 clear">
+  您的位置：<a href="#">首页</a> > <a href="#" class="blue">投诉信息</a>
+</div>
+
+<!--search-car 开始-->
+    <div class="chexing w1002" style="margin:0px auto; border:0px;">
+       <h2>车型：</h2>
+       <div class="xz-sch"><div class="sel fl"><select><option>选品牌</option></select><select><option>选车型</option></select><a href="#">搜</a></div><div class="search-bar fl"><input type="text" value="输入关键字" class="fl"><a href="#">搜</a></div></div>
+   </div>
+<!--search-car 结束-->
+
+<!--ts 开始-->
+<div class="ts w1002">
+  <div class="ts-l fl">
+    <h2>列表</h2>
+        <!--{if $cat[subs]}-->
+            <div class="bm_c bbda">
+                111{lang sub_category}:&nbsp;&nbsp;
+                <!--{eval $i = 1;}-->
+                <!--{loop $cat[subs] $value}-->
+                <!--{if $i != 1}--><span class="pipe">|</span><!--{/if}--><a href="{echo getportalcategoryurl($value[catid]);}" class="xi2">$value[catname]</a><!--{eval $i--;}-->
+                <!--{/loop}-->
+            </div>
+        <!--{/if}-->
+        
+    <div class="ts-li">
+      <ul>
+        <!--{loop $list['list'] $value}-->
+        <!--{eval $highlight = article_title_style($value);}-->
+        <li><a href="portal.php?mod=view&aid=$value[aid]" target="_blank" $highlight>$value[title]</a><em>$value[dateline]</em></li>
+        <!--{if $value[status] == 1}-->({lang moderate_need})<!--{/if}-->
+            <!--{if $_G['group']['allowmanagearticle'] || ($_G['group']['allowpostarticle'] && $value['uid'] == $_G['uid'] && (empty($_G['group']['allowpostarticlemod']) || $_G['group']['allowpostarticlemod'] && $value['status'] == 1)) || $categoryperm[$value['catid']]['allowmanage']}-->
+        <!--{/if}-->
+        <!--{/loop}-->
+      </ul>
+        <!--{if $list['multi']}--><div class="pgs cl">{$list['multi']}</div><!--{/if}-->
+    </div>
+
+  </div>
+  <div class="ts-r fr">
+    <div class="btnbox">
+    
+    <a href="ts-1.html"><img src="template/eis_y_car/portal/images/029.png"></a>
+    </div>
+    <div class="ts-ri">
+      <h3>最新投诉</h3>
+      <ul>
+        <li><a href="#">杭州市迈腾旅行车发动机烧机油服务不好</a></li>
+         <li><a href="#">杭州市迈腾旅行车发动机烧机油服务不好</a></li>
+          <li><a href="#">杭州市迈腾旅行车发动机烧机油服务不好</a></li>
+           <li><a href="#">杭州市迈腾旅行车发动机烧机油服务不好</a></li>
+            <li><a href="#">杭州市迈腾旅行车发动机烧机油服务不好</a></li>
+             <li><a href="#">杭州市迈腾旅行车发动机烧机油服务不好</a></li>
+              <li><a href="#">杭州市迈腾旅行车发动机烧机油服务不好</a></li>
+               <li><a href="#">杭州市迈腾旅行车发动机烧机油服务不好</a></li>
+                <li><a href="#">杭州市迈腾旅行车发动机烧机油服务不好</a></li>
+                 <li><a href="#">杭州市迈腾旅行车发动机烧机油服务不好</a></li>
+                 
+      </ul>
+    </div>
+  </div>
+</div>
+<!--ts 结束-->
+
+<!--{subtemplate portal/footer}-->

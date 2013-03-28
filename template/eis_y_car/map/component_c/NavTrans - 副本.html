@@ -1,0 +1,3003 @@
+<div id="nav_container">
+    <div id="route_top" class="route_top">
+      <!--wjp cmsads -->
+      <div id="pos9" style="display:none"></div>
+      <!-- 跨城公交提示 -->
+      #cbtLink#
+      #taxiCost#
+      <div id="route_type" class="drive strategySel"> 
+          <div class="strategySel_r" id="navStrategy">
+               <span class="leftBorLine"></span>
+               <div class="noSel" id="type0">最少时间</div>
+               <div class="noSel" id="type1"><span class="lineBg">最短路程</span></div>
+               <div class="noSel" id="type2"><span class="lineBg">不走高速</span></div>
+               <span class="rightBorLine"></span>
+          </div>
+      </div>
+    </div>
+  <div class="route_contentWrapper">
+      <div id="route_content" class="result_holder">
+        <div class="special">
+          <div class="drive">
+              <div class="con" id="scheme_#guid#">
+                #schemeHtml#
+              </div>
+          </div>
+        </div>        
+        <div id="route_tips" class="route_tips" style="padding-top:10px">EGT提醒您：以上行车线路仅供参考，如有问题请到<a id="mapComplaintCenter" target="_blank" onClick="addStat(STAT_TOUSU_LIST_NAV)" href="http://192.168.1.135/add">EGT地图投诉中心</a>反馈。</div>
+        <!--wjp cmsads -->
+        <div id="pos10" style="display:none"></div>
+      </div>
+  </div>
+  <div id="drive_bottom" class="route_bottom black navtran"><p class=lp><a tid="reChoice" href="javascript:void(0)" onclick="Instance('#guid#').backAddr();return false;">重选起终点</a></p><p class="rp">查看：<a href="javascript:void(0)" tid="routeReturn" onclick="Instance('#guid#').returnDr()">返程</a>&nbsp;#busInfo#&nbsp;#walkInfo#</p><a onclick="PcToMobile.open('NAV');" class="pctomoin-img img-small" href="javascript:void(0)"></a></div>
+</div>
+<script>
+    function NavTrans() {
+        T.lang.Class.call(this);
+        this.json = null;
+        this.rettype = ["", "从起点出发", "到达目的地", "途经点", "行驶", "到达目的地(在左侧)", "到达目的地(在右侧)"];
+        this.roadtype = ["", "环岛", "无属性道路", "主路", "高速连接路", "交叉点内路段", "连接道路", "停车场内部道路", "服务区内部道路", "桥", "步行街", "辅路", "匝道", "全封闭道路", "未定义交通区域", "POI连接路", "隧道", "步行道", "公交专用道", "提前右转道"];
+        this.turtype = ["", "直行", "右前方转弯", "右转", "右后方转弯", "调头", "左后方转弯", "左转", "左前方转弯", "稍向左转", "直行", "稍向右转", "正北方向", "东北方向", "正东方向", "东南方向", "正南方向", "西南方向", "正西方向", "西北方向"];
+        this.iwgo = ["在", "从", "从"];
+        this.iwto = ["", "", "离开"];
+        this.pwtype = ["过", "在"];
+        this.pstype = ["左侧的", "右侧的", ""];
+        this.dwtype = ["", "朝"];
+        this.tipLabel = createDrvMidLabel("拖动以更改路线");
+        this.driveBounds = [];
+        this.drivePoints = [];
+        this.routePoints = [];
+        this.popPoints = [];
+        this.dragPoints = [];
+        this.popInfos = [];
+        this.popWins = [];
+        this.popPois = [];
+        this.navPoi = [];
+        this.navGas = [];
+        this.navSapa = [];
+        this.navCharge = [];
+        this.tempPoi = [];
+        this.dateStart = null;
+        this.dateEnd = null;
+        this.dragUrls = [];
+        this.groupIndex = [];
+        this.groupPoints = [];
+        this.groupBounds = [];
+        this.groupPopPoints = [];
+        this.queryObj = [];
+        this.strategy = 0;
+        this.maxDragVia = 10;
+        this.noName = "未知路段";
+        this.mainRoud = {};
+        this.mainRoudLine = [];
+        this.mainDrivePoints = {};
+        this.haveMainRoud = false;
+        this.isShowAllDes = false;
+        this.sgi = -1;
+        this.egi = -1;
+        if (window.trafficMgr) {
+            window.trafficMgr.setTrafficDiv()
+        }
+        window.dropRoutes = null;
+        this.ajax = new T.Ajax();
+        this.ajax.async = true;
+        this.mapZoomLevel = map.zoomLevel;
+        var b = map.pixelToPoint({
+            x: -map.width * 3,
+            y: map.height * 3
+        });
+        var a = map.pixelToPoint({
+            x: map.width * 3,
+            y: -map.height * 3
+        });
+        this.drawBd = new BMap.Bounds(b.lng, b.lat, a.lng, a.lat);
+        Share.setSmSCode(0);
+        this.scrollPanel = new baidu.ui.ScrollPanel({
+            container: "route_content",
+            overflow: "overflow-y",
+            autoUpdate: false
+        })
+    }
+    T.lang.inherits(NavTrans, T.lang.Class, "NavTrans");
+    T.object.extend(NavTrans.prototype, {
+        render: function(g, p) {
+            var r = this;
+            BShare.getMInfo = function() {
+                var t = "";
+                if (r.total && r.total != 0) {
+                    var v = r.s_query,
+                    w = r.e_query,
+                    u = r.curLineIndex,
+                    t = BShare.fixName(v + "到" + w) + " 全程" + (r.getExtInfo() || "")
+                }
+                return {
+                    text: t,
+                    className: r._className
+                }
+            };
+            if (mapInfoScrollPanel) {
+                mapInfoScrollPanel.hide()
+            }
+            if (this.cinfo && this.cinfo.isPos == true) {
+                if (this.cinfo.destFlag == 0) {
+                    window.conType = 0;
+                    window.conPoint = this.cinfo.point
+                } else {
+                    window.conType = 1;
+                    window.conPoint = this.cinfo.point
+                }
+                this.setContext(window.conPoint)
+            }
+            if (!p) {
+                return
+            }
+            this.json = p;
+            var f = p.result;
+            this.total = f.total;
+            var l = f.error;
+            this.start = f.start;
+            this.end = f.end;
+            this.end = this.end[this.end.length - 1];
+            this.sCity = f.start_city;
+            this.eCity = f.end_city;
+            this.eCity = this.eCity[this.eCity.length - 1];
+            this.strategy = f.sy;
+            this.drag = f.drag || 0;
+            this.sugIndex = this.sug_index;
+            this.sBus = this.start.bus_stop;
+            this.eBus = this.end.bus_stop;
+            this.startName = this.start.wd.length > 10 ? this.start.wd.substring(0, 10) + "...": this.start.wd;
+            this.endName = this.end.wd.length > 10 ? this.end.wd.substring(0, 10) + "...": this.end.wd;
+            this.s_query = f.s_query ? f.s_query: this.start.wd;
+            this.e_query = f.e_query ? f.e_query: this.end.wd;
+            if (!window.cxtBusPoints) {
+                window.cxtBusPoints = []
+            }
+            var b = this.start.pt.split(",");
+            var o = new BMap.Point(b[0], b[1]);
+            window.cxtBusPoints[0] = {
+                p: o,
+                n: this.startName,
+                t: 0
+            };
+            var b = this.end.pt.split(",");
+            var s = new BMap.Point(b[0], b[1]);
+            window.cxtBusPoints[1] = {
+                p: s,
+                n: this.endName,
+                t: 1
+            };
+            var d = modelConfig.cityName;
+            this.currentCity = modelConfig.cityCode;
+            if (!this.total || this.total == 0) {
+                var k = "";
+                if (this.start.wd == "未知路段" || this.end.wd == "未知路段") {} else {
+                    k = getIknowCode("想知道: " + d + " 从" + this.start.wd + "到" + this.end.wd + "开车怎么走")
+                }
+                var a = ["<div id='nav_container'><div class='mapinfo_con'>", "<p style='text-indent:5px;line-height:25px;background:#FFF5CA'>未能计算出从" < span class = 'nr_kw' > "+this.start.wd+" < /span>"到"<span class='nr_kw'>"+this.end.wd+"</span > "的驾车路线，抱歉。</P>", k, "<div class='nr_suggest'>您还可以：", "<ul><li>看看地图当前城市是否有误，尝试更换城市</li>", "<li>您可在地图上移动起点、终点，再次尝试</li>", "<li>您可更换关键词再次尝试。</li>", "</ul></div>", "</div></div>"];
+                return a.join("")
+            }
+            var m = p.content;
+            if (!m) {
+                return ""
+            }
+            for (var n = 0; n < m.rss.length; n++) {
+                var c = m.rss[n];
+                if (c.mn && c.mn.m == 1 && c.n && c.mn.mg) {
+                    r.mainRoud[n] = {
+                        n: c.n,
+                        c: c.mn.c
+                    };
+                    if (r.mainRoud.ids && r.mainRoud.ids.push) {
+                        r.mainRoud.ids.push(n)
+                    } else {
+                        r.mainRoud.ids = [n]
+                    }
+                    r.haveMainRoud = true
+                }
+            }
+            this.dis = m.dis;
+            this.disName = this.roundDis(this.dis);
+            this.time = m.time;
+            this.kpsList = m.kps;
+            this.rssList = m.rss;
+            this.taxi = m.taxi;
+            if (this.sCity.code != this.eCity.code) {
+                var j = '<div style="padding:10px 0 0 9px"><div class="cbtLink"><img class="cbtLinkLogo" src="' + MapConfig.smFlwCon + './template/eis_y_car/map/image/transparent.gif" />&nbsp;<span>从' + this.startName + "到" + this.endName + "的跨城公交 </span><a href='javascript:void(0)' tid='showCBusRoute' onclick=\"Instance('" + this.guid + "').busChange();addStat(STAT_CBT_NAV_TOP);return false;\">查看线路</a></div></div>";
+                g = g.replace(/#cbtLink#/gi, j);
+                g = g.replace(/#busInfo#/gi, '|&nbsp;<a href="javascript:void(0)" onclick="Instance(\'' + this.guid + "').busChange();addStat(STAT_CBT_NAV_BOTTOM);return false;\">跨城市公交</a>")
+            } else {
+                if (modelConfig.supBus == 0 && modelConfig.cityType == 2) {
+                    g = g.replace(/#busInfo#/gi, "|&nbsp;暂无公交")
+                } else {
+                    g = g.replace(/#busInfo#/gi, '|&nbsp;<a href="javascript:void(0)" onclick="Instance(\'' + this.guid + "').busChange();return false;\">公交</a>")
+                }
+            }
+            var h = parseFloat(BMap.Project.getDistanceByMC(o, s));
+            if (h < 1500) {
+                g = g.replace(/#walkInfo#/gi, '|&nbsp;<a href="javascript:void(0)" onclick="Instance(\'' + this.guid + "').navWalk();return false;\">步行</a>");
+                addStat(STAT_WALK_COUNT_LINK)
+            } else {
+                g = g.replace(/#walkInfo#/gi, "")
+            }
+            if (this.sCity.code != this.eCity.code) {
+                this.insertGroup()
+            }
+            var e = this.makeScheme(this.kpsList, this.rssList);
+            g = g.replace(/#schemeHtml#/gi, e);
+            if (this.sCity.code == this.eCity.code && isActiveCity("taxi", this.sCity.code)) {
+                if (this.taxi) {
+                    var q = '<div id="newBsTaxi" class="MapInfo_taxiCost"><span onclick="Instance(\'' + this.guid + '\').getTaxi(this);addStat(STAT_TAXI_NAV_TOP); return false;" class="textLineA">打车费用: ' + this.taxi.detail[0].totalPrice + '元</span> <span style="color:#999999">(按驾车的最短路程计算)</span></div>';
+                    g = g.replace(/#taxiCost#/gi, q)
+                }
+            }
+            return g
+        },
+        initialize: function() {
+            if (this.isMain == false) {
+                ModelMgr.mainModel.modelQuery = this.modelQuery
+            }
+            if (driveSSG1) {
+                driveSSG1.setValue(this.start.wd)
+            } else {
+                searchBox.setValue("DriveSearchSta", this.start.wd)
+            }
+            if (driveSSG2) {
+                driveSSG2.setValue(this.end.wd)
+            } else {
+                document.fmnav.word_to.value = this.end.wd
+            }
+            var r = this;
+            window.YXMNavHash = r.guid;
+            map.clearOverlays();
+            if (!r.total || r.total == 0) {
+                r.dragPoints.push({
+                    p: r.start.pt,
+                    n: r.start.wd
+                });
+                var b = addDestPoi(r.start.pt, "", DEST_START);
+                b.enableDragging();
+                b.addEventListener("dragging",
+                function(a) {
+                    r.addViaRoute2(a, 1)
+                });
+                b.addEventListener("mouseover",
+                function(a) {
+                    r.onViaPoiOver(a, 1)
+                });
+                b.addEventListener("mouseout",
+                function(a) {
+                    r.onRemoveTips(a, 1)
+                });
+                b.addEventListener("dragend",
+                function(a) {
+                    r.addViaPoi2(a, 1)
+                });
+                b.index = 0;
+                window.startPoi = b;
+                r.dragPoints.push({
+                    p: r.end.pt,
+                    n: r.end.wd
+                });
+                b = addDestPoi(r.end.pt, "", DEST_END);
+                b.addEventListener("dragging",
+                function(a) {
+                    r.addViaRoute2(a, 2)
+                });
+                b.addEventListener("mouseover",
+                function(a) {
+                    r.onViaPoiOver(a, 2)
+                });
+                b.addEventListener("mouseout",
+                function(a) {
+                    r.onRemoveTips(a, 2)
+                });
+                b.addEventListener("dragend",
+                function(a) {
+                    r.addViaPoi2(a, 2)
+                });
+                b.index = 1;
+                b.enableDragging();
+                window.endPoi = b;
+                return
+            }
+            searchInViewCtrl.exit();
+            this.sended = 0;
+            this.addDrPoi();
+            addDrRoute(false, this);
+            this.addPopInfoWin();
+            this._binder();
+            var r = this;
+            map.removeEventListener("moveend", window.drawRoute);
+            map.removeEventListener("zoomend", window.drawRoute);
+            map.removeEventListener("zoomstart", window.clearRPoints);
+            window.drawRoute = function() {
+                if (!r.guid) {
+                    return
+                }
+                setTimeout(function() {
+                    addDrRoute(true, r)
+                },
+                10)
+            };
+            window.clearRPoints = function() {
+                if (window.dropRoutes) {
+                    for (var n = 0; n < window.dropRoutes.length; n++) {
+                        var a = window.dropRoutes[n];
+                        a.setPoints("")
+                    }
+                }
+            };
+            map.addEventListener("moveend", window.drawRoute);
+            map.addEventListener("zoomend", window.drawRoute);
+            map.addEventListener("zoomstart", window.clearRPoints);
+            if (r.cinfo._index != undefined) {
+                var d = r.cinfo._index.split("-");
+                if (r.cinfo._index.indexOf("showAll") > -1) {
+                    r.showAllDes()
+                } else {
+                    if (d[1]) {
+                        var l = d[1].split(",");
+                        for (var k = 0; k < l.length; k++) {
+                            if (!isNaN(l[k])) {
+                                r.showMainRoudeDes(parseInt(l[k]))
+                            }
+                        }
+                        Share.listIndex = 0 + "-" + l
+                    }
+                }
+                r.cinfo._index = null
+            }
+            if (r.cinfo._popIndex != undefined) {
+                var h = parseInt(r.cinfo._popIndex);
+                var f = r.popPoints[h].p;
+                var s = r.popPoints[h].a;
+                var j = r.popWins[h];
+                if (h != 0 && h != r.popPoints.length - 1) {
+                    var g = addDrvDirIcon(f, s);
+                    g.addEventListener("click", r.getClickMarker(j, g, h));
+                    transInfoWindow(g, j, {
+                        showLine: true
+                    });
+                    r.popPois.push(g);
+                    addStat(STAT_POP_DIR)
+                } else {
+                    if (h == 0) {
+                        r.clickStop(null, 0)
+                    } else {
+                        if (h == r.popPoints.length - 1) {
+                            r.clickStop(null, 1)
+                        }
+                    }
+                }
+            }
+            var e = r.start.uid || "";
+            var c = r.end.uid || "";
+            var q = r.sBus == 1 ? 0 : 1;
+            var t = r.eBus == 1 ? 0 : 1;
+            var o = r.sCity.code;
+            var m = r.eCity.code;
+            r.busQueryString = "bt&bttp=1&c=" + r.currentCity + "&sc=" + o + "&ec=" + m + "&sn=" + q + "$$" + e + "$$" + r.start.pt + "$$" + encodeURIComponent(r.start.wd) + "$$$$$$&en=" + t + "$$" + c + "$$" + r.end.pt + "$$" + encodeURIComponent(r.end.wd) + "$$$$$$&sq=" + encodeURIComponent(r.s_query) + "&eq=" + encodeURIComponent(r.e_query);
+            r.navTranFor3D();
+            if (map.mapType == BMAP_TYPE_DIMENSIONAL) {
+                window.navTranFor3D(false)
+            }
+            addAdsContent(r.json, 5);
+            if (this.cinfo && this.cinfo.sms == "nav") {
+                sms.ready("", "nav");
+                Share.setSmSCode("nav")
+            } (function(u) {
+                if (!driveCtrl) {
+                    return
+                }
+                initDriveControlHelper(window, u, map, driveCtrl);
+                var p = Helper.NaviTrans,
+                x = getPointByStr(u.end.pt);
+                u.alongWayMarkers = p.getMarkersAlongRoute(u.json);
+                u.colorizedRoutes = null;
+                driveCtrl.onChecked = null;
+                var y = u.modelQuery.match(/drag=1/) ? false: true;
+                var n = getParam(location.href);
+                var i = false;
+                if (n && n.s) {
+                    i = true
+                }
+                var z = driveCtrl.getCheckboxStatus();
+                if (!window.isPrint) {
+                    driveCtrl.show()
+                }
+                if (y || z.count === 0 || driveCtrl._fromContextMenu || i) {
+                    driveCtrl._fromContextMenu = null;
+                    driveCtrl.menu(true, true, y, true)
+                }
+                p.requestDestParks(x);
+                function v(F, G, B) {
+                    if (G === "roadtype") {
+                        if (B) {
+                            if (u.colorizedRoutes === null) {
+                                u.colorizedRoutes = p.getColorizedRoutes(u.json)
+                            }
+                            u.colorizedRoutes.toggle(map, true)
+                        } else {
+                            if (u.colorizedRoutes) {
+                                u.colorizedRoutes.toggle(map, false)
+                            }
+                        }
+                    } else {
+                        if (G === "park") {
+                            p.toggleDestParks(x, B)
+                        } else {
+                            p.toggleMarkers(map, u.alongWayMarkers[G], B);
+                            if (G === "road" && B) {
+                                var C = 0,
+                                A = u.alongWayMarkers[G].length,
+                                E = 0;
+                                if (!isNaN(r.mainRoud._sgIndex)) {
+                                    C = r.mainRoud._sgIndex
+                                }
+                                if (!isNaN(r.mainRoud._egIndex)) {
+                                    A = r.mainRoud._egIndex
+                                }
+                                for (var D = 0; D < u.alongWayMarkers[G].length; D++) { (function() {
+                                        var J = D - C,
+                                        K = {},
+                                        H = r.mainRoud[r.mainRoud.ids[D]];
+                                        if (D < C || D > A) {
+                                            K.from = "mk";
+                                            K.i = r.mainRoud.ids[D];
+                                            E = H.gIndex - 1
+                                        } else {
+                                            E++
+                                        }
+                                        var I = T.g("main_roude_tit" + E);
+                                        if (r.mainRoud[1] && r.mainRoud[1]._gIndex) {
+                                            var L = E - 1 > 0 ? E - 1 : 0;
+                                            I = T.g("main_roude_tit" + L)
+                                        }
+                                        u.alongWayMarkers[G][D].addEventListener("mouseover",
+                                        function() {
+                                            u.mainRoudeOn(H.index, H.gIndex, I, null, K)
+                                        });
+                                        u.alongWayMarkers[G][D].addEventListener("mouseout",
+                                        function() {
+                                            if (! (this.infoWindow && this.infoWindow.isOpen())) {
+                                                u.mainRoudeOut(H.index, H.gIndex, I, null, K)
+                                            }
+                                        });
+                                        u.alongWayMarkers[G][D].addEventListener("infowindowopen",
+                                        function() {
+                                            var M = this;
+                                            u.mainRoudeOn(H.index, H.gIndex, I, null, K);
+                                            M.infoWindow.addEventListener("close",
+                                            function() {
+                                                u.mainRoudeOut(H.index, H.gIndex, I, null, K)
+                                            })
+                                        });
+                                        u.alongWayMarkers[G][D].addEventListener("click",
+                                        function(M) {
+                                            addStat(STAT_NAV_MAIN_ICON)
+                                        })
+                                    })()
+                                }
+                            }
+                        }
+                    }
+                }
+                driveCtrl.onChecked = v;
+                if (driveCtrl.isPushed()) {
+                    z = driveCtrl.getCheckboxStatus();
+                    if (z.count > 0) {
+                        Helper.oeach(z.status,
+                        function(B, A) {
+                            v(driveCtrl, B, A)
+                        })
+                    }
+                }
+                if (window.startPoi) {
+                    function w(B) {
+                        var A = B.target;
+                        A.setZIndex(1024)
+                    }
+                    function a(B) {
+                        var A = B.target;
+                        A.setZIndex(1023)
+                    }
+                    startPoi.addEventListener("mouseover", w);
+                    startPoi.addEventListener("mouseout", a);
+                    endPoi.addEventListener("mouseover", w);
+                    endPoi.addEventListener("mouseout", a)
+                }
+                _adjustMapButtons()
+            })(this);
+            setComplaintCenterURL(map, this);
+            this.scrollPanel.render("route_content");
+            T.on(window, "onresize",
+            function() {
+                var a = Instance(window.YXMNavHash);
+                if (a.scrollPanel) {
+                    a.scrollPanel.update()
+                }
+            });
+            if (T.browser.ie == 6 && r.scrollPanel) {
+                r.scrollPanel.update()
+            }
+            SchemeFaver.isRepeat.call(this, {
+                pathtype: 0,
+                dom: T.G(this.guid + "_favbtn")
+            })
+        },
+        unload: function() {
+            window.cxtBusPoints = null;
+            window.startPoi = null;
+            window.endPoi = null;
+            window.dropRoutes = [];
+            this.routePoints = [];
+            this.queryObj = [];
+            this.dragPoints = [];
+            var a = T.G("rnAd");
+            if (a) {
+                a.style.display = "none";
+                a.innerHTML = ""
+            }
+            if (window.driveCtrl) {
+                window.driveCtrl.hide(true)
+            }
+            _adjustMapButtons();
+            this.scrollPanel = null;
+            T.un(window, "onresize")
+        },
+        _binder: function() {
+            var b = this;
+            function a(g) {
+                if (!T.g("navStrategy")) {
+                    return
+                }
+                var c = T.g("navStrategy");
+                if (c) {
+                    var f = c.getElementsByTagName("div");
+                    for (var e = 0; e < f.length; e++) {
+                        var d = f[e];
+                        if (g == d.id.charAt(4)) {
+                            d.className = "sel";
+                            d.checked = 1
+                        }
+                        d.style.cursor = "pointer";
+                        d.onclick = function(h) {
+                            T.g("type" + b.strategy) ? T.g("type" + b.strategy).className = "noSel": null;
+                            b.strategy = this.id.charAt(4);
+                            this.className = "sel";
+                            this.checked = 1;
+                            if (navigator.cookieEnabled) {
+                                T.cookie.set("Map_navTranType", b.strategy, {
+                                    expires: new Date(new Date().getTime() + (365 * 24 * 60 * 60 * 1000))
+                                })
+                            }
+                            go("nav&c=" + b.currentCity + "&drag=0&sc=" + b.sCity.code + "&ec=" + b.eCity.code + "&sy=" + b.strategy + "&sn=1$$$$" + b.start.pt + "$$" + encodeURIComponent(b.start.wd) + "$$$$$$&en=1$$$$" + b.end.pt + "$$" + encodeURIComponent(b.end.wd) + "$$$$$$&sq=" + encodeURIComponent(b.s_query) + "&eq=" + encodeURIComponent(b.e_query), {
+                                dom: "nav_container"
+                            })
+                        };
+                        d.onmouseover = function(n) {
+                            var h = this,
+                            m = h.getElementsByTagName("span"),
+                            k = T.g("navStrategy").getElementsByTagName("span"),
+                            o = 0,
+                            l = h.id.charAt(4);
+                            for (var i = 0; i < k.length; i++) {
+                                if (k[i] == m[0]) {
+                                    o = i
+                                }
+                            }
+                            if (l == b.strategy) {
+                                T.ac(T.g("route_type"), "bus_strategySel_on");
+                                if (l == 0) {
+                                    k[0].className = "leftBorLine leftBorLine_active_on"
+                                } else {
+                                    if (l == 2) {
+                                        k[k.length - 1].className = "rightBorLine rightBorLine_active_on"
+                                    }
+                                }
+                            } else {
+                                h.className = "noSel noSel_on";
+                                if (l == 0) {
+                                    k[0].className = "leftBorLine leftBorLine_on"
+                                } else {
+                                    if (l == 2) {
+                                        k[k.length - 1].className = "rightBorLine rightBorLine_on"
+                                    }
+                                }
+                            }
+                            if (m[0]) {
+                                m[0].className = "lineBg lineBg_on"
+                            }
+                            if (((o + 2) < k.length) && k[o + 1]) {
+                                k[o + 1].className = "lineBg lineBg_on"
+                            }
+                        };
+                        d.onmouseout = function(n) {
+                            var i = this,
+                            m = i.getElementsByTagName("span"),
+                            j = T.g("navStrategy").getElementsByTagName("span"),
+                            o = 0,
+                            l = i.id.charAt(4);
+                            for (var h = 0; h < j.length; h++) {
+                                if (j[h] == m[0]) {
+                                    o = h
+                                }
+                            }
+                            if (l == b.strategy) {
+                                T.rc(T.g("route_type"), "bus_strategySel_on");
+                                if (l == 0) {
+                                    j[0].className = "leftBorLine"
+                                } else {
+                                    if (l == 2) {
+                                        j[j.length - 1].className = "rightBorLine"
+                                    }
+                                }
+                            } else {
+                                i.className = "noSel";
+                                if (l == 0) {
+                                    j[0].className = "leftBorLine"
+                                } else {
+                                    if (l == 2) {
+                                        j[j.length - 1].className = "rightBorLine"
+                                    }
+                                }
+                            }
+                            if (m[0]) {
+                                m[0].className = "lineBg"
+                            }
+                            if (((o + 2) < j.length) && j[o + 1]) {
+                                j[o + 1].className = "lineBg"
+                            }
+                        }
+                    }
+                }
+            }
+            a(b.strategy);
+            if (window.resizeNavContent) {
+                T.un(window, "onresize", window.resizeNavContent)
+            }
+            window.resizeNavContent = function(h) {
+                var f = T.G("route_top"),
+                g = T.G("drive_bottom");
+                if (f) {
+                    var k = T.G("route_content");
+                    var d = f.parentNode;
+                    var j = getPosition(d);
+                    var m = getClientSize();
+                    var c = m.height - 142 - f.offsetHeight - (g ? (g.offsetHeight) : 0) - 10;
+                    var i = T.G("adsImg9");
+                    if (i) {
+                        if (c - 32 > 0) {
+                            c = c - 32
+                        }
+                    }
+                    var l = T.G("adswd9");
+                    if (l) {
+                        if (c - 22 > 0) {
+                            c = c - 22
+                        }
+                    }
+                    d.scrollTop = scrollbottom = 0;
+                    k.style.height = ((c) < 0 ? 0 : c) + "px"
+                }
+            };
+            window.resizeNavContent();
+            T.on(window, "onresize", window.resizeNavContent)
+        },
+        setContext: function(b) {
+            if (b) {
+                var a = b.lng + "," + b.lat;
+                go("sd&pt=" + a + "&r=5000", c)
+            }
+            function c(n) {
+                var j = n.content;
+                var k = "0";
+                var h = "0";
+                var m = 0;
+                if (!j) {
+                    if (window.conType == 0) {
+                        map.removeOverlay(window.startPoi);
+                        window.startPoi = null
+                    } else {
+                        map.removeOverlay(window.endPoi);
+                        window.endPoi = null
+                    }
+                    return
+                }
+                if (j) {
+                    var d = j.name || "未知路段";
+                    var f = map.temp.infoWin;
+                    if (!window.cxtBusPoints) {
+                        window.cxtBusPoints = []
+                    }
+                    if (window.conType == 0) {
+                        window.cxtBusPoints[0] = {
+                            p: b,
+                            n: d
+                        };
+                        if (!window.startPoi) {
+                            window.startPoi = addDestPoi(window.cxtBusPoints[0].p, "", DEST_START);
+                            window.startPoi.enableDragging()
+                        } else {
+                            window.startPoi.setPoint(window.cxtBusPoints[0].p)
+                        }
+                        function g(r) {
+                            var q = r.target.getPoint();
+                            var o = createSearchInfoWnd({
+                                title: d
+                            },
+                            {
+                                x: q.lng,
+                                y: q.lat,
+                                isMenu: true
+                            });
+                            openSearchInfoWnd(o, r.target);
+                            switchInfoWndTab(1, "iw_esn")
+                        }
+                        window.startPoi.addEventListener("click", g);
+                        window.startPoi.addEventListener("dragging",
+                        function(o) {
+                            this.closeInfoWindow();
+                            window.startPoi.removeEventListener("click", g)
+                        });
+                        function i() {
+                            var p = window.startPoi.point;
+                            var o = window.endPoi.point;
+                            go("nav&c=" + modelConfig.cityCode + "&drag=1&sc=" + k + "&&st=1&ec=" + h + "&et=1&sy=" + m + "&sn=1$$$$" + p.lng + "," + p.lat + "$$" + encodeURIComponent(window.cxtBusPoints[0].n) + "$$$$$$&en=1$$$$" + o.lng + "," + o.lat + "$$" + encodeURIComponent(window.cxtBusPoints[1].n) + "$$$$$$")
+                        }
+                        if (window.startPoi && window.endPoi) {
+                            i()
+                        } else {
+                            if (f && f.isOpen() && f._ext && f._ext.name != "未知地点") {
+                                window.endPoi = addDestPoi(f.getPoint(), "", DEST_END);
+                                window.endPoi.addEventListener("dragstart",
+                                function(o) {
+                                    me.dragStart(o)
+                                });
+                                window.endPoi.addEventListener("dragging",
+                                function(o) {
+                                    me.draging(o)
+                                });
+                                window.endPoi.addEventListener("dragend",
+                                function(o) {
+                                    me.dragEnd(o, 1)
+                                });
+                                window.endPoi.enableDragging();
+                                window.cxtBusPoints[1] = {
+                                    p: f.getPoint(),
+                                    n: f._ext.name || "未知地点",
+                                    t: 1
+                                };
+                                if (window.startPoi && window.endPoi) {
+                                    i()
+                                }
+                            }
+                        }
+                        j = null;
+                        return
+                    }
+                    if (window.conType == 1) {
+                        window.cxtBusPoints[1] = {
+                            p: b,
+                            n: d
+                        };
+                        if (!window.endPoi) {
+                            window.endPoi = addDestPoi(window.cxtBusPoints[1].p, "", DEST_END);
+                            window.endPoi.enableDragging()
+                        } else {
+                            window.endPoi.setPoint(window.cxtBusPoints[1].p)
+                        }
+                        function e(r) {
+                            var q = r.target.getPoint();
+                            var o = createSearchInfoWnd({
+                                title: d
+                            },
+                            {
+                                x: q.lng,
+                                y: q.lat,
+                                isMenu: true
+                            });
+                            openSearchInfoWnd(o, r.target);
+                            switchInfoWndTab(0, "iw_ssn")
+                        }
+                        window.endPoi.addEventListener("click", e);
+                        window.endPoi.addEventListener("dragging",
+                        function(o) {
+                            this.closeInfoWindow();
+                            window.endPoi.removeEventListener("click", e)
+                        });
+                        function l() {
+                            var p = window.startPoi.point;
+                            var o = window.endPoi.point;
+                            go("nav&c=" + modelConfig.cityCode + "&drag=1&sc=" + k + "&&st=1&ec=" + h + "&et=1&sy=" + m + "&sn=1$$$$" + p.lng + "," + p.lat + "$$" + encodeURIComponent(window.cxtBusPoints[0].n) + "$$$$$$&en=1$$$$" + o.lng + "," + o.lat + "$$" + encodeURIComponent(window.cxtBusPoints[1].n) + "$$$$$$")
+                        }
+                        if (window.startPoi && window.endPoi) {
+                            l()
+                        } else {
+                            if (f && f.isOpen() && f._ext && f._ext.name != "未知地点") {
+                                window.startPoi = addDestPoi(f.getPoint(), "", DEST_START);
+                                window.startPoi.addEventListener("dragstart",
+                                function(o) {
+                                    me.dragStart(o)
+                                });
+                                window.startPoi.addEventListener("dragging",
+                                function(o) {
+                                    me.draging(o)
+                                });
+                                window.startPoi.addEventListener("dragend",
+                                function(o) {
+                                    me.dragEnd(o, 0)
+                                });
+                                window.startPoi.enableDragging();
+                                window.cxtBusPoints[0] = {
+                                    p: f.getPoint(),
+                                    n: f._ext.name || "未知地点",
+                                    t: 0
+                                };
+                                if (window.startPoi && window.endPoi) {
+                                    l()
+                                }
+                            }
+                        }
+                        j = null;
+                        return
+                    }
+                }
+            }
+        },
+        getExtInfo: function() {
+            var a = "";
+            if (this.disName) {
+                a += this.disName
+            }
+            if (this.time) {
+                a += ("/" + formatTime(this.time, "nav"))
+            }
+            this._extinfo = "约" + a;
+            return this._extinfo
+        },
+        makeScheme: function(Q, k) {
+            var q = [""],
+            E = this;
+            function e(l, b) {
+                var a = "";
+                if (l) {
+                    var j = E.pstype[l.ps] || "",
+                    c = E.pwtype[l.pw] || "";
+                    var g = l.pd < ((k[b].t == 13 || k[b].t == 4) ? 1000 : 50) ? "": "约" + E.roundDis(l.pd) + "后";
+                    a = c + j + "<span class='b'>" + l.pn + "</span>" + g + (j == "" ? "": "，")
+                }
+                return a
+            }
+            function H(b) {
+                var a = Q[b].iw;
+                return Q[b].ic == "" ? "": ((E.iwgo[a] || "") + "<span>" + Q[b].ic + "</span>" + (E.iwto[a] || ""))
+            }
+            if (Q && k) {
+                q.push("<p onclick=\"Instance('" + this.guid + '\').resetDrv()" id="drv_km" class="km">');
+                q.push('<span class="i dvpt" tid=\'drivePrintBtn\' onclick=\'return printMap(this.getElementsByTagName("a")[0]);\'><a href="javascript:void(0)" title="打印" target=\'Print\'><img src="' + MapConfig.smFlwCon + './template/eis_y_car/map/image/transparent.gif" alt="打印" /></a></span>');
+                q.push('<b class="sp">|</b><span class="i stmc" tid=\'driveSmSBtn\' title="发送到手机" onclick=\'sms.ready(this,"nav")\'><img src="' + MapConfig.smFlwCon + './template/eis_y_car/map/image/transparent.gif" alt="发送到手机" /></span>');
+                q.push("<b class=\"sp\">|</b><span tid='driveFavBtn' id='" + this.guid + '_favbtn\' class="i afav" title="加入收藏夹" onclick="Instance(\'' + this.guid + '\').addToFav(this, event)"><img src="' + MapConfig.smFlwCon + './template/eis_y_car/map/image/transparent.gif" /></span>');
+                q.push('<a href="javascript:void(0)" >全程</a>&nbsp;&nbsp;<span id="navDis">' + this.getExtInfo() + "</span></p>");
+                q.push('<p class="via" id="via_' + this.guid + '" ></p>');
+                q.push('<div id="info_' + this.guid + '" class="info">');
+                q.push('<h3 class="no1 arr" onclick="Instance(\'' + this.guid + "').clickStop(event,0)\">");
+                if (E.haveMainRoud) {
+                    q.push('<span class="drv_show_all blue" id="showAllDesBtn" onclick="Instance(\'' + this.guid + "').showAllDes(this,event)\">显示全部详情</span>")
+                }
+                q.push("<span class=\"drv_title\"><strong id='startInfo'>" + this.startName + "</strong></span></h3>");
+                q.push('<div id="table_info">');
+                var aa = Q.length,
+                M = 0,
+                m = 0,
+                n = 0,
+                x = ") ",
+                f = false,
+                D = 0;
+                E.mainRoud._sgIndex = -1;
+                E.mainRoud._egIndex = aa;
+                for (var V = 0; V < aa; V++) {
+                    var I = Q[V].rt;
+                    var Z = parseInt(k[V].d);
+                    var O = k[V].poi;
+                    if (O) {
+                        Z = Z - O.pd
+                    }
+                    var u = this.roundDis(Z);
+                    if (E.mainRoud[V]) {
+                        E.mainRoud[V].index = M;
+                        E.mainRoud[V].gIndex = n;
+                        if (E.mainRoud[1]) {
+                            E.mainRoud[1].gIndex = 0;
+                            E.mainRoud[1]._gIndex = -1
+                        }
+                        if (V == this.egi) {
+                            E.mainRoud[V].gIndex = n + 1
+                        }
+                        D++
+                    }
+                    if (V == 0 && this.sgi > 0) {
+                        q.push('<h4 id="main_roude_tit' + n + '" class="main-roude-title" onmouseover="Instance(\'' + this.guid + "').mainRoudeOn(" + M + "," + n + ',this,event)" onmouseout="Instance(\'' + this.guid + "').mainRoudeOut(" + M + "," + n + ',this,event)" onclick="Instance(\'' + this.guid + "').mainRoudeClick(" + M + "," + n + ',this,event)"><span id="main_roude_bt' + V + '" class="main-roude-title-bt blueA">展开</span>' + (n + 1) + ". " + this.sCity.cname + '内驾车方案</h4><ul class="main-roude-content" id="main_roude_con' + n + '" style="display:none">');
+                        n++;
+                        m = 0;
+                        this.mainRoudLine.push(M)
+                    } else {
+                        if (V == 0 && (E.haveMainRoud && E.mainRoud.ids.length > 0)) {
+                            var p = ". 从起点到" + E.mainRoud[E.mainRoud.ids[0]].n;
+                            if (E.mainRoud.ids[0] == 1) {
+                                p = ".从" + E.mainRoud[1].n + "出发"
+                            }
+                            q.push('<h4 id="main_roude_tit' + n + '" class="main-roude-title" onmouseover="Instance(\'' + this.guid + "').mainRoudeOn(" + M + "," + n + ',this,event)" onmouseout="Instance(\'' + this.guid + "').mainRoudeOut(" + M + "," + n + ',this,event)" onclick="Instance(\'' + this.guid + "').mainRoudeClick(" + M + "," + n + ',this,event)"><span id="main_roude_bt' + n + '" class="main-roude-title-bt blueA">展开</span>' + (n + 1) + p + '</h4><ul class="main-roude-content" id="main_roude_con' + n + '" style="display:none">');
+                            n++;
+                            m = 0;
+                            this.mainRoudLine.push(M)
+                        } else {
+                            if (V == 0 && !E.haveMainRoud) {
+                                q.push('<ul class="no-main-roude-content">');
+                                x = ". "
+                            } else {
+                                if (this.egi > 0 && V == this.egi) {
+                                    if (E.mainRoud[V]) {
+                                        E.mainRoud._egIndex = D - 2
+                                    } else {
+                                        E.mainRoud._egIndex = D - 1
+                                    }
+                                    q.push('</ul><h4 id="main_roude_tit' + n + '" class="main-roude-title" onmouseover="Instance(\'' + this.guid + "').mainRoudeOn(" + M + "," + n + ',this,event)" onmouseout="Instance(\'' + this.guid + "').mainRoudeOut(" + M + "," + n + ',this,event)" onclick="Instance(\'' + this.guid + "').mainRoudeClick(" + M + "," + n + ',this,event)"><span id="main_roude_bt' + n + '" class="main-roude-title-bt blueA">展开</span>' + (n + 1) + ". " + this.eCity.cname + '内驾车方案</h4><ul class="main-roude-content" style="display:none" id="main_roude_con' + n + '">');
+                                    n++;
+                                    m = 0;
+                                    this.mainRoudLine.push(M);
+                                    f = false
+                                } else {
+                                    if (this.egi > 0 && V > this.egi) {
+                                        if (V == aa) {
+                                            q.push("</ul>")
+                                        }
+                                    } else {
+                                        if (E.haveMainRoud && !(E.mainRoud.ids.length == 1 && E.mainRoud.ids[0] == 1) && (V == E.mainRoud.ids[E.mainRoud.ids.length - 1])) {
+                                            q.push('</ul><h4 id="main_roude_tit' + n + '" class="main-roude-title" onmouseover="Instance(\'' + this.guid + "').mainRoudeOn(" + M + "," + n + ',this,event)" onmouseout="Instance(\'' + this.guid + "').mainRoudeOut(" + M + "," + n + ',this,event)" onclick="Instance(\'' + this.guid + "').mainRoudeClick(" + M + "," + n + ',this,event)"><span id="main_roude_bt' + n + '" class="main-roude-title-bt blueA">展开</span>' + (n + 1) + ". " + E.mainRoud[V].n);
+                                            if (this.egi == -1) {
+                                                q.push("到终点");
+                                                f = false
+                                            } else {
+                                                if (E.sgi != -1 && E.mainRoud._sgIndex == -1) {
+                                                    E.mainRoud._sgIndex = D - 1
+                                                }
+                                            }
+                                            q.push('</h4><ul class="main-roude-content" style="display:none" id="main_roude_con' + n + '">');
+                                            n++;
+                                            m = 0;
+                                            this.mainRoudLine.push(M)
+                                        } else {
+                                            if (!E.haveMainRoud && V == aa) {
+                                                q.push("</ul>")
+                                            } else {
+                                                if (V > 1 && V >= this.sgi && E.mainRoud[V]) {
+                                                    if (E.sgi != -1 && E.mainRoud._sgIndex == -1) {
+                                                        E.mainRoud._sgIndex = D - 1
+                                                    }
+                                                    q.push('</ul><h4 id="main_roude_tit' + n + '" class="main-roude-title" onmouseover="Instance(\'' + this.guid + "').mainRoudeOn(" + M + "," + n + ',this,event)" onmouseout="Instance(\'' + this.guid + "').mainRoudeOut(" + M + "," + n + ',this,event)" onclick="Instance(\'' + this.guid + "').mainRoudeClick(" + M + "," + n + ',this,event)"><span id="main_roude_bt' + n + '" class="main-roude-title-bt blueA">展开</span>' + (n + 1) + ". " + E.mainRoud[V].n + '</h4><ul class="main-roude-content" style="display:none" id="main_roude_con' + n + '">');
+                                                    n++;
+                                                    m = 0;
+                                                    this.mainRoudLine.push(M);
+                                                    f = true
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    if (!this.groupBounds[n - 1]) {
+                        this.groupBounds[n - 1] = []
+                    }
+                    if (!this.groupPopPoints[n - 1]) {
+                        this.groupPopPoints[n - 1] = []
+                    }
+                    if (!this.mainDrivePoints[n - 1]) {
+                        this.mainDrivePoints[n - 1] = []
+                    }
+                    if (D > 0 && E.mainRoud[V]) {
+                        if (!E.mainRoud[V].points) {
+                            E.mainRoud[V].points = []
+                        }
+                        var af = 1;
+                        if (k[V].mn.c && k[V].mn.c > 1) {
+                            af = k[V].mn.c
+                        }
+                        for (var U = 0; U < af; U++) {
+                            var v = V + U,
+                            X = null;
+                            if (U > 0 && k[v] && k[v].mn && k[v].mn.m == 1) {
+                                break
+                            }
+                            if (k[v] && k[v].g) {
+                                X = parse2Geo(k[v].g)
+                            }
+                            if (! (X && X.points)) {
+                                continue
+                            }
+                            if (this.sgi != -1 && this.egi != -1) {
+                                if (v >= this.sgi && v < this.egi) {
+                                    this.mainDrivePoints[n - 1].push(X.points)
+                                }
+                            } else {
+                                if (this.sgi != -1) {
+                                    if (v >= this.sgi) {
+                                        this.mainDrivePoints[n - 1].push(X.points)
+                                    }
+                                } else {
+                                    if (this.egi != -1) {
+                                        if (v < this.egi) {
+                                            this.mainDrivePoints[n - 1].push(X.points)
+                                        }
+                                    } else {
+                                        this.mainDrivePoints[n - 1].push(X.points)
+                                    }
+                                }
+                            }
+                            E.mainRoud[V].points.push(X.points)
+                        }
+                    }
+                    if (V == 0) {
+                        q.push('<li id="route_' + M + '" onmouseout="Instance(\'' + this.guid + "').removeTips(this)\" onmouseover= \"Instance('" + this.guid + "').addTips(" + M + ',null,this,event)" onclick="Instance(\'' + this.guid + "').highRoute(" + M + ',null,this,event)">');
+                        if (!isPrint) {
+                            q.push((m + 1) + x)
+                        }
+                        q.push("从<span>起点</span>向" + this.turtype[Q[V].ett] + "出发，");
+                        this.dragPoints.push({
+                            p: parse2Geo(Q[V].pt).points,
+                            n: this.startName
+                        });
+                        this.popPoints.push({
+                            p: this.start.pt,
+                            a: -1
+                        });
+                        var h = this.getRoadName(k[V + 1].t, k[V + 1].n);
+                        this.popInfos.push({
+                            title: this.startName,
+                            info: "",
+                            next: h || this.noName
+                        });
+                        var d = this.getRoadName(k[V + 1].t, k[V + 1].n);
+                        var Y = this.getRoadName(k[V + 2].t, k[V + 2].n);
+                        var K = parseInt(k[V + 1].d);
+                        var N = this.roundDis(K);
+                        this.popPoints.push({
+                            p: parse2Geo(Q[V].pt).points,
+                            a: Q[V].a
+                        });
+                        this.groupPopPoints[n - 1].push({
+                            p: parse2Geo(Q[V].pt).points,
+                            a: Q[V].a
+                        });
+                        if (V + 2 == aa - 1) {
+                            this.popInfos.push({
+                                title: d || this.noName,
+                                info: this.rettype[Q[V + 1].rt] + N,
+                                next: "停车点"
+                            })
+                        } else {
+                            I = Q[V + 2].rt;
+                            var L = this.getRetType(k[V + 1].t, 1, k[V + 1].n);
+                            if (I == 3) {
+                                Y = "到达" + this.rettype[I];
+                                L = "，"
+                            }
+                            var r = Q[V + 1].iw;
+                            var C = H(V + 1);
+                            this.popInfos.push({
+                                title: d || this.noName,
+                                info: C + this.turtype[Q[V + 1].ett] + L + Y,
+                                next: Y || this.noName
+                            })
+                        }
+                    } else {
+                        if (V == 1) {
+                            var ad = this.getRoadName(k[V].t, k[V].n);
+                            var h = this.getRoadName(k[V + 1].t, k[V + 1].n);
+                            var ab = k[V].tr == 1 ? "<br><font color='#CA0000'>全路段收费</font>": k[V].tr == 2 ? "<br><font  color='#CA0000'>部分路段收费</font>": "";
+                            var r = Q[V].iw;
+                            var C = H(V);
+                            var O = k[V].poi;
+                            var P = e(O, V);
+                            var A = this.getRoadAct(k[V].t, k[V].n);
+                            var t = this.dwtype[Q[V].dw] || "";
+                            var w = Q[V].dr ? (t + "<span>" + Q[V].dr + "</span>，") : "";
+                            var L = this.getRetType(k[V + 1].t, 0, k[V + 1].n);
+                            this.navPoi[M] = k[V].poi;
+                            this.navGas[M] = k[V].gas;
+                            this.navSapa[M] = k[V].sapa;
+                            this.navCharge[M] = k[V].tr;
+                            q.push(A + "<span>" + ad + "</span>" + this.rettype[Q[V].rt] + u + "，" + P + C + w + "<span>" + this.turtype[Q[V].ett] + "</span>" + L + "<span>" + h + "</span>");
+                            if (Q[V + 1].rt == 3) {
+                                var I = Q[V + 1].rt;
+                                var s = this.rettype[I];
+                                q.push("到达<span>" + s + "</span>")
+                            }
+                            if (aa > 3) {
+                                q.push(ab + "</li>")
+                            }
+                            var X = parse2Geo(k[V].g);
+                            this.drivePoints.push(X.points);
+                            this.driveBounds.push(X.bound);
+                            this.groupBounds[n - 1].push(X.bound);
+                            if (!this.routePoints[this.routePoints.length]) {
+                                this.routePoints[this.routePoints.length] = []
+                            }
+                            this.routePoints[this.routePoints.length - 1].push({
+                                p: X.points,
+                                d: Z,
+                                b: X.bound
+                            });
+                            var d = this.getRoadName(k[V].t, k[V + 1].n);
+                            var Y = "",
+                            L = "";
+                            if (k[V + 2]) {
+                                Y = this.getRoadName(k[V + 1].t, k[V + 2].n);
+                                L = this.getRetType(k[V + 2].t, 0, k[V + 2].n)
+                            }
+                            var K = parseInt(k[V + 1].d);
+                            var N = this.roundDis(K);
+                            this.popPoints.push({
+                                p: parse2Geo(Q[V].pt).points,
+                                a: Q[V].a
+                            });
+                            if (n == 1) {
+                                this.groupPopPoints[n - 1].push({
+                                    p: parse2Geo(Q[V].pt).points,
+                                    a: Q[V].a
+                                })
+                            } else {
+                                if (D > 0 && k[V].n == E.mainRoud[E.mainRoud.ids[D - 1]].n) {
+                                    this.groupPopPoints[n - 1].push({
+                                        p: parse2Geo(Q[V].pt).points,
+                                        a: Q[V].a
+                                    })
+                                }
+                            }
+                            if (V + 1 == aa - 1) {
+                                this.popInfos.push({
+                                    title: "停车点",
+                                    info: this.rettype[Q[V + 1].rt],
+                                    next: "终点"
+                                })
+                            } else {
+                                if (V + 1 == aa - 2) {
+                                    this.popInfos.push({
+                                        title: h || this.noName,
+                                        info: this.rettype[Q[V + 1].rt] + N,
+                                        next: "停车点"
+                                    })
+                                } else {
+                                    if (Q[V + 2].rt == 3) {
+                                        var I = Q[V + 2].rt;
+                                        var s = this.rettype[I];
+                                        this.popInfos.push({
+                                            title: h || this.noName,
+                                            info: this.rettype[Q[V + 1].rt] + N + "，到达" + s,
+                                            next: Y || this.noName
+                                        })
+                                    } else {
+                                        var I = Q[V + 1].rt;
+                                        if (I == 3 && V + 2 == aa) {
+                                            h = ad;
+                                            var o = parseInt(k[V + 2].d);
+                                            var B = this.roundDis(o);
+                                            W = this.rettype[Q[V + 2].rt] + B + "，到达停车点"
+                                        } else {
+                                            h = T.trim(k[V + 2].n);
+                                            var o = parseInt(k[V + 1].d);
+                                            var B = this.roundDis(o);
+                                            if (V + 2 == aa - 2) {
+                                                if (I == 3) {
+                                                    ad = this.getRoadName(k[V].t, k[V].n);
+                                                    Y = "停车点";
+                                                    var o = parseInt(k[V + 2].d);
+                                                    var B = this.roundDis(o);
+                                                    W = this.rettype[Q[V].rt] + B + this.turtype[Q[V + 1].ett] + "，到达停车点"
+                                                } else {
+                                                    ad = this.getRoadName(k[V + 1].t, k[V + 1].n);
+                                                    Y = this.getRoadName(k[V + 2].t, k[V + 2].n);
+                                                    var r = Q[V + 1].iw;
+                                                    var C = H(V + 1);
+                                                    W = C + this.turtype[Q[V + 1].ett] + ","
+                                                }
+                                            } else {
+                                                if (I == 3) {
+                                                    ad = this.getRoadName(k[V].t, k[V].n);
+                                                    Y = this.getRoadName(k[V + 3].t, k[V + 3].n);
+                                                    var o = parseInt(k[V + 2].d);
+                                                    var B = this.roundDis(o);
+                                                    var L = this.getRetType(k[V + 3].t, 1, k[V + 3].n);
+                                                    var r = Q[V + 1].iw;
+                                                    var C = H(V + 1);
+                                                    W = C + this.turtype[Q[V].ett] + L + Y
+                                                } else {
+                                                    ad = this.getRoadName(k[V + 1].t, k[V + 1].n);
+                                                    Y = this.getRoadName(k[V + 2].t, k[V + 2].n);
+                                                    var L = this.getRetType(k[V + 2].t, 1, k[V + 2].n);
+                                                    var r = Q[V + 1].iw;
+                                                    var C = H(V + 1);
+                                                    W = C + this.turtype[Q[V + 1].ett] + L + Y
+                                                }
+                                            }
+                                        }
+                                        this.popInfos.push({
+                                            title: ad || this.noName,
+                                            info: W,
+                                            next: Y || this.noName
+                                        })
+                                    }
+                                }
+                            }
+                            M++;
+                            m++
+                        } else {
+                            if (V == aa - 2) {
+                                var r = Q[V + 1].iw;
+                                var C = H(V + 1);
+                                var O = k[V].poi;
+                                var P = e(O, V);
+                                this.navPoi[M] = k[V].poi;
+                                this.navGas[M] = k[V].gas;
+                                this.navSapa[M] = k[V].sapa;
+                                this.navCharge[M] = k[V].tr;
+                                var ad = this.getRoadName(k[V].t, k[V].n);
+                                var G = this.getRoadName(k[V - 1].t, k[V - 1].n);
+                                var A = ((ad != "" && G == ad) ? "继续": "") + this.getRoadAct(k[V].t, k[V].n);
+                                q.push('<li id="route_' + M + '" onmouseout="Instance(\'' + this.guid + "').removeTips(this)\" onmouseover= \"Instance('" + this.guid + "').addTips(" + M + ',null,this,event)" onclick="Instance(\'' + this.guid + "').highRoute(" + M + ',null,this,event)">');
+                                if (!isPrint) {
+                                    q.push((m + 1) + x)
+                                }
+                                q.push(A + "<span>" + ad + "</span>" + this.rettype[Q[V].rt] + u + "，" + P + C);
+                                var X = parse2Geo(k[V].g);
+                                this.drivePoints.push(X.points);
+                                this.routePoints[this.routePoints.length - 1].push({
+                                    p: X.points,
+                                    d: Z,
+                                    b: X.bound
+                                });
+                                this.driveBounds.push(X.bound);
+                                this.groupBounds[n - 1].push(X.bound);
+                                var d = this.getRoadName(k[V].t, k[V + 1].n);
+                                var K = parseInt(k[V + 1].d);
+                                var N = this.roundDis(K);
+                                this.popPoints.push({
+                                    p: parse2Geo(Q[V].pt).points,
+                                    a: Q[V].a
+                                });
+                                if (n == 1) {
+                                    this.groupPopPoints[n - 1].push({
+                                        p: parse2Geo(Q[V].pt).points,
+                                        a: Q[V].a
+                                    })
+                                } else {
+                                    if (D > 0 && k[V].n == E.mainRoud[E.mainRoud.ids[D - 1]].n) {
+                                        if (this.groupPopPoints[n - 1].length == 0) {
+                                            this.groupPopPoints[n - 1].push({
+                                                p: parse2Geo(Q[V - 1].pt).points,
+                                                a: Q[V - 1].a
+                                            })
+                                        }
+                                        this.groupPopPoints[n - 1].push({
+                                            p: parse2Geo(Q[V].pt).points,
+                                            a: Q[V].a
+                                        })
+                                    }
+                                }
+                                this.popInfos.push({
+                                    title: "停车点",
+                                    info: "步行前往终点",
+                                    next: this.endName
+                                });
+                                M++;
+                                m++
+                            } else {
+                                if (V == aa - 1) {
+                                    var z = parse2Geo(k[V - 1].g).points.split(";");
+                                    var ag, ae, ac = this.end.pt.split(",");
+                                    if (z && z.length >= 2) {
+                                        var S = z.length;
+                                        ag = z[S - 1].split(",");
+                                        ae = z[S - 2].split(",")
+                                    } else {
+                                        ag = parse2Geo(Q[V - 1].pt).points.split(",");
+                                        ae = parse2Geo(Q[V - 2].pt).points.split(",")
+                                    }
+                                    var J = (ag[0] - ac[0]) * (ae[1] - ac[1]) - (ag[1] - ac[1]) * (ae[0] - ac[0]);
+                                    if (J == 0) {
+                                        I = 2
+                                    } else {
+                                        if (J > 0) {
+                                            I = 6
+                                        } else {
+                                            if (J < 0) {
+                                                I = 5
+                                            }
+                                        }
+                                    }
+                                    var F = BMap.Project.getDistanceByMC(new BMap.Point(ac[0], ac[1]), new BMap.Point(ag[0], ag[1]));
+                                    if (F < 10) {
+                                        I = 2
+                                    }
+                                    var ab = k[V - 1].tr == 1 ? "<br><font color='#CA0000'>全路段收费</font>": k[V].tr == 2 ? "<br><font color='#CA0000'>部分路段收费</font>": "";
+                                    var R = I == 2 ? "到达<span>终点</span>": I == 5 ? "到达<span>终点</span>(在道路<span>左侧</span>)": I == 6 ? "到达<span>终点</span>(在道路<span>右侧</span>)": "";
+                                    q.push(R + ab);
+                                    q.push("</li>");
+                                    q.push("</ul>");
+                                    this.dragPoints.push({
+                                        p: parse2Geo(Q[V].pt).points,
+                                        n: this.endName
+                                    });
+                                    this.popPoints.push({
+                                        p: this.end.pt,
+                                        a: -1
+                                    });
+                                    if (n == 1 || this.egi != -1) {
+                                        this.groupPopPoints[n - 1].push({
+                                            p: parse2Geo(Q[V].pt).points,
+                                            a: Q[V].a
+                                        })
+                                    } else {
+                                        if (D > 0 && k[V].n == E.mainRoud[E.mainRoud.ids[D - 1]].n) {
+                                            this.groupPopPoints[n - 1].push({
+                                                p: this.end.pt,
+                                                a: -1
+                                            })
+                                        }
+                                    }
+                                    this.popInfos.push({
+                                        title: this.endName,
+                                        info: "",
+                                        next: ""
+                                    })
+                                } else {
+                                    if (V < aa - 2) {
+                                        if (I != 3) {
+                                            var G = this.getRoadName(k[V - 1].t, k[V - 1].n);
+                                            var ad = this.getRoadName(k[V].t, k[V].n);
+                                            var h = this.getRoadName(k[V + 1].t, k[V + 1].n);
+                                            var A = ((ad != "" && G == ad) ? "继续": "") + this.getRoadAct(k[V].t, k[V].n);
+                                            var r = Q[V].iw;
+                                            var C = H(V);
+                                            var ab = k[V].tr == 1 ? "<br><font color='#CA0000'>全路段收费</font>": k[V].tr == 2 ? "<br><font color='#CA0000'>部分路段收费</font>": "";
+                                            var O = k[V].poi;
+                                            var P = e(O, V);
+                                            this.navPoi[M] = k[V].poi;
+                                            this.navGas[M] = k[V].gas;
+                                            this.navSapa[M] = k[V].sapa;
+                                            this.navCharge[M] = k[V].tr;
+                                            var I = Q[V + 1].rt;
+                                            var t = this.dwtype[Q[V].dw] || "";
+                                            var L = this.getRetType(k[V + 1].t, 0, k[V + 1].n);
+                                            var w = Q[V].dr ? (t + "<span>" + Q[V].dr + "</span>，") : "";
+                                            q.push('<li id="route_' + M + '" onmouseout="Instance(\'' + this.guid + "').removeTips(this)\" onmouseover= \"Instance('" + this.guid + "').addTips(" + M + ',null,this,event)" onclick="Instance(\'' + this.guid + "').highRoute(" + M + ',null,this,event)">');
+                                            if (!isPrint) {
+                                                q.push((m + 1) + x)
+                                            }
+                                            if (I == 3) {
+                                                var s = this.rettype[I];
+                                                q.push(A + "<span>" + ad + "</span>" + this.rettype[Q[V].rt] + u + "，" + P + C + "到达<span>" + s + "</span>" + ab)
+                                            } else {
+                                                var y = (ad == h) ? "": (L + "<span>" + h + "</span>");
+                                                q.push(A + "<span>" + ad + "</span>" + this.rettype[Q[V].rt] + u + "，" + P + C + w + "<span>" + this.turtype[Q[V].ett] + "</span>" + y + ab)
+                                            }
+                                            q.push("</li>");
+                                            var X = parse2Geo(k[V].g);
+                                            this.drivePoints.push(X.points);
+                                            this.routePoints[this.routePoints.length - 1].push({
+                                                p: X.points,
+                                                d: Z,
+                                                b: X.bound
+                                            });
+                                            this.driveBounds.push(X.bound);
+                                            this.groupBounds[n - 1].push(X.bound);
+                                            var d = this.getRoadName(k[V + 1].t, k[V + 1].n);
+                                            var Y = this.getRoadName(k[V + 2].t, k[V + 2].n);
+                                            var L = this.getRetType(k[V + 2].t, 0, k[V + 2].n);
+                                            var K = parseInt(k[V + 1].d);
+                                            var N = this.roundDis(K);
+                                            this.popPoints.push({
+                                                p: parse2Geo(Q[V].pt).points,
+                                                a: Q[V].a
+                                            });
+                                            if (n == 1) {
+                                                this.groupPopPoints[n - 1].push({
+                                                    p: parse2Geo(Q[V].pt).points,
+                                                    a: Q[V].a
+                                                })
+                                            } else {
+                                                if (D > 0 && k[V].n == E.mainRoud[E.mainRoud.ids[D - 1]].n || V == this.egi) {
+                                                    if (this.groupPopPoints[n - 1].length == 0) {
+                                                        this.groupPopPoints[n - 1].push({
+                                                            p: parse2Geo(Q[V - 1].pt).points,
+                                                            a: Q[V - 1].a
+                                                        })
+                                                    }
+                                                    this.groupPopPoints[n - 1].push({
+                                                        p: parse2Geo(Q[V].pt).points,
+                                                        a: Q[V].a
+                                                    })
+                                                }
+                                            }
+                                            var W = "";
+                                            if (V == aa - 3) {
+                                                Y = "停车点"
+                                            }
+                                            if (Q[V + 2].rt == 3) {
+                                                var I = Q[V + 2].rt;
+                                                var s = this.rettype[I];
+                                                var Y = T.trim(k[V + 3].n);
+                                                this.popInfos.push({
+                                                    title: h || this.noName,
+                                                    info: this.rettype[Q[V + 1].rt] + N + "，到达" + s,
+                                                    next: Y || this.noName
+                                                })
+                                            } else {
+                                                if (Q[V + 1].rt == 3) {
+                                                    s = this.rettype[I];
+                                                    var K = parseInt(k[V + 2].d);
+                                                    var N = this.roundDis(K);
+                                                    h = T.trim(k[V].n);
+                                                    var Y = T.trim(k[V + 3].n);
+                                                    var L = this.getRetType(k[V + 3].t, 1, k[V + 3].n);
+                                                    var r = Q[V + 2].iw;
+                                                    var C = H(V + 2);
+                                                    this.popInfos.push({
+                                                        title: h || this.noName,
+                                                        info: C + this.turtype[Q[V + 2].ett] + L + Y,
+                                                        next: Y || this.noName
+                                                    })
+                                                } else {
+                                                    var L = this.getRetType(k[V + 2].t, 1, k[V + 2].n);
+                                                    var r = Q[V + 1].iw;
+                                                    var C = H(V + 1);
+                                                    if (Q[V + 2].rt == 2 || Q[V + 2].rt == 5 || Q[V + 2].rt == 6) {
+                                                        L = "到达";
+                                                        Y = "停车点"
+                                                    }
+                                                    this.popInfos.push({
+                                                        title: h || this.noName,
+                                                        info: C + this.turtype[Q[V + 1].ett] + L + Y,
+                                                        next: Y || this.noName
+                                                    })
+                                                }
+                                            }
+                                            M++;
+                                            m++
+                                        } else {
+                                            var s = T.trim(k[V + 1].n);
+                                            s = s || this.noName;
+                                            this.dragPoints.push({
+                                                p: parse2Geo(Q[V].pt).points,
+                                                n: s
+                                            });
+                                            if (!this.routePoints[this.routePoints.length]) {
+                                                this.routePoints[this.routePoints.length] = []
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                q.push("</div>");
+                q.push('<h3 class="no2" onclick="Instance(\'' + this.guid + "').clickStop(event,1)\"><span class=\"drv_title\"><strong id='endInfo'>" + this.endName + "</strong></span></h3>");
+                q.push("</div>")
+            }
+            return q.join("")
+        },
+        insertGroup: function() {
+            var h = this,
+            d = h.kpsList,
+            j = h.rssList,
+            a = d.length,
+            g = 0;
+            for (var f = 0; f < a; f++) {
+                var e = d[f].rt;
+                var c = parseInt(j[f].d);
+                var b = j[f].poi;
+                if (b) {
+                    c = c - b.pd
+                }
+                if (f == 1) {
+                    if (c >= 20000) {
+                        h.groupIndex.push(g)
+                    }
+                    g++
+                } else {
+                    if (f == a - 2) {
+                        if (c >= 20000) {
+                            h.groupIndex.push(g)
+                        }
+                        g++
+                    } else {
+                        if (f > 0 && f < a - 2) {
+                            if (e != 3) {
+                                if (c >= 20000) {
+                                    h.groupIndex.push(g)
+                                }
+                                g++
+                            }
+                        }
+                    }
+                }
+            }
+            if (h.groupIndex.length > 0) {
+                h.sgi = h.groupIndex[0] - 1;
+                if (h.haveMainRoud && h.mainRoud.ids.length > 0) {
+                    if (h.sgi + 1 < h.mainRoud.ids[0]) {
+                        h.sgi = h.mainRoud.ids[0] - 1
+                    }
+                }
+            }
+            if (h.groupIndex.length >= 1) {
+                h.egi = h.groupIndex[h.groupIndex.length - 1] + 1
+            }
+            if (h.egi != -1) {
+                h.egi = h.sgi != -1 ? h.egi + 2 : h.egi;
+                h.egi = h.egi > a - 2 ? a - 2 : h.egi
+            }
+            if (h.egi == a - 2) {
+                this.egi = -1
+            }
+        },
+        addDrPoi: function() {
+            var g = this.dragPoints;
+            var c = g.length;
+            var d = this;
+            var a = ['<table class="">'];
+            for (var b = 0; b < c; b++) {
+                var f;
+                if (b == 0) {
+                    f = addDestPoi(this.start.pt, "", DEST_START);
+                    f.addEventListener("dragging",
+                    function(h) {
+                        d.addViaRoute2(h, 1)
+                    });
+                    f.addEventListener("mouseover",
+                    function(h) {
+                        d.onViaPoiOver(h, 1)
+                    });
+                    f.addEventListener("mouseout",
+                    function(h) {
+                        d.onRemoveTips(h, 1)
+                    });
+                    f.addEventListener("dragend",
+                    function(h) {
+                        d.addViaPoi2(h, 1)
+                    });
+                    window.startPoi = f
+                } else {
+                    if (b == c - 1) {
+                        f = addDestPoi(this.end.pt, "", DEST_END);
+                        f.addEventListener("dragging",
+                        function(h) {
+                            d.addViaRoute2(h, 2)
+                        });
+                        f.addEventListener("mouseover",
+                        function(h) {
+                            d.onViaPoiOver(h, 2)
+                        });
+                        f.addEventListener("mouseout",
+                        function(h) {
+                            d.onRemoveTips(h, 2)
+                        });
+                        f.addEventListener("dragend",
+                        function(h) {
+                            d.addViaPoi2(h, 2)
+                        });
+                        window.endPoi = f
+                    } else {
+                        if (b > 0 && b < c - 1) {
+                            var e = new BMap.Icon(MapConfig.smFlwCon + "image/drv_m.png", MARKER_11_11_SIZE, {
+                                offset: MARKER_11_11_OFFSET,
+                                infoWindowOffset: MARKER_11_11_INFOWND_OFFSET
+                            });
+                            f = new BMap.Marker(getPoiPoint(g[b].p), {
+                                icon: e
+                            }); (function() {
+                                var h = b;
+                                f.addEventListener("domready",
+                                function() {
+                                    this.viaContext = createContextMenu([{
+                                        text: "删除该点",
+                                        callback: d.delContext(h),
+                                        width: 60
+                                    }], this.getDom(), "pointer")
+                                })
+                            })();
+                            map.addOverlay(f);
+                            f.enableDragging();
+                            f._stCode = OVERLAY_STYLE.DRV_M_MKR;
+                            f.addEventListener("dragging",
+                            function(h) {
+                                d.addViaRoute2(h, 0)
+                            });
+                            f.addEventListener("mouseout",
+                            function(h) {
+                                d.onRemoveTips(h, 1)
+                            });
+                            f.addEventListener("mouseover",
+                            function(h) {
+                                d.onViaPoiOver(h, 0)
+                            });
+                            f.addEventListener("dragend",
+                            function(h) {
+                                d.addViaPoi2(h, 0)
+                            });
+                            if (b == 1) {
+                                a.push('<tr><td rowspan="' + (c - 2) + '" valign="top">途经</td><td>' + g[b].n + '</td><td><a href="javascript:void(0)" onclick="Instance(\'' + this.guid + "').delVia(" + b + ');return false;">删除</a></td></tr>')
+                            } else {
+                                a.push("<tr><td>" + g[b].n + '</td><td><a href="javascript:void(0)" onclick="Instance(\'' + this.guid + "').delVia(" + b + ');return false;">删除</a></td></tr>')
+                            }
+                        }
+                    }
+                }
+                if (!this.dragPois) {
+                    this.dragPois = []
+                }
+                f.addEventListener("dragstart",
+                function(h) {
+                    d.dragViaPoi(h)
+                });
+                if (MapConfig.navTrans.enableDragging) {
+                    f.enableDragging()
+                }
+                f.index = b;
+                this.dragPois.push(f)
+            }
+            a.push["</table>"];
+            if (T.G("via_" + this.guid)) {
+                T.G("via_" + this.guid).innerHTML = a.join("")
+            }
+        },
+        delContext: function(a) {
+            var b = this;
+            return function() {
+                b.delVia(a)
+            }
+        },
+        addPopPoi: function(h, c) {
+            for (var e = 0; e < this.popPois.length; e++) {
+                map.removeOverlay(this.popPois[e]);
+                this.popPois[e] = null
+            }
+            this.popPois = [];
+            if (!this.popPois.length) {
+                if (c != null && !isNaN(c)) {
+                    var b = this.groupPopPoints[c][0];
+                    if (!b) {
+                        return
+                    }
+                    var n = this.groupPopPoints[c][this.groupPopPoints[c].length - 1];
+                    var a = b.p.toString();
+                    var f = this.sgi - 1;
+                    var o = n.p.toString();
+                    var l = parseInt(b.a);
+                    var j = parseInt(n.a);
+                    var d = addDrvDirIcon(a, l);
+                    var g = addDrvDirIcon(o, j);
+                    var m = this.popWins[1];
+                    var k = this.popWins[this.sgi - 1];
+                    d.addEventListener("click", this.getClickMarker(m, d, 1));
+                    g.addEventListener("click", this.getClickMarker(k, g, this.sgi - 1))
+                } else {
+                    if (h != null && !isNaN(h)) {
+                        var a = this.popPoints[h + 1].p.toString();
+                        var o = this.popPoints[h + 2].p.toString();
+                        var l = parseInt(this.popPoints[h + 1].a);
+                        var j = parseInt(this.popPoints[h + 2].a);
+                        var d = addDrvDirIcon(a, l);
+                        if (h + 2 == this.popPoints.length - 2) {
+                            j = 12
+                        }
+                        var g = addDrvDirIcon(o, j);
+                        var m = this.popWins[h + 1];
+                        var k = this.popWins[h + 2];
+                        d.addEventListener("click", this.getClickMarker(m, d, h + 1));
+                        g.addEventListener("click", this.getClickMarker(k, g, h + 2))
+                    }
+                }
+                d.disableDragging();
+                g.disableDragging();
+                this.popPois.push(d);
+                this.popPois.push(g)
+            }
+        },
+        addDrArrow: function() {
+            if (this.arrows) {
+                for (var c = 0; c < this.arrows.length; c++) {
+                    map.removeOverlay(this.arrows[c])
+                }
+                this.arrows = []
+            }
+            if (!this.arrows) {
+                this.arrows = []
+            }
+            for (var c = 1; c < this.popPoints.length - 3; c++) {
+                var e = this.popPoints[c + 1].p;
+                var b = this.popPoints[c + 1].a;
+                var a = this.popWins[c + 1];
+                var d = addDrvDirIcon(e, b);
+                d.addEventListener("click", this.getClickMarker(a, d, c + 1));
+                this.arrows.push(d)
+            }
+        },
+        addPopInfoWin: function() {
+            var f = this.popPoints.length;
+            var h = this.start.uid;
+            var e = this.end.uid;
+            for (var c = 0; c < f; c++) {
+                var b = null;
+                if (c == 0) {
+                    b = h
+                }
+                if (c == f - 1) {
+                    b = e
+                }
+                this.popWins.push(createTransInfoWnd({
+                    title: this.popInfos[c].title,
+                    content: this.popInfos[c].info,
+                    curIndex: c,
+                    total: f,
+                    obj: this,
+                    nextInfo: this.popInfos[c].next,
+                    nextTransCbk: this.nextTransCbk,
+                    zoomTransCbk: this.zoomTransCbk,
+                    transUid: b
+                }))
+            }
+            var g = this;
+            var a = this.popWins[0];
+            window.openSWin = function() {
+                g.getClickMarker(a, g.dragPois[0], 0)()
+            };
+            var d = this.popWins[this.popWins.length - 1];
+            window.openEWin = function() {
+                g.getClickMarker(d, g.dragPois[g.dragPois.length - 1], g.popPoints.length - 1)()
+            };
+            if (this.dragPois) {
+                this.dragPois[0].addEventListener("click", window.openSWin);
+                this.dragPois[this.dragPois.length - 1].addEventListener("click", window.openEWin)
+            }
+        },
+        onRouteOver: function(f) {
+            if (!MapConfig.navTrans.enableDragging) {
+                return
+            }
+            if (this.dragPoints) {
+                if (this.dragPoints.length >= this.maxDragVia + 2) {
+                    return
+                }
+            }
+            var c = this;
+            var d = f.point || f.domEvent.point;
+            if (!this.dragVia && d) {
+                this.dragVia = addDestPoi(d, "", DEST_MIDDLE);
+                this.dragVia.viaName = "";
+                this.dragVia.dis = "";
+                this.dragVia.setTop(true);
+                this.dragVia.setLabel(this.tipLabel);
+                this.dragVia.addEventListener("dragstart",
+                function(g) {
+                    c.dragViaPoi(g)
+                });
+                this.dragVia.addEventListener("dragging",
+                function(g) {
+                    c.addViaRoute(g)
+                });
+                this.dragVia.addEventListener("dragend",
+                function(g) {
+                    c.addViaPoi(g)
+                })
+            } else {
+                if (this.dragVia && d) {
+                    var a = true;
+                    if (driveCtrl) {
+                        var b = driveCtrl.getCheckboxStatus();
+                        a = !Helper.NaviTrans.isNearAnyMarker(this.alongWayMarkers, f.pixel, b, map)
+                    }
+                    if (a) {
+                        this.dragVia.setPoint(f.point);
+                        this.dragVia.show();
+                        this.dragVia.setLabel(this.tipLabel)
+                    } else {
+                        this.dragVia.hide()
+                    }
+                }
+            }
+            if (!this.draging) {
+                this.dragIndex = f.target.index;
+                this.tempDrag = [window.dropRoutes[this.dragIndex]]
+            }
+        },
+        onRouteMove: function(g) {
+            if (this.distime) {
+                window.clearTimeout(this.distime);
+                this.distime = null
+            }
+            var c = g.target,
+            f = map.pointToPixel(c.getPoints()[0]),
+            d = map.pointToPixel(c.getPoints()[c.getPoints().length - 1]);
+            if (getDistanceByPixel(g.pixel, f) <= 20 || getDistanceByPixel(g.pixel, d) <= 20) {
+                if (this.dragVia) {
+                    this.dragVia.hide()
+                }
+                return
+            }
+            if (this.dragVia) {
+                var a = true;
+                if (driveCtrl) {
+                    var b = driveCtrl.getCheckboxStatus();
+                    a = !Helper.NaviTrans.isNearAnyMarker(this.alongWayMarkers, g.pixel, b, map)
+                }
+                if (a) {
+                    this.dragVia.setPoint(g.point);
+                    this.dragVia.show();
+                    this.dragVia.setLabel(this.tipLabel)
+                } else {
+                    this.dragVia.hide()
+                }
+            }
+        },
+        onRemoveTips: function(b) {
+            if (this.tipLabel) {
+                map.removeOverlay(this.tipLabel)
+            }
+            var a = this;
+            if (a.dragVia) {
+                a.dragVia.hide()
+            }
+        },
+        removeTimer: function(a) {
+            if (this.distime) {
+                window.clearTimeout(this.distime);
+                this.distime = null
+            }
+        },
+        dragViaPoi: function(b) {
+            var a = this;
+            a.dateStart = new Date().getTime();
+            a.removeTimer(b)
+        },
+        onViaPoiOver: function(c, b) {
+            if (!this.draging && window.dropRoutes) {
+                var a = c.target.index;
+                switch (b) {
+                case 0:
+                    this.tempDrag = [window.dropRoutes[a - 1], window.dropRoutes[a]];
+                    break;
+                case 1:
+                    this.tempDrag = [window.dropRoutes[a]];
+                    break;
+                case 2:
+                    this.tempDrag = [window.dropRoutes[a - 1]];
+                    break
+                }
+            }
+            if (MapConfig.navTrans.enableDragging) {
+                c.target.setLabel(this.tipLabel)
+            }
+        },
+        removeDraw: function() {
+            var c = this;
+            if (c.tempDrag && c.tempDrag.length > 0) {
+                for (var b = 0; b < c.tempDrag.length; b++) {
+                    var a = c.tempDrag[b];
+                    if (a) {
+                        removeRoute(a)
+                    }
+                }
+            }
+        },
+        addViaPoi: function(f) {
+            var j = this;
+            j.ajax.duration = 1;
+            if (j.dragVia && j.dragPoints) {
+                if (j.dragPoints.length >= j.maxDragVia + 2) {
+                    return
+                }
+            }
+            j.ajax.onsuccess = null;
+            j.onRouteOut(f);
+            var d = this.dragIndex;
+            if (!j.queryObj || !j.queryObj.length) {
+                return
+            }
+            var h = j.queryObj[j.queryObj.length - 1];
+            var g = j.dragVia.point.lng + "," + j.dragVia.point.lat;
+            if (h.flag && h.flag == 1 && h.dragpt) {
+                var l = h.dragpt;
+                g = l.lng + "," + l.lat
+            }
+            if (j.dragpt) {
+                g = j.dragpt
+            }
+            j.dragPoints.splice(d + 1, 0, {
+                p: g,
+                n: j.dragVia.viaName
+            });
+            var a = addDestPoi(g, "", DEST_MIDDLE);
+            a.addEventListener("dragstart",
+            function(i) {
+                j.dragViaPoi(i)
+            });
+            a.addEventListener("dragging",
+            function(i) {
+                j.addViaRoute2(i)
+            });
+            a.index = d;
+            j.draging = false;
+            j.sended = 1;
+            j.sp = null;
+            j.ep = null;
+            var k = "",
+            b = "";
+            for (var c = 1; c < j.dragPoints.length - 1; c++) {
+                k += "1$$$$" + j.dragPoints[c].p + "$$$$+to:";
+                b += "0 +to:"
+            }
+            go("nav&c=" + j.currentCity + "&drag=1&sc=" + j.sCity.code + "&ec=" + b + j.eCity.code + "&sy=" + j.strategy + "&sn=1$$$$" + j.popPoints[1].p + "$$" + encodeURIComponent(j.start.wd) + "$$$$$$" + j.start.pt + "$$&en=" + k + "1$$$$" + j.popPoints[j.popPoints.length - 2].p + "$$" + encodeURIComponent(j.end.wd) + "$$$$$$" + j.end.pt + "$$", {
+                dom: "nav_container"
+            });
+            j.queryObj = []
+        },
+        dragRequest: function(query) {
+            var me = this;
+            var index = me.dragIndex;
+            me.draging = true;
+            this.sended = 0;
+            var factor = Math.pow(2, BMap.MapType[map.mapType].zoomLevelMax - map.zoomLevel - 7);
+            me.ajax.onsuccess = function(json) {
+                try {
+                    eval("me.data=" + json.responseText);
+                    if (!me.data || !me.data.result || me.data.result.error != 0 || !me.data.content) {
+                        me.dragVia.failure = 1;
+                        me.draging = false;
+                        query.flag = 0
+                    } else {
+                        var content = me.data.content;
+                        var g = parse2Geo(content.geo, factor);
+                        var ps = g.points;
+                        var viaName = content.name;
+                        if (typeof(viaName) == "undefined" || viaName == "") {
+                            viaName = me.noName
+                        }
+                        me.dragVia.viaName = viaName;
+                        me.dragVia.dis = content.dis;
+                        var dis = me.dragVia.dis || 0;
+                        for (var i = 0; i < me.routePoints.length; i++) {
+                            var seg = me.routePoints[i];
+                            if (i != index) {
+                                for (var j = 0; j < seg.length; j++) {
+                                    dis += seg[j].d
+                                }
+                            }
+                        }
+                        if (dis == 0) {
+                            dis = me.dis
+                        }
+                        var disName = dis < 1000 ? dis.toFixed(1) + "米": (dis / 1000).toFixed(1) + "公里";
+                        me.tipLabel.setContent(viaName + "(" + disName + ")");
+                        me.dragVia.setLabel(me.tipLabel);
+                        me.dragpt = parse2Geo(content.dragpt).points;
+                        if (me.popPois) {
+                            for (var i = 0; i < me.popPois.length; i++) {
+                                map.removeOverlay(me.popPois[i])
+                            }
+                            me.popPois = null
+                        }
+                        if (me.tempDrag && me.tempDrag.length > 0) {
+                            for (var i = 0; i < me.tempDrag.length; i++) {
+                                var l = me.tempDrag[i];
+                                if (l) {
+                                    removeRoute(l)
+                                }
+                            }
+                        }
+                        me.dragingSTime = new Date().getTime();
+                        me.tempDrag = [];
+                        for (var i = 0; i < ps.length; i++) {
+                            var l = addRoute(ps[i], ROUTE_TYPE_DRIVE);
+                            l.index = index + i;
+                            me.tempDrag.push(l);
+                            if (i == 0) {
+                                window.dropRoutes.splice(index, 1, l)
+                            } else {
+                                window.dropRoutes.splice(index + i, 0, l)
+                            }
+                        }
+                        me.draging = false;
+                        query.flag = 1;
+                        me.dragVia.failure = 0
+                    }
+                } catch(e) {
+                    me.dragVia.failure = 1;
+                    me.draging = false;
+                    query.flag = 0
+                }
+            };
+            var bound = map.getBounds();
+            this.dragSTime = new Date().getTime();
+            this.ajax.request(location.pathname + modelConfig.DATA_URL + query.url + "&ie=utf-8&l=" + map.zoomLevel + "&b=(" + bound.minX + "," + bound.minY + ";" + bound.maxX + "," + bound.maxY + ")&newmap=1&t=" + new Date().getTime())
+        },
+        addViaRoute: function(f) {
+            if (this.dragVia && this.dragPoints) {
+                if (this.dragPoints.length >= this.maxDragVia + 2) {
+                    return
+                }
+            }
+            this.dateEnd = new Date().getTime();
+            var h = this.dateEnd - this.dateStart;
+            var g = this.dragVia.point;
+            this.dragVia.failure = 0;
+            var c = this.dragIndex;
+            var b = this.dragVia.viaName;
+            if (typeof(b) == "undefined" || b == "") {
+                b = this.noName
+            }
+            this.sp = "";
+            this.ep = "";
+            if (!this.sp) {
+                this.sp = this.dragPoints[c].p
+            }
+            if (!this.ep) {
+                this.ep = this.dragPoints[c + 1].p
+            }
+            var a = "";
+            var k = et = 1;
+            a = "drag&sy=" + this.strategy + "&pt=" + g.lng + "," + g.lat + "&sn=" + this.sp + "&st=1&en=" + this.ep + "&et=1&r=5000";
+            var j = {
+                url: a,
+                flag: 0,
+                dragpt: g
+            };
+            this.ajax.duration = -1;
+            if (this.draging) {
+                if (h > 2000) {
+                    if (this.timeout) {
+                        clearTimeout(this.timeout)
+                    }
+                    this.dateStart = new Date().getTime();
+                    this.queryObj.push(j);
+                    this.dragRequest(j)
+                }
+            } else {
+                this.queryObj.push(j);
+                this.dragRequest(j)
+            }
+            var i = this;
+            this.timeout = setTimeout(function() {
+                if (!i.queryObj || !i.queryObj.length) {
+                    return
+                }
+                var d = i.queryObj[i.queryObj.length - 1];
+                if (d && d.flag == 0) {
+                    if (i.queryObj && !i.draging && i.dflag == 0) {
+                        i.dragRequest(d)
+                    }
+                }
+            },
+            3000)
+        },
+        addViaPoi2: function(h, q, b) {
+            var l = this;
+            if (l.dflag != 1) {
+                stopBubble(h);
+                l.ajax.duration = 1;
+                l.ajax.onsuccess = null;
+                l.draging = false;
+                l.sended = 1;
+                var p = h ? h.target: b;
+                p.dis = 0;
+                var g = p.index;
+                if (!l.queryObj || !l.queryObj.length) {
+                    return
+                }
+                var k = l.queryObj[l.queryObj.length - 1];
+                var j = p.point.lng + "," + p.point.lat;
+                var m = j;
+                if (l.mousept) {
+                    m = l.mousept
+                }
+                if (l.dragpt) {
+                    j = l.dragpt
+                }
+                var c = p.viaName;
+                c = c || l.noName;
+                var a = "";
+                var n = "",
+                d = "";
+                l.dragPoints.splice(g, 1, {
+                    p: j,
+                    n: p.viaName
+                });
+                for (var f = 1; f < l.dragPoints.length - 1; f++) {
+                    n += "1$$$$" + l.dragPoints[f].p + "$$$$$$$$+to:";
+                    d += "0 +to:"
+                }
+                switch (q) {
+                case 0:
+                    a = "nav&c=" + l.currentCity + "&drag=1&sc=" + l.sCity.code + "&ec=" + d + l.eCity.code + "&sy=" + l.strategy + "&sn=1$$$$" + l.popPoints[1].p + "$$" + encodeURIComponent(l.start.wd) + "$$$$$$" + l.start.pt + "$$$$&st=0&en=" + n + "1$$$$" + l.popPoints[l.popPoints.length - 2].p + "$$" + encodeURIComponent(l.end.wd) + "$$$$$$" + l.end.pt + "$$&et=0";
+                    break;
+                case 1:
+                    a = "nav&c=" + l.currentCity + "&drag=1&sc=" + l.sCity.code + "&ec=" + d + l.eCity.code + "&sy=" + l.strategy + "&sn=1$$$$" + j + "$$" + encodeURIComponent(c) + "$$$$$$" + m + "$$&st=1&en=" + n + "1$$$$" + l.end.pt + "$$" + encodeURIComponent(l.end.wd) + "$$$$$$&et=0&de=1";
+                    break;
+                case 2:
+                    a = "nav&c=" + l.currentCity + "&drag=1&sc=" + l.sCity.code + "&ec=" + d + l.eCity.code + "&sy=" + l.strategy + "&sn=1$$$$" + l.start.pt + "$$" + encodeURIComponent(l.start.wd) + "$$$$$$&st=0&en=" + n + "1$$$$" + j + "$$" + encodeURIComponent(c) + "$$$$$$" + m + "$$&et=1&de=1";
+                    break
+                }
+                go(a, {
+                    dom: "nav_container"
+                });
+                l.dflag = 1;
+                l.dragpt = "";
+                MapHunter.record("rt", 2, {
+                    pt: p.point,
+                    t: q
+                })
+            }
+            l.queryObj = []
+        },
+        addViaRoute2: function(c, k) {
+            this.dateEnd = new Date().getTime();
+            var g = this.dateEnd - this.dateStart;
+            var b = c.target.index;
+            var j = c.target;
+            j.failure = 0;
+            if (g > 10 && this.dragPois) {
+                this.dragPois[0].removeEventListener("click", window.openSWin);
+                this.dragPois[this.dragPois.length - 1].removeEventListener("click", window.openEWin)
+            }
+            var f = j.point;
+            var a = "";
+            var l = et = 1;
+            this.sp = "";
+            this.ep = "";
+            switch (k) {
+            case 0:
+                this.sp = this.dragPoints[b - 1].p;
+                this.ep = this.dragPoints[b + 1].p;
+                break;
+            case 1:
+                this.ep = this.dragPoints[b + 1].p;
+                break;
+            case 2:
+                this.sp = this.dragPoints[b - 1].p;
+                break
+            }
+            l = 1;
+            et = 1;
+            a = "drag&sy=" + this.strategy + "&pt=" + f.lng + "," + f.lat + "&sn=" + this.sp + "&st=" + l + "&en=" + this.ep + "&et=" + et + "&r=5000";
+            var i = {
+                url: a,
+                flag: 0,
+                dragpt: f
+            };
+            this.ajax.duration = -1;
+            if (this.draging) {
+                if (g > 2000) {
+                    if (this.timeout) {
+                        clearTimeout(this.timeout)
+                    }
+                    this.dateStart = new Date().getTime();
+                    this.dragRequest2(i, b, k, j);
+                    this.queryObj.push(i)
+                }
+                var h = this;
+                this.timeout = setTimeout(function() {
+                    if (!h.queryObj || !h.queryObj.length) {
+                        return
+                    }
+                    var d = h.queryObj[h.queryObj.length - 1];
+                    if (d && d.flag == 0) {
+                        if (h.queryObj && !h.draging && h.dflag == 0) {
+                            h.dragRequest2(d, b, k, j)
+                        }
+                    }
+                },
+                3000)
+            } else {
+                this.dragRequest2(i, b, k, j);
+                this.queryObj.push(i)
+            }
+        },
+        dragRequest2: function(query, index, type, dragObj) {
+            var me = this;
+            me.draging = true;
+            this.sended = 0;
+            var factor = Math.pow(2, BMap.MapType[map.mapType].zoomLevelMax - map.zoomLevel - 7);
+            this.ajax.onsuccess = function(json) {
+                try {
+                    eval("me.data=" + json.responseText);
+                    if (!me.data || !me.data.result || me.data.result.error != 0 || !me.data.content) {
+                        dragObj.failure = 1;
+                        dragObj.draging = false;
+                        query.flag = 0
+                    } else {
+                        var result = me.data.result;
+                        var content = me.data.content;
+                        var g = parse2Geo(content.geo, factor);
+                        var ps = g.points;
+                        var viaName = content.name;
+                        if (typeof(viaName) == "undefined" || viaName == "") {
+                            viaName = me.noName
+                        }
+                        dragObj.viaName = viaName;
+                        dragObj.dis = content.dis;
+                        dragObj.failure = 0;
+                        var dis = dragObj.dis || 0;
+                        var rlen = me.routePoints.length;
+                        if (rlen > 1) {
+                            for (var i = 0; i < rlen; i++) {
+                                var seg = me.routePoints[i];
+                                if ((i > index || i < index - 1) || (i > index && index == 1) || (i < index - 1 && index == rlen - 1)) {
+                                    for (var j = 0; j < seg.length; j++) {
+                                        dis += parseFloat(seg[j].d)
+                                    }
+                                }
+                            }
+                        }
+                        var disName = me.roundDis(dis);
+                        me.tipLabel.setContent(viaName + "(" + disName + ")");
+                        dragObj.setLabel(me.tipLabel);
+                        me.dragpt = parse2Geo(content.dragpt).points;
+                        me.mousept = result.pt;
+                        if (me.popPois) {
+                            for (var i = 0; i < me.popPois.length; i++) {
+                                map.removeOverlay(me.popPois[i])
+                            }
+                            me.popPois = null
+                        }
+                        if (me.tempDrag && me.tempDrag.length > 0) {
+                            for (var i = 0; i < me.tempDrag.length; i++) {
+                                var l = me.tempDrag[i];
+                                if (l) {
+                                    removeRoute(l)
+                                }
+                            }
+                        }
+                        me.tempDrag = [];
+                        if (type == 1 || type == 2) {
+                            var l = addRoute(ps, ROUTE_TYPE_DRIVE);
+                            me.tempDrag.push(l);
+                            if (type == 1) {
+                                l.index = index;
+                                window.dropRoutes.splice(index, 1, l)
+                            } else {
+                                l.index = index - 1;
+                                window.dropRoutes.splice(index - 1, 1, l)
+                            }
+                        } else {
+                            for (var i = 0; i < ps.length; i++) {
+                                var l = addRoute(ps[i], ROUTE_TYPE_DRIVE);
+                                l.index = index - 1 + i;
+                                me.tempDrag.push(l);
+                                if (i == 0) {
+                                    window.dropRoutes.splice(index - 1, 1, l)
+                                } else {
+                                    window.dropRoutes.splice(index - 1 + i, 0, l)
+                                }
+                            }
+                        }
+                        me.draging = false;
+                        me.dflag = 0;
+                        query.flag = 1
+                    }
+                } catch(e) {
+                    dragObj.failure = 1;
+                    dragObj.draging = false;
+                    query.flag = 0
+                }
+            };
+            var bound = map.getBounds();
+            this.ajax.request(location.pathname + modelConfig.DATA_URL + query.url + "&ie=utf-8&l=" + map.zoomLevel + "&b=(" + bound.minX + "," + bound.minY + ";" + bound.maxX + "," + bound.maxY + ")&newmap=1&t=" + new Date().getTime())
+        },
+        onRouteOut: function(b) {
+            var a = this;
+            if (a.dragVia) {
+                a.distime = setTimeout(function() {
+                    a.removeDrag()
+                },
+                250)
+            }
+        },
+        removeDrag: function() {
+            var a = this;
+            if (a.dragVia) {
+                a.dragVia.hide()
+            }
+        },
+        delVia: function(c) {
+            this.dragPoints.splice(c, 1);
+            var e = "",
+            a = "";
+            for (var d = 1; d < this.dragPoints.length - 1; d++) {
+                e += "1$$$$" + this.dragPoints[d].p + "$$$$+to:";
+                a += "0 +to:"
+            }
+            var b = "nav&navtp=2&c=" + this.currentCity + "&drag=1&sc=" + this.sCity.code + "&ec=" + a + this.eCity.code + "&sy=" + this.strategy + "&sn=1$$$$" + this.popPoints[1].p + "$$" + encodeURIComponent(this.start.wd) + "$$$$$$" + this.start.pt + "$$&en=" + e + "1$$$$" + this.popPoints[this.popPoints.length - 2].p + "$$" + encodeURIComponent(this.end.wd) + "$$$$$$" + this.end.pt + "$$";
+            go(b, {
+                dom: "nav_container"
+            })
+        },
+        highRoute: function(c, a, h, f) {
+            var g = window.event || f;
+            if (g) {
+                stopBubble(g)
+            }
+            map.closeInfoWindow();
+            this.mapZoomLevel = map.zoomLevel;
+            if (a != null) {
+                if (this.groupBounds[a]) {
+                    var b = this.groupBounds[a];
+                    var d = getBPoints(b);
+                    setViewport(d, 60)
+                }
+            } else {
+                if (c != null) {
+                    if (this.driveBounds[c]) {
+                        var b = [(this.driveBounds[c])];
+                        var d = getBPoints(b);
+                        setViewport(d, 60)
+                    }
+                }
+            }
+            if (a != null) {
+                addStat(STAT_NAV_MAIN_SHOW_INFO)
+            } else {
+                addStat(STAT_NAV_LIST_CLICK)
+            }
+            addDrRoute(true, this);
+            this.addPopPoi(c, a);
+            this.addTips(c, a, h, f);
+            Share.listIndex = c + "-" + this.getShareGindex();
+            addStat(STAT_DRV_SEL, {
+                n: c
+            })
+        },
+        addTips: function(c, v, g, o, k) {
+            var w = this,
+            k = k || {};
+            if (w._tempLinkOver == 1) {
+                return
+            }
+            try {
+                var m = Math.pow(2, BMap.MapType[map.mapType].zoomLevelMax - map.zoomLevel - 7);
+                if (w.draging) {
+                    return
+                }
+                w.lastOver = g;
+                var n = [],
+                u = c > 0 ? c: 1;
+                if (k.from == "mk") {
+                    for (var q = 0; q < w.mainRoud[k.i].points.length; q++) {
+                        var p = cutPoints(w.mainRoud[k.i].points[q], m);
+                        n.push(p)
+                    }
+                } else {
+                    if (v != null && !isNaN(v)) {
+                        var l = w.mainRoudLine.length;
+                        var d = w.drivePoints.length;
+                        var r = (v + 1) >= l ? d: w.mainRoudLine[v + 1];
+                        n.push(w.popPoints[c + 1].p);
+                        if (v != 0 && v != (w.mainRoudLine.length - 1)) {
+                            for (var q = 0; q < w.mainDrivePoints[v].length; q++) {
+                                var p = cutPoints(w.mainDrivePoints[v][q], m);
+                                n.push(p)
+                            }
+                        } else {
+                            for (var q = w.mainRoudLine[v]; q < r; q++) {
+                                var p = cutPoints(w.drivePoints[q], m);
+                                n.push(p)
+                            }
+                        }
+                    } else {
+                        var p = cutPoints(w.drivePoints[c], m);
+                        n.push(w.popPoints[c + 1].p);
+                        n.push(p)
+                    }
+                }
+                if (w.tempRoute) {
+                    unSelectRoute(w.tempRoute);
+                    removeRoute(w.tempRoute);
+                    w.tempRoute = null
+                }
+                w.tempRoute = addRoute(n.join(";"), ROUTE_TYPE_DRIVE);
+                selectRoute(w.tempRoute);
+                var b = T.g("table_info").getElementsByTagName("li");
+                if (v == null) {
+                    for (var q = 0; q < b.length; q++) {
+                        var j = b[q];
+                        if (j.id == "route_" + c || j.id == "group_" + v) {
+                            T.ac(j, "tr sel")
+                        } else {
+                            T.rc(j, "tr sel")
+                        }
+                    }
+                }
+                if (v == null) {
+                    var a = w.navSapa[c];
+                    var t = w.navCharge[c];
+                    if (a && a.length > 0 && t) {
+                        w.tempLink = baidu.G("tempLink_" + c);
+                        if (w.tempLink) {
+                            return
+                        } else {
+                            var h = "<font style='text-align:right;float:right;' onmouseover='Instance(\"" + w.guid + "\").serverOver()' onmouseout='Instance(\"" + w.guid + "\").serverOut()' id='tempLink_" + c + "'></font>";
+                            baidu.insertHTML(g, "beforeEnd", h)
+                        }
+                        w.tempLink = baidu.G("tempLink_" + c);
+                        var f = "<a style='padding-right:5px' id='sapa_" + c + "' href='javascript:void(0)' onclick='Instance(\"" + w.guid + '").showMarkerWithLabel(' + c + ',"sapa",true,event);stopBubble(event);return false;\'>查看服务区</a>';
+                        baidu.insertHTML(w.tempLink, "beforeEnd", f)
+                    }
+                }
+                this.showMarkerWithLabel(c, "poi", true, o)
+            } catch(s) {}
+        },
+        serverOver: function() {
+            var a = this;
+            a._tempLinkOver = 1
+        },
+        serverOut: function() {
+            var a = this;
+            if (!a._tempLinkOver) {
+                a._tempLinkOver = 1
+            } else {
+                a._tempLinkOver = -1
+            }
+        },
+        showMarkerWithLabel: function(g, f, i, b) {
+            $H = Helper;
+            if (driveCtrl && Helper && Helper.NaviTrans) {
+                var h = window.event || b;
+                var a = h.srcElement || h.target;
+                var j = driveCtrl.isChecked(f),
+                c = driveCtrl.isPushed();
+                var d = null;
+                if (f === "poi") {
+                    var k = a.innerHTML.match(/<span class="?b"?>(.*?)<\/span>/i);
+                    if (!k) {
+                        return
+                    }
+                    k = k[1];
+                    d = $H.NaviTrans.getMarkersByLabelText(this.alongWayMarkers[f], k)
+                } else {
+                    d = $H.NaviTrans.getMarkersByIndex(this.alongWayMarkers[f], g + 1)
+                }
+                $H.aeach(d,
+                function(e) {
+                    if (!e.__label) {
+                        return
+                    }
+                    var l = e.__label;
+                    if (l) {
+                        if (i) {
+                            map.addOverlay(e);
+                            map.addOverlay(l);
+                            e.show();
+                            l.show()
+                        } else {
+                            if (!j || !c) {
+                                map.removeOverlay(e);
+                                map.removeOverlay(l);
+                                e.hide()
+                            }
+                            l.hide()
+                        }
+                    }
+                })
+            }
+        },
+        removeTips: function(f) {
+            var c = this;
+            try {
+                if (c._tempLinkOver == -1) {
+                    c._tempLinkOver = 0;
+                    return
+                }
+                if (c.tempRoute) {
+                    unSelectRoute(c.tempRoute);
+                    removeRoute(c.tempRoute);
+                    c.tempRoute = null
+                }
+                this.lastOver = f;
+                if (c.tempLink) {
+                    baidu.dom.remove(c.tempLink);
+                    c.tempLink = null
+                }
+                var i = this.alongWayMarkers.poi || [];
+                var h = this.alongWayMarkers.sapa || [];
+                var b = driveCtrl.isChecked("poi"),
+                a = driveCtrl.isChecked("sapa"),
+                g = driveCtrl.isPushed();
+                Helper.aeach(i,
+                function(e) {
+                    var j = e.__label;
+                    if (!b || !g) {
+                        map.removeOverlay(e)
+                    }
+                    if (!j) {
+                        return
+                    }
+                    j.hide()
+                });
+                Helper.aeach(h,
+                function(e) {
+                    var j = e.__label;
+                    if (!a || !g) {
+                        map.removeOverlay(e)
+                    }
+                    if (!j) {
+                        return
+                    }
+                    j.hide()
+                })
+            } catch(d) {}
+        },
+        returnDr: function() {
+            addStat(STAT_DRIVE_RETURN);
+            var a = this;
+            if (a.cinfo && a.cinfo.isSingle == true) {
+                if (a.cinfo.t == 0) {
+                    a.cinfo.t = 1
+                } else {
+                    a.cinfo.t = 0
+                }
+            }
+            go("nav&navtp=1&c=" + a.currentCity + "&drag=0&sc=" + a.eCity.code + "&ec=" + a.sCity.code + "&sy=" + a.strategy + "&en=1$$$$" + a.start.pt + "$$" + encodeURIComponent(a.start.wd) + "$$$$$$&sn=1$$$$" + a.end.pt + "$$" + encodeURIComponent(a.end.wd) + "$$$$$$&sq=" + encodeURIComponent(a.e_query) + "&eq=" + encodeURIComponent(a.s_query), {
+                cinfo: a.cinfo
+            })
+        },
+        busChange: function() {
+            var a = this;
+            switchTab._ByClickTab = false;
+            if (a.cinfo && a.cinfo.isSingle == true) {
+                a.cinfo.q = a.cinfo.q.replace(/^nse&/, "bse&")
+            }
+            a.cinfo._maplevel = map.getZoom();
+            a.cinfo._centerPoint = map.getCenter();
+            go(a.busQueryString, {
+                cinfo: a.cinfo
+            })
+        },
+        resetDrv: function() {
+            if (window.dropRoutes) {
+                for (var b = 0; b < window.dropRoutes.length; b++) {
+                    var a = window.dropRoutes[b];
+                    if (a) {
+                        removeRoute(a)
+                    }
+                }
+                window.dropRoutes = []
+            }
+            if (this.popPois) {
+                for (var b = 0; b < this.popPois.length; b++) {
+                    map.removeOverlay(this.popPois[b])
+                }
+                this.popPois = []
+            }
+            addDrRoute(false, this)
+        },
+        nextTransCbk: function(d, g) {
+            var b = g.popPoints[d].p;
+            var j = g.popPoints[d].a;
+            var f = g.popWins[d];
+            for (var h = 0; h < g.popPois.length; h++) {
+                map.removeOverlay(g.popPois[h]);
+                g.popPois[h] = null
+            }
+            var e = T.g("table_info").getElementsByTagName("li");
+            for (var h = 0; h < e.length; h++) {
+                var k = e[h];
+                if (k.id == "route_" + (d - 1)) {
+                    T.ac(k, "tr sel")
+                } else {
+                    T.rc(k, "tr sel")
+                }
+            }
+            if (d > 0 && d < g.popPoints.length - 1) {
+                if (d == g.popPoints.length - 2) {
+                    j = 12
+                }
+                var c = addDrvDirIcon(b, j);
+                c.addEventListener("click", g.getClickMarker(f, c, d));
+                g.popPois.push(c);
+                c.openInfoWindow(f)
+            }
+            if (d == 0 && window.startPoi) {
+                transInfoWindow(window.startPoi, f, {
+                    showLine: false
+                });
+                Share.popIndex = 0
+            } else {
+                if (d == g.popPoints.length - 1 && window.endPoi) {
+                    transInfoWindow(window.endPoi, f, {
+                        showLine: false
+                    });
+                    Share.popIndex = g.popPoints.length - 1
+                }
+            }
+            addStat(STAT_POP_DIR)
+        },
+        zoomTransCbk: function(c, b) {
+            var a = BMap.MapType[map.mapType].zoomLevelMax;
+            if (c == 0) {
+                map.zoomTo(a)
+            } else {
+                if (b.mapZoomLevel != map.zoomLevel) {
+                    map.zoomTo(b.mapZoomLevel)
+                } else {
+                    map.zoomTo(a - 3)
+                }
+            }
+        },
+        clickStop: function(c, b) {
+            if (b == 0) {
+                var a = this.popWins[0];
+                transInfoWindow(window.startPoi, a, {
+                    showLine: false
+                });
+                Share.popIndex = 0
+            } else {
+                var a = this.popWins[this.popPoints.length - 1];
+                transInfoWindow(window.endPoi, a, {
+                    showLine: false
+                });
+                Share.popIndex = this.popPoints.length - 1
+            }
+        },
+        getClickMarker: function(a, b, c) {
+            return function() {
+                Share.popIndex = c;
+                transInfoWindow(b, a, {
+                    showLine: false
+                });
+                var f = T.g("table_info").getElementsByTagName("li");
+                for (var e = 0; e < f.length; e++) {
+                    var d = f[e];
+                    if (d.id == "route_" + (c - 1)) {
+                        T.ac(d, "tr sel")
+                    } else {
+                        T.rc(d, "tr sel")
+                    }
+                }
+            }
+        },
+        s2Bounds: function(c) {
+            var b = c.split(";");
+            var d = b[0].split(",");
+            var a = b[1].split(",");
+            return new BMap.Bounds(d[0], d[1], a[0], a[1])
+        },
+        backAddr: function() {
+            addStat(STAT_DRIVE_ANEW);
+            var a = this;
+            if (a.cinfo && a.cinfo.isSingle == true) {
+                go(a.cinfo.q + "&src=4", {
+                    cinfo: a.cinfo
+                })
+            } else {
+                go("nav&c=" + a.currentCity + "&drag=0&sc=" + a.sCity.code + "&ec=" + a.eCity.code + "&sy=" + a.strategy + "&sn=2$$$$" + a.start.pt + "$$" + encodeURIComponent(this.s_query) + "$$$$$$&en=2$$$$" + a.end.pt + "$$" + encodeURIComponent(this.e_query) + "$$$$$$&src=4")
+            }
+            addStat(STAT_DRV_RESEL_ADDR)
+        },
+        navWalk: function() {
+            var a = this;
+            if (a.cinfo && a.cinfo.isSingle == true) {
+                if (a.cinfo.t == 0) {
+                    a.cinfo.t = 1
+                } else {
+                    a.cinfo.t = 0
+                }
+            }
+            go("walk&version=2.0&walktp=1&c=" + a.currentCity + "&wdrag=0&sc=" + a.sCity.code + "&ec=" + a.eCity.code + "&sy=" + a.strategy + "&en=1$$$$" + a.end.pt + "$$" + encodeURIComponent(a.end.wd) + "$$$$$$&sn=1$$$$" + a.start.pt + "$$" + encodeURIComponent(a.start.wd) + "$$$$$$&sq=" + encodeURIComponent(a.s_query) + "&eq=" + encodeURIComponent(a.e_query), {
+                cinfo: a.cinfo
+            })
+        },
+        showNavPoi: function(m, g, a) {
+            var l = this;
+            var j = window.event || a;
+            if (j) {
+                stopBubble(j)
+            }
+            if (l.tempPoi && l.tempPoi.length > 0) {
+                for (var f = 0; f < l.tempPoi.length; f++) {
+                    map.removeOverlay(l.tempPoi[f])
+                }
+                l.tempPoi = []
+            }
+            switch (m) {
+            case 0:
+                var b = l.navPoi[g];
+                if (b) {
+                    var o = parse2Geo(b.pg).points;
+                    var c = b.pn;
+                    l.tempPoi.push(l.addNavPoi(o, c, 0))
+                }
+                break;
+            case 1:
+                var d = l.navSapa[g];
+                for (var f = 0; f < d.length; f++) {
+                    var n = d[f];
+                    var o = parse2Geo(n.g).points;
+                    var c = n.n;
+                    l.tempPoi.push(l.addNavPoi(o, c, 1))
+                }
+                break;
+            case 2:
+                var h = l.navGas[g];
+                for (var f = 0; f < h.length; f++) {
+                    var k = h[f];
+                    var o = parse2Geo(k.g).points;
+                    var c = k.n;
+                    l.tempPoi.push(l.addNavPoi(o, c, 2))
+                }
+                break
+            }
+        },
+        addNavPoi: function(a, g, d) {
+            var f = getPoiPoint(a);
+            if (!f) {
+                return
+            }
+            var e = new BMap.Icon(MapConfig.smFlwCon + "image/drv_pin_" + d + ".png", new BMap.Size(22, 22), {
+                offset: new BMap.Size(7, 21)
+            });
+            var c = new BMap.Marker(f, {
+                icon: e
+            });
+            map.addOverlay(c);
+            var b = new BMap.Label(g, {
+                offset: new BMap.Size(10, -21),
+                title: g
+            });
+            c.setLabel(b);
+            b.setStyle({
+                lineHeight: "15px",
+                padding: "1px 3px",
+                borderColor: "#a7a7a7",
+                color: "#666",
+                cursor: "pointer"
+            });
+            if (g) {
+                c.setTitle(g)
+            }
+            c.siblingElement.guid = c.guid;
+            return c
+        },
+        roundDis: function(a) {
+            var b = "";
+            if (a > 0 && a <= 10) {
+                b = 10 + "米"
+            } else {
+                if (a > 10) {
+                    b = a < 1000 ? (a / 10).toFixed(0) * 10 + "米": (a / 1000).toFixed(1) + "公里"
+                }
+            }
+            return b
+        },
+        getRetType: function(d, a, c) {
+            var b = "";
+            if (a == 0) {
+                b = "进入";
+                if (!c && (d == 9 || d == 12)) {
+                    b = "上"
+                } else {
+                    if (d == 0 || (!c && d != 1 && d != 16)) {
+                        b = ""
+                    }
+                }
+            } else {
+                if (a == 1) {
+                    b = "，进入";
+                    if (!c && (d == 9 || d == 12)) {
+                        b = "，上"
+                    } else {
+                        if (d == 0 || (!c && d != 1 && d != 16)) {
+                            b = ""
+                        }
+                    }
+                }
+            }
+            return b
+        },
+        getRoadAct: function(c, b) {
+            var a = "沿";
+            if (c == 0 || (!b && c != 1 && c != 16 && c != 9 && c != 12)) {
+                a = ""
+            }
+            return a
+        },
+        getRoadName: function(b, a) {
+            if (a == "" || !a) {
+                if (b == 9 || b == 12 || b == 1 || b == 16) {
+                    a = this.roadtype[b]
+                }
+            }
+            return a
+        },
+        getTaxi: function(b, a) {
+            addStat(STAT_DRIVE_TAXI);
+            openTaxi(b, {
+                data: this.taxi,
+                from: "nav"
+            })
+        },
+        isCrossCity: function() {
+            if (!this.sCity || !this.eCity) {
+                return false
+            }
+            return this.sCity.code != this.eCity.code
+        },
+        navTranFor3D: function() {
+            var a = this;
+            window.navTranFor3D = function(b) {
+                MapConfig.navTrans.enableDragging = b;
+                if (window.startPoi) {
+                    if (b) {
+                        window.startPoi.enableDragging()
+                    } else {
+                        window.startPoi.disableDragging()
+                    }
+                }
+                if (window.endPoi) {
+                    if (b) {
+                        window.endPoi.enableDragging()
+                    } else {
+                        window.endPoi.disableDragging()
+                    }
+                }
+                if (b) {
+                    if (a.tipLabel) {
+                        map.addOverlay(a.tipLabel)
+                    }
+                } else {
+                    if (a.tipLabel) {
+                        map.removeOverlay(a.tipLabel)
+                    }
+                }
+                for (var c = 0; c < a.dragPois.length; c++) {
+                    if (b) {
+                        a.dragPois[c].enableDragging()
+                    } else {
+                        a.dragPois[c].disableDragging()
+                    }
+                }
+            }
+        },
+        mainRoudeOn: function(c, a, b, g, f) {
+            var e = this,
+            d = b.getAttribute("isOpen"),
+            f = f || {};
+            if (d != 1) {
+                T.ac(b, "main-roude-title_focus")
+            }
+            e.addTips(c, a, b, g, f)
+        },
+        mainRoudeOut: function(c, a, b, g, f) {
+            var e = this,
+            d = b.getAttribute("isOpen"),
+            f = f || {};
+            if (d != 1) {
+                T.rc(b, "main-roude-title_focus")
+            }
+            e.removeTips(b)
+        },
+        mainRoudeClick: function(d, a, c, g) {
+            var f = this,
+            e = c.getAttribute("isOpen"),
+            b = T.g("main_roude_bt" + a);
+            if (e != 1) {
+                f.showMainRoudeDes(a);
+                f.highRoute(d, a, c, g)
+            } else {
+                f.hideMainRoudeDes(a)
+            }
+            if (f.scrollPanel) {
+                f.scrollPanel.update()
+            }
+        },
+        showMainRoudeDes: function(a) {
+            if (isPrint) {
+                return
+            }
+            var d = T.g("main_roude_tit" + a),
+            c = T.g("main_roude_con" + a),
+            b = T.g("main_roude_bt" + a);
+            d.setAttribute("isOpen", "1");
+            if (d.className.indexOf("main-roude-title_focus") < 0) {
+                T.ac(d, "main-roude-title_focus")
+            }
+            if (c) {
+                c.style.display = ""
+            }
+            b.innerHTML = "收起"
+        },
+        hideMainRoudeDes: function(a) {
+            var d = T.g("main_roude_tit" + a),
+            c = T.g("main_roude_con" + a),
+            b = T.g("main_roude_bt" + a);
+            d.setAttribute("isOpen", "0");
+            T.rc(d, "main-roude-title_focus");
+            if (c) {
+                c.style.display = "none"
+            }
+            b.innerHTML = "展开";
+            Share.listIndex = a + "-" + this.getShareGindex()
+        },
+        showAllDes: function(b, h) {
+            var f = this,
+            a = T.g("table_info").getElementsByTagName("h4"),
+            h = window.event || h,
+            g = b ? 1 : 0,
+            b = b || T.g("showAllDesBtn");
+            if (h) {
+                stopBubble(h)
+            }
+            if (!f.isShowAllDes) {
+                f.showAllDes.showArr = {};
+                T.ac(b, "drv_show_all_foucs");
+                for (var d = 0; d < a.length; d++) {
+                    if (a[d].getAttribute("isOpen") == 1) {
+                        f.showAllDes.showArr[d] = 1
+                    }
+                    f.showMainRoudeDes(d)
+                }
+                f.isShowAllDes = true;
+                if (Share.listIndex != null) {
+                    Share.listIndex += "-showAll"
+                } else {
+                    Share.listIndex = "0-showAll"
+                }
+                if (g) {
+                    addStat(STAT_NAV_SHOW_ALL)
+                }
+            } else {
+                T.rc(b, "drv_show_all_foucs");
+                for (var c = 0; c < a.length; c++) {
+                    if (!f.showAllDes.showArr[c]) {
+                        f.hideMainRoudeDes(c)
+                    }
+                }
+                f.showAllDes.showArr = {};
+                f.isShowAllDes = false;
+                Share.listIndex = 0 + "-" + f.getShareGindex();
+                if (g) {
+                    addStat(STAT_NAV_CANCEL_SHOW_ALL)
+                }
+            }
+            if (f.scrollPanel) {
+                f.scrollPanel.update()
+            }
+            MapHunter.record("oa", 3)
+        },
+        getShareGindex: function() {
+            var a = T.g("table_info").getElementsByTagName("h4"),
+            c = "";
+            for (var b = 0; b < a.length; b++) {
+                if (a[b].getAttribute("isOpen") == 1) {
+                    c += b + ","
+                }
+            }
+            c = c.replace(/,$/, "");
+            return c
+        },
+        addToFav: function(b, a) {
+            var c = this;
+            stopBubble(window.event || a);
+            SyncMgr.checkFav(function() {
+                SchemeFaver.toClound.call(c, {
+                    pathtype: 0,
+                    dom: b
+                })
+            },
+            this)
+        }
+    });
+</script>
+

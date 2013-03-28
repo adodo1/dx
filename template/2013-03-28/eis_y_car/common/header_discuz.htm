@@ -1,0 +1,526 @@
+<!--{subtemplate common/header_common}-->
+    <meta name="application-name" content="$_G['setting']['bbname']" />
+    <meta name="msapplication-tooltip" content="$_G['setting']['bbname']" />
+    <!--{if $_G['setting']['portalstatus']}--><meta name="msapplication-task" content="name=$_G['setting']['navs'][1]['navname'];action-uri={echo !empty($_G['setting']['domain']['app']['portal']) ? 'http://'.$_G['setting']['domain']['app']['portal'] : $_G[siteurl].'portal.php'};icon-uri={$_G[siteurl]}{IMGDIR}/portal.ico" /><!--{/if}-->
+    <meta name="msapplication-task" content="name=$_G['setting']['navs'][2]['navname'];action-uri={echo !empty($_G['setting']['domain']['app']['forum']) ? 'http://'.$_G['setting']['domain']['app']['forum'] : $_G[siteurl].'forum.php'};icon-uri={$_G[siteurl]}{IMGDIR}/bbs.ico" />
+    <!--{if $_G['setting']['groupstatus']}--><meta name="msapplication-task" content="name=$_G['setting']['navs'][3]['navname'];action-uri={echo !empty($_G['setting']['domain']['app']['group']) ? 'http://'.$_G['setting']['domain']['app']['group'] : $_G[siteurl].'group.php'};icon-uri={$_G[siteurl]}{IMGDIR}/group.ico" /><!--{/if}-->
+    <!--{if helper_access::check_module('feed')}--><meta name="msapplication-task" content="name=$_G['setting']['navs'][4]['navname'];action-uri={echo !empty($_G['setting']['domain']['app']['home']) ? 'http://'.$_G['setting']['domain']['app']['home'] : $_G[siteurl].'home.php'};icon-uri={$_G[siteurl]}{IMGDIR}/home.ico" /><!--{/if}-->
+    <!--{if $_G['basescript'] == 'forum' && $_G['setting']['archiver']}-->
+        <link rel="archives" title="$_G['setting']['bbname']" href="{$_G[siteurl]}archiver/" />
+    <!--{/if}-->
+    <!--{if !empty($rsshead)}-->$rsshead<!--{/if}-->
+    <!--{if widthauto()}-->
+        <link rel="stylesheet" id="css_widthauto" type="text/css" href="data/cache/style_{STYLEID}_widthauto.css?{VERHASH}" />
+        <script type="text/javascript">HTMLNODE.className += ' widthauto'</script>
+    <!--{/if}-->
+    <!--{if $_G['basescript'] == 'forum' || $_G['basescript'] == 'group'}-->
+        <script type="text/javascript" src="{$_G[setting][jspath]}forum.js?{VERHASH}"></script>
+    <!--{elseif $_G['basescript'] == 'home' || $_G['basescript'] == 'userapp'}-->
+        <script type="text/javascript" src="{$_G[setting][jspath]}home.js?{VERHASH}"></script>
+    <!--{elseif $_G['basescript'] == 'portal'}-->
+        <script type="text/javascript" src="{$_G[setting][jspath]}portal.js?{VERHASH}"></script>
+    <!--{/if}-->
+    <!--{if $_G['basescript'] != 'portal' && $_GET['diy'] == 'yes' && check_diy_perm($topic)}-->
+        <script type="text/javascript" src="{$_G[setting][jspath]}portal.js?{VERHASH}"></script>
+    <!--{/if}-->
+    <!--{if $_GET['diy'] == 'yes' && check_diy_perm($topic)}-->
+    <link rel="stylesheet" type="text/css" id="diy_common" href="data/cache/style_{STYLEID}_css_diy.css?{VERHASH}" />
+    <!--{/if}-->
+    <!--[if IE 6]>
+    <script type="text/javascript" src="{IMGDIR}/png.js"></script>
+         <script type="text/javascript">
+         DD_belatedPNG.fix('.eis_zone a, .eis_board1 .eis_titles,.carflashImage span');
+         </script>
+    <![endif]-->
+    <style type="text/css">
+        a{ font-family:Arial,Helvetica,sans-serif}
+        .eis_body{/* width:1213px; margin:0 auto; position:relative; background:url({IMGDIR}/bg.gif) no-repeat */}
+        body {  background:url({IMGDIR}/bg1.png) no-repeat 50% 0;background-position:top left;}
+        #toptb,#hd{ width:1000px; margin:auto}
+        #toptb{/* margin-left:190px; _margin-left:180px;*/}
+        #hd{/* margin:46px 0 0 208px; */ margin-top:46px}
+        .wp_1000{ width:1000px; /*margin:0 0 0 188px*/ margin:auto}
+        
+        .eis_hd_left{ width:780px; height:255px;}
+            /*logo & search*/
+        .fastlg a{ font-size:14px}
+        #um{ overflow:hidden; padding:0}
+        #um, #um a{ font-size:14px}
+        #um .avt{ margin-right:10px; margin-top:5px;}
+        .avt img{ padding:0px; border:none; width:18px; height:18px; border-radius:2px}
+        #eis_us{ padding-right:16px; background:url({IMGDIR}/arrwd.gif) no-repeat 100% 50%}
+        #eis_us.a{ background:url({IMGDIR}/arrow_top.gif) no-repeat 100% 50%}
+        .eis_sch_user{ width:445px;}
+        #scbar{ border:none; background:none; height:70px; margin-top:8px;}
+        #scbar_txt{ width:368px; padding-left:5px; height:36px; line-height:36px; border:1px solid #999; border-right:0px; float:left;}
+        #scbar_type{ display:none}
+        #scbar_btn{ width:70px; height:39px; text-indent:-999em; background:url({IMGDIR}/pic02.gif); border:none; cursor:pointer; float:right;}
+        #scbar_hot{ height:20px; line-height:20px; margin-top:5px}
+        #scbar_hot a{ color:#333; margin-right:10px;}
+        #eis_us_menu #myprompt.new{ background-repeat:no-repeat; padding-left:15px;}
+        .fastlg_fm{ border:none !important}
+        .fastlg_fm .hm{ display:none !important}
+        
+            /*notice & navigate*/
+        .dottom{ width:764px; height:120px;	float:left;	margin-top:28px;}
+        .dottom .gonggao{ width:470px; /*border:1px #000 solid; */height:116px; float:left; margin-left:20px; }
+        .dottom .gonggao1{ width:270px; /*border:1px #000 solid; */height:116px; float:left; margin-left:20px; }
+        
+        .dottom .gonggao1{ margin-left:0}
+        .dottom .gonggao img,.dottom .gonggao1 img{ float:left; margin:9px 0px 0px 7px;}
+        .content01{	width:260px; background-color:#7ecafa; height:116px; float:left;}
+        .content02{	width:460px; background-color:#7ecafa; height:116px; float:left; }
+        
+        .title_g{ width:230px;	margin: auto;	height:40px;	line-height:40px;	font-size:14px;	color:#FFF;	border-bottom:1px #FFF solid;	font-family:"微软雅黑";}	
+        .title_k{ width:430px;	margin: auto;	height:40px;	line-height:40px;	font-size:14px;	color:#FFF;	border-bottom:1px #FFF solid;	font-family:"微软雅黑";}	
+        .ggdiv{	width:230px; margin:10px auto 0; overflow:hidden;}
+        .gg_nr li{ width:230px;  line-height:25px;	height:25px;}
+        .gg_nr li a{ text-decoration:none; font-size:12px; color:#FFF;	}	
+        .gg_nr li a:hover{  font-size:12px;color:#F9D89D;	}
+        
+        .daohang_table{	margin:auto; line-height:20px; margin-top:10px; color:#FFF; font-size:13px; _font-size:12px; width:480px;}
+        .daohang_table input{ width:100px;}
+        .daohang_btn{ width:45px; height:36px; border:none; background: url({IMGDIR}/pic08.gif) no-repeat scroll center top transparent; cursor:pointer;}
+        
+            /*weather*/
+        .eis_hd_right{ width:180px; height:255px; overflow:hidden; }
+        
+        .wtname{ display:none !important; margin-left:-50px;}
+        #kuangb #img1,#kuangb #img2,#kuangb #img3{ width:40px !important; height:40px !important}
+        
+        .eis_dz1{ width:995px;}
+        .eis_zone{ position:relative; border:1px solid #999999; width:179px; height:167px; float:left; margin-right:15px; margin-top:20px; background:url({IMGDIR}/pic09.jpg) no-repeat 50% 50%}
+        .eis_zone a,.eis_board1 .eis_titles{ position:absolute; background:url({IMGDIR}/t_bg.png) repeat; left:2px; bottom:2px; font-size:14px;	color:#FFF;	text-decoration:none;	font-family:"微软雅黑"; height:30px; line-height:30px; width:165px; padding-left:10px;}
+        .eis_zone a:hover{ text-decoration:none}
+        .eis_board{}
+        .eis_board1{ position:relative; width:175px; height:163px; border:1px solid #999999; padding:2px; background-color:#fff; float:left; margin-right:15px; margin-top:20px;}
+        
+        
+        
+        .eis_tables{height:163px;;overflow:hidden;position: relative; }
+        .boxcaption{ 
+                float: left; 
+                position: absolute; 
+                background: #000;
+                color:#FFF;
+                height: 100px; 
+                width: 100%; 
+                opacity: .8; 
+                /* For IE 5-7 */
+                filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=80);
+                /* For IE 8 */
+                -MS-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=80)";
+                top: 163;
+                left: 0;
+            }
+            
+        .eis_board1 img{ width:175px; height:163px;}
+        
+        .eis_board2 ul{width:960px; padding-left:30px;}
+        .eis_board2 ul li{width:180px; height:220px;float:left; }
+        
+        .eis_board2 ul li img{ width:150px; height:143px;display:inline-block;margin:0px 15px 5px 15px;text-align:center;white-space:normal; }
+        
+        #pt{ margin:20px 0 0}
+        
+            /*footer*/
+        #ft{ border:none; margin-top:10px;}
+        #footer{ overflow:hidden; width:1000px; margin-bottom:20px;}
+
+        .foot_content{ color:#666; width:700px; margin-left:100px; line-height:30px; text-align:center; float:left; display:inline; }
+        
+        .foot_content .link{color:#666;	text-decoration:none;font-size:12px;}
+        
+        .foot_text{	color:#666;	font-family:Arial, Helvetica, sans-serif; display:block}
+        
+        .foot_pliceman{	width:180px;height:200px;	float:left;	display:inline;	margin:20px 0px 0px 20px;}
+        
+        .foot_pliceman img{	float:left;	margin-right:10px;	}
+        
+        .foot_pliceman a{	color:#000;	text-decoration:none;line-height:15px;	}
+        
+        /*forumdisplay*/
+        .eis_f10{ margin:0 !important; _margin-bottom:10px; border:none !important}
+        .eis_b10{ overflow:hidden; margin:0 0 10px !important}
+        
+        #carflash_div {	margin-top:10px;	overflow:hidden;	width:960px; 	float:left;	display:inline;	}
+        
+        /*****/
+        #carflash {	 WIDTH:960px; POSITION: relative; HEIGHT:270px;}
+        #carflash img { width:960px; HEIGHT:270px;}
+        #carflashContent {	MARGIN-LEFT: 0px; WIDTH:958px; POSITION: absolute; TOP: 0px;}
+        .carflashImage { DISPLAY: none; FLOAT: left; POSITION: relative;}
+        .carflashImage span { DISPLAY: none;  WIDTH:789px; COLOR: #fff; padding:25px 14px 20px; POSITION: absolute; background:url({IMGDIR}/t_bg.png) repeat}
+        .carflashImage span a{ color:#FFF;	text-decoration:none;}
+        .clear {CLEAR:both; }
+        .carflashImage span strong {FONT-SIZE:16px;	font-family:"微软雅黑";	}
+        .left {	LEFT:0px; WIDTH:162px! important; TOP:0px; HEIGHT:225px;}
+        .right { RIGHT:0px; top:0; WIDTH:162px! important;  HEIGHT:225px;}
+        .eis_fgx{ display:block; overflow:hidden; white-space:nowrap}
+        
+        /*search1*/
+        .eis_scbar{	width:211px !important; width:212px\9 !important; height:30px !important; margin-top:2px !important; float:right;overflow:hidden;text-align:left;}
+        .eis_scbar #scbar_txt{ width:155px !important; font-size:12px; height:24px !important; line-height:24px !important; border:2px solid #005eac; border-right:0px; float:left;}
+        .eis_scbar #scbar_btn{ width:49px !important; height:30px !important; background:url({IMGDIR}/search.jpg); cursor:pointer; float:right;}
+        
+        /*pg*/
+        .pg strong{ background-color:#76C3FB !important; color:#fff !important}
+        .pg a, .pg strong, .pgb a, .pg label{ border-color:#8DC1D7 !importan; margin-right:4px; margin-left:0 !important}
+        .pg a:hover,.pgb a:hover{ border-color:#76C3FB !important}
+        .pg{ float:left}
+        
+        /*主题*/
+        .eis_taba{ margin-bottom:-2px}
+        .eis_taba ul{ margin-left:20px;}
+        .eis_taba ul li{ float:left; width:52px; margin-right:2px;}
+        .eis_taba ul li a{ height:28px; line-height:28px; display:block; text-align:center; background:url({IMGDIR}/tab_btn02.jpg) no-repeat 50% 0; }
+        .eis_taba ul li.a{ float:left; width:72px; margin-right:2px;}
+        .eis_taba ul li.a a{ color:#fff; line-height:29px;background:url({IMGDIR}/tab_btn01.jpg) no-repeat 50% 0; }
+        .eis_taba ul li a:hover{ text-decoration:none}
+        .eis_ttp{ border-top:1px solid #9DB3C5 !important; height:30px; line-height:30px; padding-top:5px !important; margin-bottom:0 !important; background:url({IMGDIR}/tabbg.jpg) repeat-x 0 1px}
+        .ttp a, .ttp strong{ padding:0 0 0 12px !important; background:none !important; border:none !important; color:#fff !important}
+        .ttp .a a{ border:none !important; background:none !important; color:#fff !important}
+        .ttp a:hover{ text-decoration:underline}
+        .eis_ttp li{ _padding-bottom:0}
+        .eis_ttp .pipe{ _margin-top:-3px;}
+        .tl .tf{}
+        .tl .th td, .tl .th th{ padding:8px 0 !important; padding:8px 0 5px\9!important;}
+        .tl tr:hover th, .tl tr:hover td{ background:none !important}
+        .tl .th, .tl .th tr:hover th, .tl .th tr:hover td{ background-color:#648fc7 !important;}
+        .tl .num {line-height: 14px;width: 80px;}
+        .pnc, a.pnc{ background-color:#E9F3FD; border-color:#E9F3FD; }
+        #fastpostsubmit strong{ font-weight:normal !important}
+        .pnpost #fastpostsubmit{ width:102px; height:24px; line-height:22px; box-shadow:none !important; text-indent:-999em; background:url({IMGDIR}/send.jpg) no-repeat}
+        #f_pst{ padding-bottom:30px !important; border:1px solid #9DB3C5 !important; border-width:1px 0 !important}
+        #f_pst .bm_h{ background:none !important;}
+        #f_pst .bm_h h2{ font-family:"宋体"}
+        #f_pst .bm_c{ border-bottom:1px solid #9DB3C5 !important; }
+        
+        /*列表页*/
+        .eis_tl{ border:none !important}
+        .eis_tl .bm_c{ padding:0;}
+        .eis_pgs{ border-top:1px solid #9DB3C5 !important; border:none\9 !important; margin-top:-10px; padding-top:10px;}
+        #xd_pop{width:50px;height:15px;position:absolute;right:500px;top:6px;background:#cb090e;}
+        .fwin{width:800px;height:400px;empty-cells: show;border-collapse: collapse;}
+        .xd_pop_content{width:700px;height:310px;margin: 0 auto;}
+        .fl_icn img{width:31px;height:29px;}
+        .xd_sx{width:976px;height:40px;margin:2px;background:#eee;}
+        .xd_sx ul li{float:left;font-size:14px;margin-right:10px;margin-left:10px;margin-top:10px;}
+        .xd_sx_q{width:976px;height:140px;margin:2px;background:#eee;}
+        .xd_sx_q ul li{float:left;font-size:14px;margin-right:10px;margin-left:10px;margin-top:10px;}
+        .common{font:14px "宋体",Arial,Helvetica,sans-serif;}
+    </style>
+    
+</head>
+
+<body id="nv_{$_G[basescript]}" class="pg_{CURMODULE}{if $_G['basescript'] === 'portal' && CURMODULE === 'list' && !empty($cat)} {$cat['bodycss']}{/if}" onkeydown="if(event.keyCode==27) return false;">
+<div class="eis_body">
+    <!---页面导航开始处--->
+    <div id="xd_pop">
+        <a href="./xd_pop.php" onclick="showWindow('xd_pop',this.href)">论坛导航</a>
+       </div>
+    <!--End-->
+    <div id="append_parent"></div><div id="ajaxwaitid"></div>
+    <!--{if $_GET['diy'] == 'yes' && check_diy_perm($topic)}-->
+        <!--{template common/header_diy}-->
+    <!--{/if}-->
+    <!--{if check_diy_perm($topic)}-->
+        <!--{block diynav}-->
+            <a id="diy-tg" href="javascript:openDiy();" title="{lang open_diy}" class="xi1 xw1" onMouseMove="showMenu(this.id)"><img src="{STATICURL}image/diy/panel-toggle.png" alt="DIY" /></a>
+            <div id="diy-tg_menu" style="display: none;">
+                <ul>
+                    <li><a href="javascript:saveUserdata('diy_advance_mode', '');openDiy();" class="xi2">{lang header_diy_mode_simple}</a></li>
+                    <li><a href="javascript:saveUserdata('diy_advance_mode', '1');openDiy();" class="xi2">{lang header_diy_mode_adv}</a></li>
+                </ul>
+            </div>
+        <!--{/block}-->
+    <!--{/if}-->
+    <!--{if CURMODULE == 'topic' && $topic && empty($topic['useheader']) && check_diy_perm($topic)}-->
+        $diynav
+    <!--{/if}-->
+    <!--{if empty($topic) || $topic['useheader']}-->
+        <!--{if $_G['setting']['mobile']['allowmobile'] && (!$_G['setting']['cacheindexlife'] && !$_G['setting']['cachethreadon'] || $_G['uid']) && ($_GET['diy'] != 'yes' || !$_GET['inajax']) && ($_G['mobile'] != '' && $_G['cookie']['mobile'] == '' && $_GET['mobile'] != 'no')}-->
+            <div class="xi1 bm bm_c">
+                {lang your_mobile_browser}<a href="{$_G['siteurl']}forum.php?mobile=yes">{lang go_to_mobile}</a> <span class="xg1">|</span> <a href="$_G['setting']['mobile']['nomobileurl']">{lang to_be_continue}</a>
+            </div>
+        <!--{/if}-->
+
+        <div id="toptb" class="cl">
+                    
+            <!--{hook/global_cpnav_top}-->
+            <div class="wp">
+                <div class="z" style="display:none">
+                    <!--{loop $_G['setting']['topnavs'][0] $nav}-->
+                        <!--{if $nav['available'] && (!$nav['level'] || ($nav['level'] == 1 && $_G['uid']) || ($nav['level'] == 2 && $_G['adminid'] > 0) || ($nav['level'] == 3 && $_G['adminid'] == 1))}-->$nav[code]<!--{/if}-->
+                    <!--{/loop}-->
+                    <!--{hook/global_cpnav_extra1}-->
+                </div>
+                <div class="y">
+                    <!--{hook/global_cpnav_extra2}-->
+                    <!--{loop $_G['setting']['topnavs'][1] $nav}-->
+                        <!--{if $nav['available'] && (!$nav['level'] || ($nav['level'] == 1 && $_G['uid']) || ($nav['level'] == 2 && $_G['adminid'] > 0) || ($nav['level'] == 3 && $_G['adminid'] == 1))}-->$nav[code]<!--{/if}-->
+                    <!--{/loop}-->
+                    <!--{if empty($_G['disabledwidthauto']) && $_G['setting']['switchwidthauto']}-->
+                        <a href="javascript:;" onClick="widthauto(this)" style="display:none"><!--{if widthauto()}-->{lang switch_narrow}<!--{else}-->{lang switch_wide}<!--{/if}--></a>
+                    <!--{/if}-->
+                    <!--{if $_G['uid'] && !empty($_G['style']['extstyle'])}--><a id="sslct" href="javascript:;" onMouseOver="delayShow(this, function() {showMenu({'ctrlid':'sslct','pos':'34!'})});">{lang changestyle}</a><!--{/if}-->
+                    <!--{if check_diy_perm($topic)}-->
+                        $diynav
+                    <!--{/if}-->
+                </div>
+            </div>
+        </div>
+
+        <!--{if !IS_ROBOT}-->
+            <!--{if $_G['uid'] && !empty($_G['style']['extstyle'])}-->
+                <div id="sslct_menu" class="cl p_pop" style="display: none;">
+                    <!--{if !$_G[style][defaultextstyle]}--><span class="sslct_btn" onClick="extstyle('')" title="{lang default}"><i></i></span><!--{/if}-->
+                    <!--{loop $_G['style']['extstyle'] $extstyle}-->
+                        <span class="sslct_btn" onClick="extstyle('$extstyle[0]')" title="$extstyle[1]"><i style='background:$extstyle[2]'></i></span>
+                    <!--{/loop}-->
+                </div>
+            <!--{/if}-->
+
+                <div id="qmenu_menu" class="p_pop {if !$_G['uid']}blk{/if}" style="display: none;">
+                    <!--{if $_G['uid']}-->
+                    <ul>
+                        <!--{loop $_G['setting']['mynavs'] $nav}-->
+                            <!--{if $nav['available'] && (!$nav['level'] || ($nav['level'] == 1 && $_G['uid']) || ($nav['level'] == 2 && $_G['adminid'] > 0) || ($nav['level'] == 3 && $_G['adminid'] == 1))}-->
+                                <li>$nav[code]</li>
+                            <!--{/if}-->
+                        <!--{/loop}-->
+                    </ul>
+                    <!--{elseif $_G[connectguest]}-->
+                        <div class="ptm pbw hm">
+                            {lang connect_fill_profile_to_visit}
+                        </div>
+                    <!--{else}-->
+                        <div class="ptm pbw hm">
+                            {lang my_nav_login}
+                        </div>
+                    <!--{/if}-->
+                </div>
+                
+                <div id="eis_us_menu" class="p_pop" style="display:none">
+                    <!--{if $_G['uid']}-->
+                    <ul>
+                        <li><a href="home.php?mod=spacecp">{lang setup}</a></li>
+                        <li><a href="home.php?mod=space&do=pm" id="pm_ntc"{if $_G[member][newpm]} class="new"{/if}>{lang pm_center}</a></li>
+                        <li><a href="home.php?mod=space&do=notice" id="myprompt"{if $_G[member][newprompt]} class="new"{/if}>{lang remind}<!--{if $_G[member][newprompt]}-->($_G[member][newprompt])<!--{/if}--></a><span id="myprompt_check"></span></li>
+                        <!--{if $_G['setting']['taskon'] && !empty($_G['cookie']['taskdoing_'.$_G['uid']])}--><li><a href="home.php?mod=task&item=doing" id="task_ntc" class="new">{lang task_doing}</a></li><!--{/if}-->
+                        <!--{if ($_G['group']['allowmanagearticle'] || $_G['group']['allowpostarticle'] || $_G['group']['allowdiy'] || getstatus($_G['member']['allowadmincp'], 4) || getstatus($_G['member']['allowadmincp'], 6) || getstatus($_G['member']['allowadmincp'], 2) || getstatus($_G['member']['allowadmincp'], 3))}-->
+                            <li><a href="portal.php?mod=portalcp"><!--{if $_G['setting']['portalstatus'] }-->{lang portal_manage}<!--{else}-->{lang portal_block_manage}<!--{/if}--></a></li>
+                        <!--{/if}-->
+                        <!--{if $_G['uid'] && $_G['group']['radminid'] > 1}-->
+                            <li><a href="forum.php?mod=modcp&fid=$_G[fid]" target="_blank">{lang forum_manager}</a></li>
+                        <!--{/if}-->
+                        <!--{if $_G['uid'] && $_G['adminid'] == 1 && $_G['setting']['cloud_status']}-->
+                            <li><a href="admin.php?frames=yes&action=cloud&operation=applist" target="_blank">{lang cloudcp}</a></li>
+                        <!--{/if}-->
+                        <li><a href="home.php?mod=spacecp&ac=usergroup"{if $upgradecredit !== 'false'} id="g_upmine" class="xi2" onMouseOver="delayShow(this, showUpgradeinfo)"{/if}>$_G[group][grouptitle]</a></li>
+                        <!--{if $_G['uid'] && getstatus($_G['member']['allowadmincp'], 1)}-->
+                            <li><a href="admin.php" target="_blank">{lang admincp}</a></li>
+                        <!--{/if}-->
+                        
+                    </ul>
+                    <!--{/if}-->
+                </div>
+                
+        <!--{/if}-->
+
+        <!--{ad/headerbanner/wp a_h}-->
+        <div id="hd">
+            <div class="wp">
+                <div class="hdc cl">
+                    <!--{eval $mnid = getcurrentnav();}-->
+                    <div class="eis_hd_left z">
+                        <h2><!--{if !isset($_G['setting']['navlogos'][$mnid])}--><a href="http://www.xcheying.com" title="$_G['setting']['bbname']">{$_G['style']['boardlogo']}</a><!--{else}-->$_G['setting']['navlogos'][$mnid]<!--{/if}--></h2>
+                    
+                        <div class="z eis_sch_user">
+                    
+                        <!--{if $_G['uid']}-->
+                    <div id="um">
+                        <p class="y">
+                            <strong class=""><a href="home.php?mod=space&uid=$_G[uid]" target="_blank" title="{lang visit_my_space}" id="eis_us" onMouseOver="showMenu({'ctrlid':'eis_us','pos':'34!','ctrlclass':'a','duration':2});">{$_G[member][username]}</a></strong>
+                            <span class="pipe">|</span>
+                            
+                            <!--{if $_G['group']['allowinvisible']}-->
+                            <span id="loginstatus">
+                                <a id="loginstatusid" href="member.php?mod=switchstatus" title="{lang login_switch_invisible_mode}" onClick="ajaxget(this.href, 'loginstatus');return false;" class="xi2"></a>
+                            </span>
+                            <span class="pipe">|</span>
+                            <!--{/if}-->
+                            
+                            <!--{hook/global_usernav_extra1}-->
+                            <!--{hook/global_usernav_extra4}-->
+                            <!--{hook/global_usernav_extra2}-->
+                            
+                            <a href="member.php?mod=logging&action=logout&formhash={FORMHASH}">{lang logout}</a>
+                            <span class="pipe" style="margin-right:-5px">|</span>
+                            <!--{hook/global_usernav_extra3}-->
+                            <!--{eval $upgradecredit = $_G['uid'] && $_G['group']['grouptype'] == 'member' && $_G['group']['groupcreditslower'] != 999999999 ? $_G['group']['groupcreditslower'] - $_G['member']['credits'] : false;}-->
+                            <a href="home.php?mod=spacecp&ac=credit&showcredit=1" id="extcreditmenu"{if !$_G[setting][bbclosed]} onMouseOver="delayShow(this, showCreditmenu);" class="showmenu"{/if}>{lang credits}: $_G[member][credits]</a>
+                            
+                        </p>
+                        <div class="avt y"><a href="home.php?mod=space&uid=$_G[uid]"><!--{avatar($_G[uid],small)}--></a></div>
+                    </div>
+                    <!--{elseif !empty($_G['cookie']['loginuser'])}-->
+                    <p>
+                        <strong><a id="loginuser" class="noborder"><!--{echo dhtmlspecialchars($_G['cookie']['loginuser'])}--></a></strong>
+                        <a href="member.php?mod=logging&action=login" onClick="showWindow('login', this.href)">{lang activation}</a>
+                        <a href="member.php?mod=logging&action=logout&formhash={FORMHASH}">{lang logout}</a>
+                    </p>
+                    <!--{elseif !$_G[connectguest]}-->
+                        <!--{template member/login_simple}-->
+                    <!--{else}-->
+                    <div id="um">
+                        <p class="y">
+                            <strong class="z">{$_G[member][username]}</strong>
+                            <!--{hook/global_usernav_extra1}-->
+                            <span class="pipe">|</span><a href="member.php?mod=logging&action=logout&formhash={FORMHASH}">{lang logout}</a>
+                            <a href="home.php?mod=spacecp&ac=credit&showcredit=1">{lang credits}: 0</a>
+                            <span class="pipe">|</span>{lang usergroup}: $_G[group][grouptitle]
+                        </p>
+                        <div class="avt y"><!--{avatar(0,small)}--></div>
+                    </div>
+                    <!--{/if}-->
+                    
+                        <!--{subtemplate common/pubsearchform}-->
+  
+                    </div>
+                    
+                        <div class="dottom cl">
+                        
+                           <div class="gonggao1">
+                              <div class="content01">
+                                 <div class="title_g">
+                                 活动公告
+                                 </div>
+                                 <div class="ggdiv">
+                                   <ul class="gg_nr">
+                                     <!--{if !empty($activitys)}--> 
+                                     <!--{loop $activitys $key $value}-->
+                                      <li>
+                                      <a href="forum.php?mod=viewthread&tid={$value[tid]}">{$value[subject]}</a> <span style="float:right;"><a href="forum.php?mod=forumdisplay&fid={$value[fid]}">{$value[name]}</a></span>
+                                      </li>
+                                    <!--{/loop}-->   
+                                    {/if}
+                                   </ul>
+                                 </div>
+                              </div>
+                              <!--<img src="{IMGDIR}/pic03.gif" height="98" width="145" border="0" id="eis_img001"/>-->
+                           </div>
+                           <div class="gonggao">
+                             <div class="content02">
+                                <div class="title_k">
+                                 出行导航
+                                </div>
+                                <form action="map.php" method="post" name="form">
+                                <table border="0" cellpadding="0" cellspacing="0" class="daohang_table">
+                                   <tr>
+                                     <td width="50">出发地</td>
+                                     <td width="50">
+                                     <select name="" onChange="objselect(this.selectedIndex,this.value,'0')">
+<option value="选择省份">选择省份</option><option value="北京">北京</option><option value="上海">上海</option><option value="天津">天津</option><option value="重庆">重庆</option><option value="河北">河北</option><option value="山西">山西</option><option value="内蒙古">内蒙古</option><option value="辽宁">辽宁</option><option value="吉林">吉林</option><option value="黑龙江">黑龙江</option><option value="江苏">江苏</option><option value="浙江">浙江</option><option value="安徽">安徽</option><option value="福建">福建</option><option value="江西">江西</option><option value="山东">山东</option><option value="河南">河南</option><option value="湖北">湖北</option><option value="湖南">湖南</option><option value="广东">广东</option><option value="广西">广西</option><option value="海南">海南</option><option value="四川">四川</option><option value="贵州">贵州</option><option value="云南">云南</option><option value="西藏">西藏</option><option value="陕西">陕西</option><option value="甘肃">甘肃</option><option value="宁夏">宁夏</option><option value="青海">青海</option><option value="新疆">新疆</option><option value="香港">香港</option><option value="澳门">澳门</option><option value="台湾">台湾</option>
+                                    </select>
+                                    
+                                    </td>
+                                     <td style="padding-left:2px;padding-bottom:2px"><div id="objselectoptions0"></div></td>
+                                     <td style="padding-left:2px;padding-bottom:2px;" width="150"><input type="text" name="mapstart"  id="Objselect0" value="{$mapstart}"/></td>
+                                     <td rowspan="2" align="center"><input type="submit" name="submit" class="daohang_btn" value=""></td>
+                                   </tr>
+                                   <tr>
+                                     <td>目的地</td>
+                                     <td width="50">
+                                     <select name="" onChange="objselect(this.selectedIndex,this.value,'1')">
+<option value="选择省份">选择省份</option><option value="北京">北京</option><option value="上海">上海</option><option value="天津">天津</option><option value="重庆">重庆</option><option value="河北">河北</option><option value="山西">山西</option><option value="内蒙古">内蒙古</option><option value="辽宁">辽宁</option><option value="吉林">吉林</option><option value="黑龙江">黑龙江</option><option value="江苏">江苏</option><option value="浙江">浙江</option><option value="安徽">安徽</option><option value="福建">福建</option><option value="江西">江西</option><option value="山东">山东</option><option value="河南">河南</option><option value="湖北">湖北</option><option value="湖南">湖南</option><option value="广东">广东</option><option value="广西">广西</option><option value="海南">海南</option><option value="四川">四川</option><option value="贵州">贵州</option><option value="云南">云南</option><option value="西藏">西藏</option><option value="陕西">陕西</option><option value="甘肃">甘肃</option><option value="宁夏">宁夏</option><option value="青海">青海</option><option value="新疆">新疆</option><option value="香港">香港</option><option value="澳门">澳门</option><option value="台湾">台湾</option>
+                                    </select>
+                                    </td>
+                                     <td style="padding-left:2px;padding-bottom:2px"><div id="objselectoptions1"></div></td>
+                                     <td style="padding-left:2px;padding-bottom:2px" ><input type="text" name="mapend" id="Objselect1" value="{$mapend}"/></td>
+                                   </tr>
+                                 </table>
+                                </form>
+                                <script language="javascript" type="text/javascript">
+                                function objselect(c,a,t){
+                                    var where=new Array(35);where[1]=[['东城'],['西城'],['崇文'],['宣武'],['朝阳'],['丰台'],['石景山'],['海淀'],['门头沟'],['房山'],['通州'],['顺义'],['昌平'],['大兴'],['平谷'],['怀柔'],['密云'],['延庆']];where[2]=[['黄浦'],['卢湾'],['徐汇'],['长宁'],['静安'],['普陀'],['闸北'],['虹口'],['杨浦'],['闵行'],['宝山'],['嘉定'],['浦东'],['金山'],['松江'],['青浦'],['南汇'],['奉贤'],['崇明']];where[3]=[['和平'],['东丽'],['河东'],['西青'],['河西'],['津南'],['南开'],['北辰'],['河北'],['武清'],['红挢'],['塘沽'],['汉沽'],['大港'],['宁河'],['静海'],['宝坻'],['蓟县']];where[4]=[['万州'],['涪陵'],['渝中'],['大渡口'],['江北'],['沙坪坝'],['九龙坡'],['南岸'],['北碚'],['万盛'],['双挢'],['渝北'],['巴南'],['黔江'],['长寿'],['綦江'],['潼南'],['铜梁'],['大足'],['荣昌'],['壁山'],['梁平'],['城口'],['丰都'],['垫江'],['武隆'],['忠县'],['开县'],['云阳'],['奉节'],['巫山'],['巫溪'],['石柱'],['秀山'],['酉阳'],['彭水'],['江津'],['合川'],['永川'],['南川']];where[5]=[['石家庄'],['邯郸'],['邢台'],['保定'],['张家口'],['承德'],['廊坊'],['唐山'],['秦皇岛'],['沧州'],['衡水']];where[6]=[['太原'],['大同'],['阳泉'],['长治'],['晋城'],['朔州'],['吕梁'],['忻州'],['晋中'],['临汾'],['运城']];where[7]=[['呼和浩特'],['包头'],['乌海'],['赤峰'],['呼伦贝尔盟'],['阿拉善盟'],['哲里木盟'],['兴安盟'],['乌兰察布盟'],['锡林郭勒盟'],['巴彦淖尔盟'],['伊克昭盟']];where[8]=[['沈阳'],['大连'],['鞍山'],['抚顺'],['本溪'],['丹东'],['锦州'],['营口'],['阜新'],['辽阳'],['盘锦'],['铁岭'],['朝阳'],['葫芦岛']];where[9]=[['长春'],['吉林'],['四平'],['辽源'],['通化'],['白山'],['松原'],['白城'],['延边']];where[10]=[['哈尔滨'],['齐齐哈尔'],['牡丹江'],['佳木斯'],['大庆'],['绥化'],['鹤岗'],['鸡西'],['黑河'],['双鸭山'],['伊春'],['七台河'],['大兴安岭']];where[11]=[['南京'],['镇江'],['苏州'],['南通'],['扬州'],['盐城'],['徐州'],['连云港'],['常州'],['无锡'],['宿迁'],['泰州'],['淮安']];where[12]=[['杭州'],['宁波'],['温州'],['嘉兴'],['湖州'],['绍兴'],['金华'],['衢州'],['舟山'],['台州'],['丽水']];where[13]=[['合肥'],['芜湖'],['蚌埠'],['马鞍山'],['淮北'],['铜陵'],['安庆'],['黄山'],['滁州'],['宿州'],['池州'],['淮南'],['巢湖'],['阜阳'],['六安'],['宣城'],['亳州']];where[14]=[['福州'],['厦门'],['莆田'],['三明'],['泉州'],['漳州'],['南平'],['龙岩'],['宁德']];where[15]=[['南昌市'],['景德镇'],['九江'],['鹰潭'],['萍乡'],['新馀'],['赣州'],['吉安'],['宜春'],['抚州'],['上饶']];where[16]=[['济南'],['青岛'],['淄博'],['枣庄'],['东营'],['烟台'],['潍坊'],['济宁'],['泰安'],['威海'],['日照'],['莱芜'],['临沂'],['德州'],['聊城'],['滨州'],['菏泽']];where[17]=[['郑州'],['开封'],['洛阳'],['平顶山'],['安阳'],['鹤壁'],['新乡'],['焦作'],['濮阳'],['许昌'],['漯河'],['三门峡'],['南阳'],['商丘'],['信阳'],['周口'],['驻马店'],['济源']];where[18]=[['武汉'],['宜昌'],['荆州'],['襄樊'],['黄石'],['荆门'],['黄冈'],['十堰'],['恩施'],['潜江'],['天门'],['仙桃'],['随州'],['咸宁'],['孝感'],['鄂州']];where[19]=[['长沙'],['常德'],['株洲'],['湘潭'],['衡阳'],['岳阳'],['邵阳'],['益阳'],['娄底'],['怀化'],['郴州'],['永州'],['湘西'],['张家界']];where[20]=[['广州'],['深圳'],['珠海'],['汕头'],['东莞'],['中山'],['佛山'],['韶关'],['江门'],['湛江'],['茂名'],['肇庆'],['惠州'],['梅州'],['汕尾'],['河源'],['阳江'],['清远'],['潮州'],['揭阳'],['云浮']];where[21]=[['南宁'],['柳州'],['桂林'],['梧州'],['北海'],['防城港'],['钦州'],['贵港'],['玉林'],['南宁地区'],['柳州地区'],['贺州'],['百色'],['河池']];where[22]=[['海口'],['三亚']];where[23]=[['成都'],['绵阳'],['德阳'],['自贡'],['攀枝花'],['广元'],['内江'],['乐山'],['南充'],['宜宾'],['广安'],['达川'],['雅安'],['眉山'],['甘孜'],['凉山'],['泸州']];where[24]=[['贵阳'],['六盘水'],['遵义'],['安顺'],['铜仁'],['黔西南'],['毕节'],['黔东南'],['黔南']];where[25]=[['昆明'],['大理'],['曲靖'],['玉溪'],['昭通'],['楚雄'],['红河'],['文山'],['思茅'],['西双版纳'],['保山'],['德宏'],['丽江'],['怒江'],['迪庆'],['临沧']];where[26]=[['拉萨'],['日喀则'],['山南'],['林芝'],['昌都'],['阿里'],['那曲']];where[27]=[['西安'],['宝鸡'],['咸阳'],['铜川'],['渭南'],['延安'],['榆林'],['汉中'],['安康'],['商洛']];where[28]=[['兰州'],['嘉峪关'],['金昌'],['白银'],['天水'],['酒泉'],['张掖'],['武威'],['定西'],['陇南'],['平凉'],['庆阳'],['临夏'],['甘南']];where[29]=[['银川'],['石嘴山'],['吴忠'],['固原']];where[30]=[['西宁'],['海东'],['海南'],['海北'],['黄南'],['玉树'],['果洛'],['海西']];where[31]=[['乌鲁木齐'],['石河子'],['克拉玛依'],['伊犁'],['巴音郭勒'],['昌吉'],['克孜勒苏柯尔克孜'],['博尔塔拉'],['吐鲁番'],['哈密'],['喀什'],['和田'],['阿克苏']];where[34]=[['台北'],['高雄'],['台中'],['台南'],['屏东'],['南投'],['云林'],['新竹'],['彰化'],['苗栗'],['嘉义'],['花莲'],['桃园'],['宜兰'],['基隆'],['台东'],['金门'],['马祖'],['澎湖']]; 
+                                    
+                                    var Obj1= 'objselectoptions'+t;
+                                    var objselectoptions=document.getElementById(Obj1);
+                                    var Obj2 = 'Objselect'+t;
+                                    var Objselect=document.getElementById(Obj2);
+                                    Objselect.value=a;
+                                    D="<select name=\"\" onChange=\"objoptions(this.value,'"+a+"','"+t+"')\">";
+                                    D+="<option value=\"选择城市\">选择城市</option>";
+                                    for(i=0;i<where[c].length;i++){D+="<option value=\""+where[c][i]+"\">"+where[c][i]+"</option>"}
+                                    objselectoptions.innerHTML=D;
+                                    }
+                              
+                                function objoptions(c,a,t){
+                                    var Obj3 = 'Objselect'+t;
+                                    var Objselect = document.getElementById(Obj3);
+                                    Objselect.value=a+c;
+                                }
+                                
+                                </script>
+                                
+                              </div>
+                              
+                           </div>
+                         </div>
+                        
+                    </div>
+                    
+                    <div class="eis_hd_right y" style="width:200px; height:260px;border-bottom:1px solid #CCC;">
+                        <!--<img src="{IMGDIR}/weather.jpg">-->
+                        <!--<iframe src="http://www.7stk.com/1/6/200904.htm" width="380" height="70" frameborder="0" marginwidth="0" marginheight="0" scrolling="no" name="I2" align="middle" style=" margin-top:10px; padding-bottom:10px; border-bottom:1px solid #C7CEDE"></iframe>
+                        <iframe src="http://www.7stk.com/1/6/200905.htm" width="380" height="70" frameborder="0" marginwidth="0" marginheight="0" scrolling="no" name="I2" align="middle" style="margin-left:-50px; border-bottom:1px solid #C7CEDE; padding-bottom:10px; margin-top:10px"></iframe>-->
+                        <!--<IFRAME id="tianqi8_wetherinfo" name="tianqi8_wetherinfo" src="http://tq.ss256.com/code/freeweather6.htm?id=&fcolor=&imgurl=tb/tbs/tb5&bimg=&bcolor=&fsize=" frameBorder=0 width=260 height=195 ALIGN=CENTER MARGINWIDTH=0 MARGINHEIGHT=0 HSPACE=0 VSPACE=0 SCROLLING=NO allowtransparency=true></IFRAME>-->
+                        <iframe src="http://www.thinkpage.cn/weather/weather.aspx?uid=&cid=101010100&l=zh-CHS&p=CMA&a=0&u=C&s=5&m=1&x=1&d=2&fc=&bgc=&bc=C6C6C6&ti=1&in=1&li=2&ct=iframe" frameborder="0" scrolling="no" width="200" height="300" allowTransparency="true"></iframe>
+                        <!--<IFRAME id="tianqi8_wetherinfo" name="tianqi8_wetherinfo" src="http://tq.ss256.com/code/freeweather12.htm?id=&fcolor=&imgurl=tb/tbb/tb1&bimg=&bcolor=&fsize=12" frameBorder=0 width=180 height=320 ALIGN=CENTER MARGINWIDTH=0 MARGINHEIGHT=0 HSPACE=0 VSPACE=0 SCROLLING=NO allowtransparency=true style="*+margin-right:45px;"></IFRAME>-->
+                        <!--<IFRAME id="tianqi8_wetherinfo" name="tianqi8_wetherinfo" src="http://tq.ss256.com/code/freeweather13.htm?id=&fcolor=&imgurl=tb/tbb/tb1&bimg=&bcolor=&fsize=" frameBorder=0 width=300 height=292 ALIGN=CENTER MARGINWIDTH=0 MARGINHEIGHT=0 HSPACE=0 VSPACE=0 SCROLLING=NO allowtransparency=true></IFRAME>-->
+                    </div>
+                </div>
+                
+                <div style="display:none">
+                <div id="nv">
+                    <a href="javascript:;" id="qmenu" onMouseOver="showMenu({'ctrlid':'qmenu','pos':'34!','ctrlclass':'a','duration':2});">{lang my_nav}</a>
+                    <ul>
+                        <!--{loop $_G['setting']['navs'] $nav}-->
+                            <!--{if $nav['available'] && (!$nav['level'] || ($nav['level'] == 1 && $_G['uid']) || ($nav['level'] == 2 && $_G['adminid'] > 0) || ($nav['level'] == 3 && $_G['adminid'] == 1))}--><li {if $mnid == $nav[navid]}class="a" {/if}$nav[nav]></li><!--{/if}-->
+                        <!--{/loop}-->
+                    </ul>
+                    <!--{hook/global_nav_extra}-->
+                </div>
+                <!--{if !empty($_G['setting']['plugins']['jsmenu'])}-->
+                    <ul class="p_pop h_pop" id="plugin_menu" style="display: none">
+                    <!--{loop $_G['setting']['plugins']['jsmenu'] $module}-->
+                         <!--{if !$module['adminid'] || ($module['adminid'] && $_G['adminid'] > 0 && $module['adminid'] >= $_G['adminid'])}-->
+                         <li>$module[url]</li>
+                         <!--{/if}-->
+                    <!--{/loop}-->
+                    </ul>
+                <!--{/if}-->
+                $_G[setting][menunavs]
+                <div id="mu" class="cl">
+                <!--{if $_G['setting']['subnavs']}-->
+                    <!--{loop $_G[setting][subnavs] $navid $subnav}-->
+                        <!--{if $_G['setting']['navsubhover'] || $mnid == $navid}-->
+                        <ul class="cl {if $mnid == $navid}current{/if}" id="snav_$navid" style="display:{if $mnid != $navid}none{/if}">
+                        $subnav
+                        </ul>
+                        <!--{/if}-->
+                    <!--{/loop}-->
+                <!--{/if}-->
+                </div>
+                </div>
+                <!--{ad/subnavbanner/a_mu}-->
+                
+            
+        </div>
+</div>
+        <!--{hook/global_header}-->
+    <!--{/if}-->
+
+    <div class="wp_1000">
+    <div id="wp" class="wp">

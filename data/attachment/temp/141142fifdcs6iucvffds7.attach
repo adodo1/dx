@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<root>
+	<item id="spacecss"><![CDATA[]]></item>
+	<item id="layoutdata">
+		<item id="diynavtop"><![CDATA[]]></item>
+		<item id="diy1">
+			<item id="frame`frameYRKv82">
+				<item id="attr">
+					<item id="name"><![CDATA[frameYRKv82]]></item>
+					<item id="moveable"><![CDATA[true]]></item>
+					<item id="className"><![CDATA[eis_f10 frame move-span cl frame-1]]></item>
+					<item id="titles"><![CDATA[]]></item>
+				</item>
+				<item id="column`frameYRKv82_left">
+					<item id="attr">
+						<item id="name"><![CDATA[frameYRKv82_left]]></item>
+						<item id="className"><![CDATA[column frame-1-c]]></item>
+					</item>
+					<item id="block`portal_block_1005">
+						<item id="attr">
+							<item id="name"><![CDATA[portal_block_1005]]></item>
+							<item id="className"><![CDATA[eis_b10 block move-span]]></item>
+							<item id="titles"><![CDATA[]]></item>
+						</item>
+					</item>
+				</item>
+			</item>
+		</item>
+		<item id="diy4"><![CDATA[]]></item>
+		<item id="diyfastposttop"><![CDATA[]]></item>
+		<item id=""><![CDATA[]]></item>
+		<item id="diyforumdisplaybottom"><![CDATA[]]></item>
+		<item id="diy3"><![CDATA[]]></item>
+	</item>
+	<item id="blockdata">
+		<item id="block">
+			<item id="1005">
+				<item id="bid"><![CDATA[1005]]></item>
+				<item id="blockclass"><![CDATA[forum_thread]]></item>
+				<item id="blocktype"><![CDATA[0]]></item>
+				<item id="name"><![CDATA[??]]></item>
+				<item id="title"><![CDATA[]]></item>
+				<item id="classname"><![CDATA[eis_b10]]></item>
+				<item id="summary"><![CDATA[]]></item>
+				<item id="uid"><![CDATA[1]]></item>
+				<item id="username"><![CDATA[admin]]></item>
+				<item id="styleid"><![CDATA[0]]></item>
+				<item id="blockstyle">
+					<item id="name"><![CDATA[]]></item>
+					<item id="blockclass"><![CDATA[forum_thread]]></item>
+					<item id="makethumb"><![CDATA[0]]></item>
+					<item id="getpic"><![CDATA[1]]></item>
+					<item id="getsummary"><![CDATA[1]]></item>
+					<item id="settarget"><![CDATA[0]]></item>
+					<item id="moreurl"><![CDATA[0]]></item>
+					<item id="fields">
+						<item id="0"><![CDATA[url]]></item>
+						<item id="1"><![CDATA[title]]></item>
+						<item id="2"><![CDATA[pic]]></item>
+						<item id="3"><![CDATA[summary]]></item>
+					</item>
+					<item id="template">
+						<item id="raw"><![CDATA[<div id="carflash_div">
+  <div id="carflash">
+    <ul id="carflashContent">
+    [loop]
+      <li class="carflashImage"> <a href="{url}"><img alt="{title}" src="{pic}"></a> <span  class="right"><strong>{title}</strong>
+       <em class="eis_fgx">----------------------------------------------</em>
+       <p>{summary}</p>
+        <a href="{url}">>>????</a></span> </li>
+     [/loop] 
+      
+    </ul>
+  </div>
+</div>]]></item>
+						<item id="footer"><![CDATA[]]></item>
+						<item id="header"><![CDATA[]]></item>
+						<item id="indexplus">
+						</item>
+						<item id="index">
+						</item>
+						<item id="orderplus">
+						</item>
+						<item id="order">
+						</item>
+						<item id="loopplus">
+						</item>
+						<item id="loop"><![CDATA[<li class="carflashImage"> <a href="{url}"><img alt="{title}" src="{pic}"></a> <span  class="right"><strong>{title}</strong>
+       <em class="eis_fgx">----------------------------------------------</em>
+       <p>{summary}</p>
+        <a href="{url}">>>????</a></span> </li>]]></item>
+					</item>
+					<item id="hash"><![CDATA[22dc5c0a]]></item>
+				</item>
+				<item id="picwidth"><![CDATA[0]]></item>
+				<item id="picheight"><![CDATA[0]]></item>
+				<item id="target"><![CDATA[blank]]></item>
+				<item id="dateformat"><![CDATA[Y-m-d]]></item>
+				<item id="dateuformat"><![CDATA[0]]></item>
+				<item id="script"><![CDATA[thread]]></item>
+				<item id="param">
+					<item id="tids"><![CDATA[]]></item>
+					<item id="uids"><![CDATA[]]></item>
+					<item id="keyword"><![CDATA[]]></item>
+					<item id="tagkeyword"><![CDATA[]]></item>
+					<item id="typeids"><![CDATA[]]></item>
+					<item id="recommend"><![CDATA[0]]></item>
+					<item id="viewmod"><![CDATA[0]]></item>
+					<item id="rewardstatus"><![CDATA[0]]></item>
+					<item id="picrequired"><![CDATA[0]]></item>
+					<item id="orderby"><![CDATA[lastpost]]></item>
+					<item id="postdateline"><![CDATA[0]]></item>
+					<item id="lastpost"><![CDATA[0]]></item>
+					<item id="highlight"><![CDATA[0]]></item>
+					<item id="titlelength"><![CDATA[40]]></item>
+					<item id="summarylength"><![CDATA[150]]></item>
+					<item id="startrow"><![CDATA[0]]></item>
+					<item id="items"><![CDATA[10]]></item>
+				</item>
+				<item id="shownum"><![CDATA[10]]></item>
+				<item id="cachetime"><![CDATA[3600]]></item>
+				<item id="cachetimerange"><![CDATA[]]></item>
+				<item id="punctualupdate"><![CDATA[0]]></item>
+				<item id="hidedisplay"><![CDATA[0]]></item>
+				<item id="dateline"><![CDATA[1347240423]]></item>
+				<item id="notinherited"><![CDATA[0]]></item>
+				<item id="isblank"><![CDATA[1]]></item>
+			</item>
+		</item>
+		<item id="style">
+		</item>
+	</item>
+</root>

@@ -1,0 +1,163 @@
+<!--{subtemplate common/header_discuz}-->
+<!--{if !empty($gid)}-->
+<div id="pt" class="bm cl">
+    <!--{if empty($gid) && $announcements}-->
+    <div class="y">
+        <div id="an">
+            <dl class="cl">
+                <dt class="z xw1">{lang announcements}:&nbsp;</dt>
+                <dd>
+                    <div id="anc"><ul id="ancl">$announcements</ul></div>
+                </dd>
+            </dl>
+        </div>
+        <script type="text/javascript">announcement();</script>
+    </div>
+    <!--{/if}-->
+    <div class="z">
+        <a href="./" class="nvhm" title="{lang homepage}">$_G[setting][bbname]</a><em>&raquo;</em><a href="forum.php"{if $_G['setting']['forumjump']} id="fjump" onmouseover="delayShow(this, 'showForummenu($_G[fid])');" class="showmenu"{/if}>{$_G[setting][navs][2][navname]}</a>$navigation
+    </div>
+    <div class="z"><!--{hook/index_status_extra}--></div>
+</div>
+<!--{/if}-->
+
+<!--{if empty($gid)}-->
+    <!--{ad/text/wp a_t}-->
+<!--{/if}-->
+
+<!--{if empty($gid)}-->
+    <div class="wp">
+        <!--[diy=diy1]--><div id="diy1" class="area"></div><!--[/diy]-->
+    </div>
+<!--{/if}-->
+
+<div id="ct" class="cl">
+    <div class="eis_dz1 cl" id="eis_board">
+    <!--{if empty($gid)}-->
+        <!--首页 $a变量 计数器 论坛首页循环分区和版块 第一个显示分区名字 从第二个到最后一个都显示除第一个分区外的所有分区的版块名字 点击第一个分区的名字进入论坛版块子页面 循环显示第一个分区里的子版块-->
+        {eval $a=1}
+        
+        <!--{loop $catlist $key $cat}-->
+        
+            <!--{if $a==1}-->
+                
+                <div class="eis_board1 eis_tables" huang='true'><a href="{if !empty($caturl)}$caturl{else}forum.php?gid=$cat[fid]{/if}"><img src="{IMGDIR}/pic09.jpg" alt="$forum[name]" /></a><div class="boxcaption" style="height:60px; bottom:-40px" align="center"><div style="font-size:15px; font-weight:500;"><a href="{if !empty($caturl)}$caturl{else}forum.php?gid=$cat[fid]{/if}" style="color:#FFF">$cat[name]</a></div></div>
+                </div>
+                
+               
+            <!--{else}-->
+            
+                <!--{loop $cat[forums] $forumid}-->
+                <!--{eval $forum=$forumlist[$forumid];}-->
+                <!--{eval $forumurl = !empty($forum['domain']) && !empty($_G['setting']['domain']['root']['forum']) ? 'http://'.$forum['domain'].'.'.$_G['setting']['domain']['root']['forum'] : 'forum.php?mod=forumdisplay&fid='.$forum['fid'];}-->                
+                    <div class="eis_board1 boxgrid caption eis_tables" huang='true'><!--{if $forum[icon]}-->$forum[icon]<!--{else}--><a href="$forumurl"{if $forum[redirect]} target="_blank"{/if}><img src="{IMGDIR}/forum{if $forum[folder]}_new{/if}.gif" alt="$forum[name]" /></a><!--{/if}--><div class="boxcaption" align="center" style="bottom:-40px; height:60px;">
+                        <div style="font-size:15px; font-weight:500; color:#FFF">
+                        <a href="$forumurl"{if $forum[redirect]} target="_blank"{/if} style="color:#FFF">$forum[name]</a></div>
+                        
+                        <!--{if !$subforumonly}--><p>{lang index_today}: <strong>$forum[todayposts]</strong><span class="pipe">|</span>{lang index_threads}: <strong>$forum[threads]</strong></p><!--{/if}-->
+                        
+                        </div>
+                    </div>
+                    
+<script language="javascript">
+    var global = function(demo,cdemo){
+    var maxheight =-40;
+    var tmpheight = 10;   
+    var v1 = null,v2=null;
+    var c = true;
+    var autoheight = maxheight;
+    var U = function(){
+    // clearInterval(v2);
+    if(autoheight<0){   
+    v1 = setInterval(function(){
+    autoheight+=tmpheight;
+    if(autoheight>0) autoheight = 0;
+    cdemo.style.bottom = autoheight+"px";
+    if(autoheight>=0){
+    clearInterval(v1);
+        }
+    },1);
+}
+} 
+    var D = function(){   
+// clearInterval(v1);
+if(autoheight > maxheight){  
+v2 = setInterval(function(){	   
+autoheight-=tmpheight;
+if(autoheight<maxheight)  autoheight = maxheight;
+cdemo.style.bottom=autoheight+"px";		
+if(autoheight<=maxheight){			
+clearInterval(v2);
+}
+},1);
+}
+}
+demo.onmouseover=function(){				
+clearInterval(v2);
+U();
+}
+demo.onmouseout=function(){
+clearInterval(v1);
+D();
+}
+  }
+var demo =  function demo(){
+      var demos = document.getElementById("eis_board").getElementsByTagName('div');
+      for(var i =0;i<demos.length;i++){
+            var dmeo = demos[i];
+            if(dmeo.getAttribute("huang")=='true'){
+                  var cdemo = dmeo.childNodes[1];
+                  new global(dmeo,cdemo);
+            }
+      }
+  }
+  new demo();
+</script>
+       <!--{/loop}-->
+            <!--{/if}-->
+        {eval $a++}
+        <!--{/loop}-->
+    <!--{else}-->
+        <!--版块-->
+		<div class="xd_sx_q">
+			<ul>
+			<!--{loop $catlist $key $cat}-->
+			<!--{loop $cat[forums] $k $forumid}-->
+			<!--{eval $forum=$forumlist[$forumid];}-->
+				<li><a href="{eval echo 'http://'.$_SERVER['SERVER_NAME'].$_SERVER[PHP_SELF].'?mod=forumdisplay&fid='.$forum[fid]}">{$forum[name]}</a></li>
+			<!--{/loop}-->
+			<!--{/loop}-->
+			</ul>
+		</div>
+        <!--{loop $catlist $key $cat}-->
+         <div class="eis_board2">
+        <!--{loop $cat[forums] $k $forumid}-->
+        <!--{eval $forum=$forumlist[$forumid];}-->
+        <!--{eval $forumurl = !empty($forum['domain']) && !empty($_G['setting']['domain']['root']['forum']) ? 'http://'.$forum['domain'].'.'.$_G['setting']['domain']['root']['forum'] : 'forum.php?mod=forumdisplay&fid='.$forum['fid'];}-->
+                {if $k%5==0}
+                <ul>
+                {/if}
+                <li>
+                <!--{if $forum[icon]}-->
+                  
+                   $forum[icon]
+                   </br></br></br></br></br></br></br></br></br>
+                   <div align="center" style=" width:180px; height:20px">$forum[name]</div>
+                <!--{else}-->
+                    <a href="$forumurl"{if $forum[redirect]} target="_blank"{/if}><img src="{IMGDIR}/forum{if $forum[folder]}_new{/if}.gif" alt="$forum[name]" /></a>
+                <!--{/if}-->
+                </li>
+                {if ($k+1)%5==0}
+                </ul>
+                {/if}
+           
+        <!--{/loop}-->
+         </div>
+        <!--{/loop}-->
+    <!--{/if}-->
+</div>
+</div>
+<!--{if $_G['group']['radminid'] == 1}-->
+    <!--{eval helper_manyou::checkupdate();}-->
+<!--{/if}-->
+<!--{subtemplate common/footer}-->
