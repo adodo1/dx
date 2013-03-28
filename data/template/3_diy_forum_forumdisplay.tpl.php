@@ -1,15 +1,15 @@
 <?php if(!defined('IN_DISCUZ')) exit('Access Denied'); hookscriptoutput('forumdisplay');
 0
-|| checktplrefresh('./template/eis_y_car/forum/forumdisplay.htm', './template/eis_y_car/common/header.htm', 1364484023, 'diy', './data/template/3_diy_forum_forumdisplay.tpl.php', './template/eis_y_car', 'forum/forumdisplay')
-|| checktplrefresh('./template/eis_y_car/forum/forumdisplay.htm', './template/eis_y_car/forum/forumdisplay_list.htm', 1364484023, 'diy', './data/template/3_diy_forum_forumdisplay.tpl.php', './template/eis_y_car', 'forum/forumdisplay')
-|| checktplrefresh('./template/eis_y_car/forum/forumdisplay.htm', './template/default/forum/forumdisplay_sort.htm', 1364484023, 'diy', './data/template/3_diy_forum_forumdisplay.tpl.php', './template/eis_y_car', 'forum/forumdisplay')
-|| checktplrefresh('./template/eis_y_car/forum/forumdisplay.htm', './template/eis_y_car/common/footer.htm', 1364484023, 'diy', './data/template/3_diy_forum_forumdisplay.tpl.php', './template/eis_y_car', 'forum/forumdisplay')
-|| checktplrefresh('./template/eis_y_car/forum/forumdisplay.htm', './template/default/common/header_common.htm', 1364484023, 'diy', './data/template/3_diy_forum_forumdisplay.tpl.php', './template/eis_y_car', 'forum/forumdisplay')
-|| checktplrefresh('./template/eis_y_car/forum/forumdisplay.htm', './template/eis_y_car/common/pubsearchform.htm', 1364484023, 'diy', './data/template/3_diy_forum_forumdisplay.tpl.php', './template/eis_y_car', 'forum/forumdisplay')
-|| checktplrefresh('./template/eis_y_car/forum/forumdisplay.htm', './template/default/forum/search_sortoption.htm', 1364484023, 'diy', './data/template/3_diy_forum_forumdisplay.tpl.php', './template/eis_y_car', 'forum/forumdisplay')
-|| checktplrefresh('./template/eis_y_car/forum/forumdisplay.htm', './template/default/forum/search_sortoption.htm', 1364484023, 'diy', './data/template/3_diy_forum_forumdisplay.tpl.php', './template/eis_y_car', 'forum/forumdisplay')
+|| checktplrefresh('./template/eis_y_car/forum/forumdisplay.htm', './template/eis_y_car/common/header.htm', 1364487590, 'diy', './data/template/3_diy_forum_forumdisplay.tpl.php', './template/eis_y_car', 'forum/forumdisplay')
+|| checktplrefresh('./template/eis_y_car/forum/forumdisplay.htm', './template/eis_y_car/forum/forumdisplay_list.htm', 1364487590, 'diy', './data/template/3_diy_forum_forumdisplay.tpl.php', './template/eis_y_car', 'forum/forumdisplay')
+|| checktplrefresh('./template/eis_y_car/forum/forumdisplay.htm', './template/default/forum/forumdisplay_sort.htm', 1364487590, 'diy', './data/template/3_diy_forum_forumdisplay.tpl.php', './template/eis_y_car', 'forum/forumdisplay')
+|| checktplrefresh('./template/eis_y_car/forum/forumdisplay.htm', './template/eis_y_car/common/footer.htm', 1364487590, 'diy', './data/template/3_diy_forum_forumdisplay.tpl.php', './template/eis_y_car', 'forum/forumdisplay')
+|| checktplrefresh('./template/eis_y_car/forum/forumdisplay.htm', './template/default/common/header_common.htm', 1364487590, 'diy', './data/template/3_diy_forum_forumdisplay.tpl.php', './template/eis_y_car', 'forum/forumdisplay')
+|| checktplrefresh('./template/eis_y_car/forum/forumdisplay.htm', './template/eis_y_car/common/pubsearchform.htm', 1364487590, 'diy', './data/template/3_diy_forum_forumdisplay.tpl.php', './template/eis_y_car', 'forum/forumdisplay')
+|| checktplrefresh('./template/eis_y_car/forum/forumdisplay.htm', './template/default/forum/search_sortoption.htm', 1364487590, 'diy', './data/template/3_diy_forum_forumdisplay.tpl.php', './template/eis_y_car', 'forum/forumdisplay')
+|| checktplrefresh('./template/eis_y_car/forum/forumdisplay.htm', './template/default/forum/search_sortoption.htm', 1364487590, 'diy', './data/template/3_diy_forum_forumdisplay.tpl.php', './template/eis_y_car', 'forum/forumdisplay')
 ;
-block_get('49');?>
+block_get('49,50');?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -379,7 +379,7 @@ EOF;
                             <?php } ?>
                             
                             <?php if(!empty($_G['setting']['pluginhooks']['global_usernav_extra1'])) echo $_G['setting']['pluginhooks']['global_usernav_extra1'];?>
-                            <?php if(!empty($_G['setting']['pluginhooks']['global_usernav_extra4'])) echo $_G['setting']['pluginhooks']['global_usernav_extra4'];?>
+                            
                             <?php if(!empty($_G['setting']['pluginhooks']['global_usernav_extra2'])) echo $_G['setting']['pluginhooks']['global_usernav_extra2'];?>
                             
                             <a href="member.php?mod=logging&amp;action=logout&amp;formhash=<?php echo FORMHASH;?>">退出</a>
@@ -612,6 +612,7 @@ var j = jQuery.noConflict();
                 <?php } ?>
             </span>
                 <?php } ?>
+                <?php if(!empty($_G['setting']['pluginhooks']['global_usernav_extra4'])) echo $_G['setting']['pluginhooks']['global_usernav_extra4'];?>
             <?php } else { ?>
             <a href="forum.php?mod=applyjoin&amp;fid=<?php echo $_G['forum']['fid'];?>" style="font-size:14px;color:red;">申请加入</a>
             <?php } ?>
@@ -1327,26 +1328,8 @@ EOF;
         <?php block_display('49');?>    </div>
     <div class="xd_t3"></div>
     <div class="xd_t2">
-        <ul>
-            <li>
-                <div class="xd_img"><img src="<?php echo pic;?>" width="170px" height="88"></div>
-                <div class="xd_title"><a href="<?php echo url;?>"><?php echo title;?></a></div>
-                <div class="xd_zz"><a href="#"><?php echo author;?></a></div>
-            </li>
-            <li><div class="xd_img"><img src="<?php echo pic;?>" width="170px" height="88"></div>
-                <div class="xd_title"><a href="<?php echo url;?>"><?php echo title;?></a></div>
-                <div class="xd_zz"><a href="#"><?php echo author;?></a></div></li>
-            <li><div class="xd_img"><img src="<?php echo pic;?>" width="170px" height="88"></div>
-                <div class="xd_title"><a href="<?php echo url;?>"><?php echo title;?></a></div>
-                <div class="xd_zz"><a href="#"><?php echo author;?></a></div></li>
-            <li><div class="xd_img"><img src="<?php echo pic;?>" width="170px" height="88"></div>
-                <div class="xd_title"><a href="<?php echo url;?>"><?php echo title;?></a></div>
-                <div class="xd_zz"><a href="#"><?php echo author;?></a></div></li>
-            <li><div class="xd_img"><img src="<?php echo pic;?>" width="170px" height="88"></div>
-                <div class="xd_title"><a href="<?php echo url;?>"><?php echo title;?></a></div>
-                <div class="xd_zz"><a href="#"><?php echo author;?></a></div></li>
-        </ul>
-    </div>
+        <!--[diy=diy2]--><div id="diy2" class="area"></div><!--[/diy]-->
+        <?php block_display('50');?>    </div>
 </div>                <?php } else { ?>
                     <div id="threadlist" class="bm bmw"<?php if($_G['uid']) { ?> style="position: relative;"<?php } ?>>
 <?php if($quicksearchlist && !$_GET['archiveid']) { ?><script type="text/javascript">

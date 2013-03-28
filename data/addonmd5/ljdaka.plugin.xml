@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<root>
+	<item id="Title"><![CDATA[Discuz! Addon MD5]]></item>
+	<item id="ID"><![CDATA[ljdaka.plugin]]></item>
+	<item id="SN"><![CDATA[20130328168enah8g83Z]]></item>
+	<item id="RevisionID"><![CDATA[10569]]></item>
+	<item id="RevisionDateline"><![CDATA[1363055106]]></item>
+	<item id="Data">
+		<item id="/app.inc.php"><![CDATA[1c1548edcb012bbe618e807d830738ff]]></item>
+		<item id="/daka.class.php"><![CDATA[997653fc22971d78aeaee2f2170bacc8]]></item>
+		<item id="/daka.inc.php"><![CDATA[29b11298200f1c8c5a10112980b03c52]]></item>
+		<item id="/discuz_plugin_ljdaka_SC_GBK.xml"><![CDATA[dfb3f02313400909299299b82f5ab1fe]]></item>
+		<item id="/discuz_plugin_ljdaka_SC_UTF8.xml"><![CDATA[95ff6c29decbb9e8223fd5e900972d0c]]></item>
+		<item id="/discuz_plugin_ljdaka_TC_BIG5.xml"><![CDATA[eae7754b3a253e6f6b2af7910a27abe5]]></item>
+		<item id="/discuz_plugin_ljdaka_TC_UTF8.xml"><![CDATA[e113940b5598a8d5a81f8121ec5d4b9a]]></item>
+		<item id="/images/info.gif"><![CDATA[694bbdb5afd22a8cf1b329e42ec57735]]></item>
+		<item id="/install.php"><![CDATA[a0b53fbd1c5371f5fc319289f7708d3d]]></item>
+		<item id="/template/daka.htm"><![CDATA[c6218f596cbcef5942b6916ff7eef4dd]]></item>
+		<item id="/template/msg.htm"><![CDATA[e822d1689977b99800d71fca3977da18]]></item>
+		<item id="/upgrade.php"><![CDATA[39d7203eed0d34096ef04817de3ad24a]]></item>
+	</item>
+</root>
