@@ -1,9 +1,9 @@
 <?php if(!defined('IN_DISCUZ')) exit('Access Denied'); 
 0
-|| checktplrefresh('./template/eis_y_car/forum/discuz.htm', './template/eis_y_car/common/header_discuz.htm', 1364401005, 'diy', './data/template/3_diy_forum_discuz.tpl.php', './template/eis_y_car', 'forum/discuz')
-|| checktplrefresh('./template/eis_y_car/forum/discuz.htm', './template/eis_y_car/common/footer.htm', 1364401005, 'diy', './data/template/3_diy_forum_discuz.tpl.php', './template/eis_y_car', 'forum/discuz')
-|| checktplrefresh('./template/eis_y_car/forum/discuz.htm', './template/eis_y_car/common/header_common.htm', 1364401005, 'diy', './data/template/3_diy_forum_discuz.tpl.php', './template/eis_y_car', 'forum/discuz')
-|| checktplrefresh('./template/eis_y_car/forum/discuz.htm', './template/eis_y_car/common/pubsearchform.htm', 1364401005, 'diy', './data/template/3_diy_forum_discuz.tpl.php', './template/eis_y_car', 'forum/discuz')
+|| checktplrefresh('./template/eis_y_car/forum/discuz.htm', './template/eis_y_car/common/header_discuz.htm', 1364484496, 'diy', './data/template/3_diy_forum_discuz.tpl.php', './template/eis_y_car', 'forum/discuz')
+|| checktplrefresh('./template/eis_y_car/forum/discuz.htm', './template/eis_y_car/common/footer.htm', 1364484496, 'diy', './data/template/3_diy_forum_discuz.tpl.php', './template/eis_y_car', 'forum/discuz')
+|| checktplrefresh('./template/eis_y_car/forum/discuz.htm', './template/default/common/header_common.htm', 1364484496, 'diy', './data/template/3_diy_forum_discuz.tpl.php', './template/eis_y_car', 'forum/discuz')
+|| checktplrefresh('./template/eis_y_car/forum/discuz.htm', './template/eis_y_car/common/pubsearchform.htm', 1364484496, 'diy', './data/template/3_diy_forum_discuz.tpl.php', './template/eis_y_car', 'forum/discuz')
 ;?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -15,8 +15,9 @@
 
 <meta name="keywords" content="<?php if(!empty($metakeywords)) { echo dhtmlspecialchars($metakeywords); } ?>" />
 <meta name="description" content="<?php if(!empty($metadescription)) { echo dhtmlspecialchars($metadescription); ?> <?php } if(empty($nobbname)) { ?>,<?php echo $_G['setting']['bbname'];?><?php } ?>" />
-<meta name="generator" content="<?php echo $_G['setting']['version'];?>" />
-<meta name="copyright" content="2001-2013 Xcheying Inc." />
+<meta name="generator" content="Discuz! <?php echo $_G['setting']['version'];?>" />
+<meta name="author" content="Discuz! Team and Comsenz UI Team" />
+<meta name="copyright" content="2001-2012 Comsenz Inc." />
 <meta name="MSSmartTagsPreventParsing" content="True" />
 <meta http-equiv="MSThemeCompatible" content="Yes" />
 <base href="<?php echo $_G['siteurl'];?>" /><link rel="stylesheet" type="text/css" href="data/cache/style_<?php echo STYLEID;?>_common.css?<?php echo VERHASH;?>" /><link rel="stylesheet" type="text/css" href="data/cache/style_<?php echo STYLEID;?>_forum_index.css?<?php echo VERHASH;?>" /><?php if($_G['uid'] && isset($_G['cookie']['extstyle']) && strpos($_G['cookie']['extstyle'], TPLDIR) !== false) { ?><link rel="stylesheet" id="css_extstyle" type="text/css" href="<?php echo $_G['cookie']['extstyle'];?>/style.css" /><?php } elseif($_G['style']['defaultextstyle']) { ?><link rel="stylesheet" id="css_extstyle" type="text/css" href="<?php echo $_G['style']['defaultextstyle'];?>/style.css" /><?php } ?><script type="text/javascript">var STYLEID = '<?php echo STYLEID;?>', STATICURL = '<?php echo STATICURL;?>', IMGDIR = '<?php echo IMGDIR;?>', VERHASH = '<?php echo VERHASH;?>', charset = '<?php echo CHARSET;?>', discuz_uid = '<?php echo $_G['uid'];?>', cookiepre = '<?php echo $_G['config']['cookie']['cookiepre'];?>', cookiedomain = '<?php echo $_G['config']['cookie']['cookiedomain'];?>', cookiepath = '<?php echo $_G['config']['cookie']['cookiepath'];?>', showusercard = '<?php echo $_G['setting']['showusercard'];?>', attackevasive = '<?php echo $_G['config']['security']['attackevasive'];?>', disallowfloat = '<?php echo $_G['setting']['disallowfloat'];?>', creditnotice = '<?php if($_G['setting']['creditnotice']) { ?><?php echo $_G['setting']['creditnames'];?><?php } ?>', defaultstyle = '<?php echo $_G['style']['defaultextstyle'];?>', REPORTURL = '<?php echo $_G['currenturl_encode'];?>', SITEURL = '<?php echo $_G['siteurl'];?>', JSPATH = '<?php echo $_G['setting']['jspath'];?>';</script>
@@ -194,23 +195,25 @@
         
         /*主题*/
         .eis_taba{ margin-bottom:-2px}
-        .eis_taba ul{ margin-left:20px;}
-        .eis_taba ul li{ float:left; width:52px; margin-right:2px;}
-        .eis_taba ul li a{ height:28px; line-height:28px; display:block; text-align:center; background:url(<?php echo IMGDIR;?>/tab_btn02.jpg) no-repeat 50% 0; }
+        /* .eis_taba ul{ margin-left:20px;} */
+        .eis_taba ul li{ float:left; width:70px; margin-right:2px;}
+        .eis_taba ul li a{ height:30px; line-height:28px; display:block; text-align:center; background:url(<?php echo IMGDIR;?>/tab_btn02.jpg) no-repeat 50% 0; }
         .eis_taba ul li.a{ float:left; width:72px; margin-right:2px;}
         .eis_taba ul li.a a{ color:#fff; line-height:29px;background:url(<?php echo IMGDIR;?>/tab_btn01.jpg) no-repeat 50% 0; }
         .eis_taba ul li a:hover{ text-decoration:none}
-        .eis_ttp{ border-top:1px solid #9DB3C5 !important; height:30px; line-height:30px; padding-top:5px !important; margin-bottom:0 !important; background:url(<?php echo IMGDIR;?>/tabbg.jpg) repeat-x 0 1px}
+        .eis_ttp{ border-top:1px solid #9DB3C5 !important; height:30px; line-height:30px; padding-top:1px !important; margin-bottom:2px !important; background:url(<?php echo IMGDIR;?>/tabbg.jpg) repeat-x 0 1px}
         .ttp a, .ttp strong{ padding:0 0 0 12px !important; background:none !important; border:none !important; color:#fff !important}
-        .ttp .a a{ border:none !important; background:none !important; color:#fff !important}
+        .ttp .a a{ border:none !important; background:#fff !important; color:#000 !important;height:28px;padding:0 4px 0 4px;width:60px;}
         .ttp a:hover{ text-decoration:underline}
-        .eis_ttp li{ _padding-bottom:0}
+        .ttp li{padding-top:2px;padding-bottom:0px;}
+        #ttp_all a{width:60px;height:30px;}
+        .eis_ttp li{ _padding-bottom:0;height:28px;width:72px;}
         .eis_ttp .pipe{ _margin-top:-3px;}
         .tl .tf{}
         .tl .th td, .tl .th th{ padding:8px 0 !important; padding:8px 0 5px\9!important;}
         .tl tr:hover th, .tl tr:hover td{ background:none !important}
-        .tl .th, .tl .th tr:hover th, .tl .th tr:hover td{ background-color:#648fc7 !important;}
-        .tl .num {line-height: 14px;width: 80px;}
+        .tl .th, .tl .th tr:hover th, .tl .th tr:hover td{ background-color:#ccc !important}
+        
         .pnc, a.pnc{ background-color:#E9F3FD; border-color:#E9F3FD; }
         #fastpostsubmit strong{ font-weight:normal !important}
         .pnpost #fastpostsubmit{ width:102px; height:24px; line-height:22px; box-shadow:none !important; text-indent:-999em; background:url(<?php echo IMGDIR;?>/send.jpg) no-repeat}
