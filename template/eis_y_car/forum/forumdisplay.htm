@@ -48,18 +48,19 @@ var j = jQuery.noConflict();
                 <a href="forum.php?mod=applyjoin&fid={$_G['forum']['fid']}" style="font-size:14px;color:red;">申请加入</a>
             <!--{elseif $_G['uid'] != $moderatorid}-->
                 <a href="forum.php?mod=moderator&fid={$_G['forum']['fid']}"><span style="color:red;font-size:14px;">申请版主</span></a>
+                <!--{hook/global_usernav_extra4}-->
             <!--{/if}-->
             <!--{if $_G['uid']==$applyjoinuid}-->
                 <!--{if $applyjointe=='0'}-->
                 <span style="color:red;font-size:14px;">正在审核</span>
                 <!--{elseif $applyjointe=='1'}-->
-                <span style="color:#123;font-size:14px;">已加入
+                <span style="color:#123;font-size:14px;">
                 <!--{if $_G['uid'] && $_G['group']['radminid'] > 1}-->
                     <a href="forum.php?mod=modcp&fid=$_G[fid]" target="_blank">管理本版</a>
                 <!--{/if}-->
             </span>
                 <!--{/if}-->
-                <!--{hook/global_usernav_extra4}-->
+                
             <!--{else}-->
             <a href="forum.php?mod=applyjoin&fid={$_G['forum']['fid']}" style="font-size:14px;color:red;">申请加入</a>
             <!--{/if}-->
@@ -139,7 +140,7 @@ var j = jQuery.noConflict();
                         <a href="forum.php?mod=forumdisplay&fid=$_G[fid]&filter=specialtype&specialtype=activity">活动</a>
                         </li>
                         <!--{/if}-->
-                        <!--{if $showdebate}--><li class="{if $_GET['specialtype']==debate} a{/if}"><a href="forum.php?mod=forumdisplay&fid=$_G[fid]&filter=specialtype&specialtype=debate$forumdisplayadd[specialtype]{if $_GET['archiveid']}&archiveid={$_GET['archiveid']}{/if}">{lang thread_debate}555</a></li><!--{/if}-->
+                        <!--{if $showdebate}--><li class="{if $_GET['specialtype']==debate} a{/if}"><a href="forum.php?mod=forumdisplay&fid=$_G[fid]&filter=specialtype&specialtype=debate$forumdisplayadd[specialtype]{if $_GET['archiveid']}&archiveid={$_GET['archiveid']}{/if}">{lang thread_debate}</a></li><!--{/if}-->
                     </ul>
                 </div>
                 
@@ -153,9 +154,9 @@ var j = jQuery.noConflict();
                         <!--{if $_G['forum']['threadtypes']}-->
                             <!--{loop $_G['forum']['threadtypes']['types'] $id $name}-->
                                 <!--{if $_GET['typeid'] == $id}-->
-                                <li class="xw1 a"><a href="forum.php?mod=forumdisplay&fid=$_G[fid]{if $_GET['sortid']}&filter=sortid&sortid=$_GET['sortid']{/if}{if $_GET['archiveid']}&archiveid={$_GET['archiveid']}{/if}"><!--{if $_G[forum][threadtypes][icons][$id] && $_G['forum']['threadtypes']['prefix'] == 2}--><img class="vm" src="$_G[forum][threadtypes][icons][$id]" alt="" /> <!--{/if}-->$name</a></li>
+                                <li class="xw1 a"><a href="forum.php?mod=forumdisplay&fid=$_G[fid]{if $_GET['sortid']}&filter=sortid&sortid=$_GET['sortid']{/if}{if $_GET['archiveid']}&archiveid={$_GET['archiveid']}{/if}"><!--{if $_G[forum][threadtypes][icons][$id] && $_G['forum']['threadtypes']['prefix'] == 2}--><img class="vm" src="$_G[forum][threadtypes][icons][$id]" alt="" /> <!--{/if}-->$name</a>|</li>
                                 <!--{else}-->
-                                <li><a href="forum.php?mod=forumdisplay&fid=$_G[fid]&filter=typeid&typeid=$id$forumdisplayadd[typeid]{if $_GET['archiveid']}&archiveid={$_GET['archiveid']}{/if}"><!--{if $_G[forum][threadtypes][icons][$id] && $_G['forum']['threadtypes']['prefix'] == 2}--><img class="vm" src="$_G[forum][threadtypes][icons][$id]" alt="" /> <!--{/if}-->$name</a></li>
+                                <li><a href="forum.php?mod=forumdisplay&fid=$_G[fid]&filter=typeid&typeid=$id$forumdisplayadd[typeid]{if $_GET['archiveid']}&archiveid={$_GET['archiveid']}{/if}"><!--{if $_G[forum][threadtypes][icons][$id] && $_G['forum']['threadtypes']['prefix'] == 2}--><img class="vm" src="$_G[forum][threadtypes][icons][$id]" alt="" /> <!--{/if}-->$name</a>|</li>
                                 <!--{/if}-->
                             <!--{/loop}-->
                         <!--{/if}-->
@@ -164,9 +165,9 @@ var j = jQuery.noConflict();
                             <!--{if $_G['forum']['threadtypes']}--><li><span class="pipe">|</span></li><!--{/if}-->
                             <!--{loop $_G['forum']['threadsorts']['types'] $id $name}-->
                                 <!--{if $_GET['sortid'] == $id}-->
-                                <li class="xw1 a"><a href="forum.php?mod=forumdisplay&fid=$_G[fid]{if $_GET['typeid']}&filter=typeid&typeid=$_GET['typeid']{/if}{if $_GET['archiveid']}&archiveid={$_GET['archiveid']}{/if}">$name</a></li>
+                                <li class="xw1 a"><a href="forum.php?mod=forumdisplay&fid=$_G[fid]{if $_GET['typeid']}&filter=typeid&typeid=$_GET['typeid']{/if}{if $_GET['archiveid']}&archiveid={$_GET['archiveid']}{/if}">$name</a>|</li>
                                 <!--{else}-->
-                                <li><a href="forum.php?mod=forumdisplay&fid=$_G[fid]&filter=sortid&sortid=$id$forumdisplayadd[sortid]{if $_GET['archiveid']}&archiveid={$_GET['archiveid']}{/if}">$name</a></li>
+                                <li><a href="forum.php?mod=forumdisplay&fid=$_G[fid]&filter=sortid&sortid=$id$forumdisplayadd[sortid]{if $_GET['archiveid']}&archiveid={$_GET['archiveid']}{/if}">$name</a>|</li>
                                 <!--{/if}-->
                             <!--{/loop}-->
                         <!--{/if}-->

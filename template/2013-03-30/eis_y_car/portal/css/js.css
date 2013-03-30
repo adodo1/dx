@@ -1,0 +1,36 @@
+@charset "utf-8";
+/* CSS Reset */
+/**index_bann**/
+.banner{ position:relative}
+.han_ban_left{ position:absolute; width:34px; height:65px; left:20px; top:90px; z-index:1; cursor:pointer}
+.han_ban_right{ position:absolute; right:20px; top:90px; width:34px; height:65px;z-index:1; cursor:pointer}
+
+.h_box_img{ position:absolute; display:none;}
+
+/**index_Picture carousel**/
+.demo{ width:322px; height:180px; position:relative; overflow:hidden;}
+.num{ position:absolute;left:260px; top:162px; z-index:10;}
+.num .cur{ background:#FFF}
+.demo ul{ position:relative; z-index:5;}
+.demo ul li{ position:absolute; display:none;}
+.num a{width: 5px;background: #0369B0;float: left;height: 5px;font-size: 0px;overflow: hidden;cursor: pointer;margin-right: 3px;
+border: #0369B0 2px solid;-webkit-border-radius: 7px;-moz-border-radius: 7px;border-radius: 7px;}
+
+/**Location**/
+.wzcx{ position:absolute; right:-120px; z-index:99; top:-70px;}
+
+.qy-li{ display:none}
+.qy-lbi{ display:none}
+
+.wtxq{ display:none}
+
+.haved{ display:none}
+
+/**cxzs-1**/
+.fd-car{ display:none;}
+.del{ cursor:pointer}
+
+.h_none{ display:none}
+
+.sed_cx{ display:none}
+

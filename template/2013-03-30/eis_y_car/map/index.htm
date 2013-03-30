@@ -1,0 +1,569 @@
+<!--{subtemplate common/header_common}-->
+<!DOCTYPE html>
+<html>
+<head>
+<!--STATUS OK-->
+<meta charset="utf-8" />
+
+
+<title></title>
+<link href='./template/eis_y_car/map/bmap.css?v=201210111817' rel="stylesheet" type="text/css">
+<meta name="application-name" content="$_G['setting']['bbname']" />
+	<meta name="msapplication-tooltip" content="$_G['setting']['bbname']" />
+	<!--{if $_G['setting']['portalstatus']}--><meta name="msapplication-task" content="name=$_G['setting']['navs'][1]['navname'];action-uri={echo !empty($_G['setting']['domain']['app']['portal']) ? 'http://'.$_G['setting']['domain']['app']['portal'] : $_G[siteurl].'portal.php'};icon-uri={$_G[siteurl]}{IMGDIR}/portal.ico" /><!--{/if}-->
+	<meta name="msapplication-task" content="name=$_G['setting']['navs'][2]['navname'];action-uri={echo !empty($_G['setting']['domain']['app']['forum']) ? 'http://'.$_G['setting']['domain']['app']['forum'] : $_G[siteurl].'forum.php'};icon-uri={$_G[siteurl]}{IMGDIR}/bbs.ico" />
+	<!--{if $_G['setting']['groupstatus']}--><meta name="msapplication-task" content="name=$_G['setting']['navs'][3]['navname'];action-uri={echo !empty($_G['setting']['domain']['app']['group']) ? 'http://'.$_G['setting']['domain']['app']['group'] : $_G[siteurl].'group.php'};icon-uri={$_G[siteurl]}{IMGDIR}/group.ico" /><!--{/if}-->
+	<!--{if helper_access::check_module('feed')}--><meta name="msapplication-task" content="name=$_G['setting']['navs'][4]['navname'];action-uri={echo !empty($_G['setting']['domain']['app']['home']) ? 'http://'.$_G['setting']['domain']['app']['home'] : $_G[siteurl].'home.php'};icon-uri={$_G[siteurl]}{IMGDIR}/home.ico" /><!--{/if}-->
+	<!--{if $_G['basescript'] == 'forum' && $_G['setting']['archiver']}-->
+		<link rel="archives" title="$_G['setting']['bbname']" href="{$_G[siteurl]}archiver/" />
+	<!--{/if}-->
+	<!--{if !empty($rsshead)}-->$rsshead<!--{/if}-->
+	<!--{if widthauto()}-->
+		<link rel="stylesheet" id="css_widthauto" type="text/css" href="data/cache/style_{STYLEID}_widthauto.css?{VERHASH}" />
+		<script type="text/javascript">HTMLNODE.className += ' widthauto'</script>
+	<!--{/if}-->
+	<!--{if $_G['basescript'] == 'forum' || $_G['basescript'] == 'group'}-->
+		<script type="text/javascript" src="{$_G[setting][jspath]}forum.js?{VERHASH}"></script>
+	<!--{elseif $_G['basescript'] == 'home' || $_G['basescript'] == 'userapp'}-->
+		<script type="text/javascript" src="{$_G[setting][jspath]}home.js?{VERHASH}"></script>
+	<!--{elseif $_G['basescript'] == 'portal'}-->
+		<script type="text/javascript" src="{$_G[setting][jspath]}portal.js?{VERHASH}"></script>
+	<!--{/if}-->
+	<!--{if $_G['basescript'] != 'portal' && $_GET['diy'] == 'yes' && check_diy_perm($topic)}-->
+		<script type="text/javascript" src="{$_G[setting][jspath]}portal.js?{VERHASH}"></script>
+	<!--{/if}-->
+    	<script type="text/javascript" src="http://api.map.baidu.com/api?v=1.3"></script>
+	<!--{if $_GET['diy'] == 'yes' && check_diy_perm($topic)}-->
+	<link rel="stylesheet" type="text/css" id="diy_common" href="data/cache/style_{STYLEID}_css_diy.css?{VERHASH}" />
+	<!--{/if}-->
+    <!--[if IE 6]>
+    <script type="text/javascript" src="{IMGDIR}/png.js"></script>
+         <script type="text/javascript">
+         DD_belatedPNG.fix('.eis_zone a, .eis_board1 .eis_titles,.carflashImage span');
+         </script>
+    <![endif]-->
+
+	<style>
+		a{ font-family:"宋体",Arial,Helvetica,sans-serif }
+    	.eis_body{/* width:1213px; margin:0 auto; position:relative; background:url({IMGDIR}/bg.gif) no-repeat */}
+		body {  background:url({IMGDIR}/bg1.png) no-repeat 50% 0;background-position:top left;}
+		#toptb,#hd{ width:1000px; margin:auto}
+		#toptb{/* margin-left:190px; _margin-left:180px;*/}
+		#hd{/* margin:46px 0 0 208px; */ margin-top:46px}
+		.wp_1000{ width:1000px; /*margin:0 0 0 188px*/ margin:auto}
+		
+		.eis_hd_left{ width:780px; height:255px;}
+			/*logo & search*/
+		.fastlg a{ font-size:14px}
+		#um{padding:0}
+		#um, #um a{ font-size:14px}
+		#um .avt{ margin-right:10px; margin-top:5px;}
+		.avt img{ padding:0px; border:none; width:18px; height:18px; border-radius:2px}
+		#eis_us{ padding-right:16px; background:url({IMGDIR}/arrwd.gif) no-repeat 100% 50%}
+		#eis_us.a{ background:url({IMGDIR}/arrow_top.gif) no-repeat 100% 50%}
+		.eis_sch_user{ width:445px;}
+		#scbar{ border:none; background:none; height:70px; margin-top:8px;}
+		#scbar_txt{ width:368px; padding-left:5px; height:36px; line-height:36px; border:1px solid #999; border-right:0px; float:left;}
+		#scbar_type{ display:none}
+		#scbar_btn{ width:70px; height:39px; text-indent:-999em; background:url({IMGDIR}/pic02.gif); border:none; cursor:pointer; float:right;}
+		#scbar_hot{ height:20px; line-height:20px; margin-top:5px}
+		#scbar_hot a{ color:#333; margin-right:10px;}
+		#eis_us_menu #myprompt.new{ background-repeat:no-repeat; padding-left:15px;}
+		.fastlg_fm{ border:none !important}
+		.fastlg_fm .hm{ display:none !important}
+		
+			/*notice & navigate*/
+		.dottom{ width:764px; height:120px;	float:left;	margin-top:28px;}
+		.dottom .gonggao{ width:490px; /*border:1px #000 solid; */height:116px; float:left; margin-left:8px; }
+		.dottom .gonggao1{ width:250px; /*border:1px #000 solid; */height:116px; float:left; margin-left:8px; }
+		
+		.dottom .gonggao1{ margin-left:0}
+		.dottom .gonggao img,.dottom .gonggao1 img{ float:left; margin:9px 0px 0px 7px;}
+		.content01{	width:240px; background-color:#7ecafa; height:116px; float:left;}
+		.content02{	width:480px; background-color:#7ecafa; height:116px; float:left; }
+		
+		.title_g{ width:230px;	margin: auto;	height:40px;	line-height:40px;	font-size:14px;	color:#FFF;	border-bottom:1px #FFF solid;	font-family:"微软雅黑";}	
+		.title_k{ width:430px;	margin: auto;	height:40px;	line-height:40px;	font-size:14px;	color:#FFF;	border-bottom:1px #FFF solid;	font-family:"微软雅黑";}	
+		.ggdiv{	width:230px; margin:10px auto 0; overflow:hidden;}
+		.gg_nr li{ width:230px;  line-height:25px;	height:25px;}
+		.gg_nr li a{ text-decoration:none; font-size:12px; color:#FFF;	}	
+		.gg_nr li a:hover{  font-size:12px;color:#F9D89D;	}
+		
+		.daohang_table{	margin:auto; line-height:20px; margin-top:10px; color:#FFF; font-size:13px; _font-size:12px; width:480px;}
+		.daohang_table input{ width:100px;}
+		.daohang_btn{ width:45px; height:36px; border:none; background: url({IMGDIR}/pic08.gif) no-repeat scroll center top transparent; cursor:pointer;}
+		
+			/*weather*/
+		.eis_hd_right{ width:180px; height:255px; overflow:hidden; }
+		
+		.wtname{ display:none !important; margin-left:-50px;}
+		#kuangb #img1,#kuangb #img2,#kuangb #img3{ width:40px !important; height:40px !important}
+		
+		.eis_dz1{ width:995px;}
+		.eis_zone{ position:relative; border:1px solid #999999; width:179px; height:167px; float:left; margin-right:15px; margin-top:20px; background:url({IMGDIR}/pic09.jpg) no-repeat 50% 50%}
+		.eis_zone a,.eis_board1 .eis_titles{ position:absolute; background:url({IMGDIR}/t_bg.png) repeat; left:2px; bottom:2px; font-size:14px;	color:#FFF;	text-decoration:none;	font-family:"微软雅黑"; height:30px; line-height:30px; width:165px; padding-left:10px;}
+		.eis_zone a:hover{ text-decoration:none}
+		.eis_board{}
+		.eis_board1{ position:relative; width:175px; height:163px; border:1px solid #999999; padding:2px; background-color:#fff; float:left; margin-right:15px; margin-top:20px;}
+		
+		
+		
+		.eis_tables{height:163px;;overflow:hidden;position: relative; }
+		.boxcaption{ 
+				float: left; 
+				position: absolute; 
+				background: #000;
+				color:#FFF;
+				height: 100px; 
+				width: 100%; 
+				opacity: .8; 
+				/* For IE 5-7 */
+				filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=80);
+				/* For IE 8 */
+				-MS-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=80)";
+				top: 163;
+ 				left: 0;
+ 			}
+			
+		.eis_board1 img{ width:175px; height:163px;}
+		
+		.eis_board2 ul{width:960px; padding-left:30px;}
+		.eis_board2 ul li{width:180px; height:220px;float:left; }
+		
+		.eis_board2 ul li img{ width:150px; height:143px;display:inline-block;margin:0px 15px 5px 15px;text-align:center;white-space:normal; }
+		
+		#pt{ margin:20px 0 0}
+		
+			/*footer*/
+		#ft{ border:none; margin-top:10px;}
+		#footer{ overflow:hidden; width:1000px; margin-bottom:20px;}
+
+		.foot_content{ color:#666; width:700px; margin-left:100px; line-height:30px; text-align:center; float:left; display:inline; }
+		
+		.foot_content .link{color:#666;	text-decoration:none;font-size:12px;}
+		
+		.foot_text{	color:#666;	font-family:Arial, Helvetica, sans-serif; display:block}
+		
+		.foot_pliceman{	width:180px;height:200px;	float:left;	display:inline;	margin:20px 0px 0px 20px;}
+		
+		.foot_pliceman img{	float:left;	margin-right:10px;	}
+		
+		.foot_pliceman a{	color:#000;	text-decoration:none;line-height:15px;	}
+		
+		/*forumdisplay*/
+		.eis_f10{ margin:0 !important; _margin-bottom:10px; border:none !important}
+		.eis_b10{ overflow:hidden; margin:0 0 10px !important}
+		
+		#carflash_div {	margin-top:10px;	overflow:hidden;	width:960px; 	float:left;	display:inline;	}
+		
+		/*****/
+		#carflash {	 WIDTH:960px; POSITION: relative; HEIGHT:270px;}
+		#carflash img { width:960px; HEIGHT:270px;}
+		#carflashContent {	MARGIN-LEFT: 0px; WIDTH:958px; POSITION: absolute; TOP: 0px;}
+		.carflashImage { DISPLAY: none; FLOAT: left; POSITION: relative;}
+		.carflashImage span { DISPLAY: none;  WIDTH:789px; COLOR: #fff; padding:25px 14px 20px; POSITION: absolute; background:url({IMGDIR}/t_bg.png) repeat}
+		.carflashImage span a{ color:#FFF;	text-decoration:none;}
+		.clear {CLEAR:both; }
+		.carflashImage span strong {FONT-SIZE:16px;	font-family:"微软雅黑";	}
+		.left {	LEFT:0px; WIDTH:162px! important; TOP:0px; HEIGHT:225px;}
+		.right { RIGHT:0px; top:0; WIDTH:162px! important;  HEIGHT:225px;}
+		.eis_fgx{ display:block; overflow:hidden; white-space:nowrap}
+		
+		/*search1*/
+		.eis_scbar{	width:211px !important; width:212px\9 !important; height:30px !important; margin-top:2px !important; float:right;overflow:hidden;text-align:left;}
+		.eis_scbar #scbar_txt{ width:155px !important; font-size:12px; height:24px !important; line-height:24px !important; border:2px solid #005eac; border-right:0px; float:left;}
+		.eis_scbar #scbar_btn{ width:49px !important; height:30px !important; background:url({IMGDIR}/search.jpg); cursor:pointer; float:right;}
+		
+		/*pg*/
+		.pg strong{ background-color:#76C3FB !important; color:#fff !important}
+		.pg a, .pg strong, .pgb a, .pg label{ border-color:#8DC1D7 !importan; margin-right:4px; margin-left:0 !important}
+		.pg a:hover,.pgb a:hover{ border-color:#76C3FB !important}
+		.pg{ float:left}
+		
+		/*主题*/
+		.eis_taba{ margin-bottom:-2px}
+		.eis_taba ul{ margin-left:20px;}
+		.eis_taba ul li{ float:left; width:52px; margin-right:2px;}
+		.eis_taba ul li a{ height:28px; line-height:28px; display:block; text-align:center; background:url({IMGDIR}/tab_btn02.jpg) no-repeat 50% 0; }
+		.eis_taba ul li.a{ float:left; width:72px; margin-right:2px;}
+		.eis_taba ul li.a a{ color:#fff; line-height:29px;background:url({IMGDIR}/tab_btn01.jpg) no-repeat 50% 0; }
+		.eis_taba ul li a:hover{ text-decoration:none}
+		.eis_ttp{ border-top:1px solid #9DB3C5 !important; height:30px; line-height:30px; padding-top:5px !important; margin-bottom:0 !important; background:url({IMGDIR}/tabbg.jpg) repeat-x 0 1px}
+		.ttp a, .ttp strong{ padding:0 0 0 12px !important; background:none !important; border:none !important; color:#fff !important}
+		.ttp .a a{ border:none !important; background:none !important; color:#fff !important}
+		.ttp a:hover{ text-decoration:underline}
+		.eis_ttp li{ _padding-bottom:0}
+		.eis_ttp .pipe{ _margin-top:-3px;}
+		.tl .tf{ display:none !important}
+		.tl .th td, .tl .th th{ padding:8px 0 !important; padding:8px 0 5px\9!important;}
+		.tl tr:hover th, .tl tr:hover td{ background:none !important}
+		.tl .th, .tl .th tr:hover th, .tl .th tr:hover td{ background-color:#3669ab !important}
+		
+		.pnc, a.pnc{ background-color:#E9F3FD; border-color:#E9F3FD; }
+		#fastpostsubmit strong{ font-weight:normal !important}
+		.pnpost #fastpostsubmit{ width:102px; height:24px; line-height:22px; box-shadow:none !important; text-indent:-999em; background:url({IMGDIR}/send.jpg) no-repeat}
+		#f_pst{ padding-bottom:30px !important; border:1px solid #9DB3C5 !important; border-width:1px 0 !important}
+		#f_pst .bm_h{ background:none !important;}
+		#f_pst .bm_h h2{ font-family:"宋体"}
+		#f_pst .bm_c{ border-bottom:1px solid #9DB3C5 !important; }
+		
+		/*列表页*/
+		.eis_tl{ border:none !important}
+		.eis_tl .bm_c{ padding:0;}
+		.eis_pgs{ border-top:1px solid #9DB3C5 !important; border:none\9 !important; margin-top:-10px; padding-top:10px;}
+    </style>
+
+<script language="javascript">
+  var globalhref='http://map.baidu.com/';
+  var webfilename='map.php';
+  
+</script>
+<script type="text/javascript" src="./template/eis_y_car/map/monitor/pdc.js"></script><script type="text/javascript">(function() {var A = window.navigator.userAgent.toLowerCase();if ((/iphone/.test(A) || /ipad/.test(A) || /ipod/.test(A) || /android/.test(A)) && /safari/.test(A)) {location.href = "/mobile/"}})();var _OLR = {"index":"{\"content\":{\"baike\":0,\"city_type\":2,\"cname\":\"\\u5317\\u4eac\\u5e02\",\"code\":131,\"geo\":\"1|12958160.97,4825907.72;12958160.97,4825907.72|12958160.97,4825907.72;\",\"if_current\":1,\"level\":12,\"sample\":{\"poi\":\"\\u4e2d\\u5173\\u6751\\u5927\\u53a6\",\"route\":\"\\u4ece\\u9890\\u548c\\u56ed\\u5230\\u897f\\u5355\"},\"sup\":1,\"sup_bus\":1,\"sup_business_area\":1,\"sup_lukuang\":1,\"sup_subway\":1,\"tips\":\"\\u5317\\u4eac\",\"uid\":\"7af0a1acefe223dd0a1cc7f3\"},\"special\":{\"data\":{\"top\":[],\"bottom\":[{\"type\":\"image\",\"title\":\"\\u624b\\u673a\\u5730\\u56fe\\u4e0b\\u8f7d\",\"pic_url\":\"http:\\\/\\\/map.baidu.com\\\/fwmap\\\/upload\\\/r\\\/image\\\/2012-09-27\\\/4ca9db2330d64de856531423d3634dec.jpg\",\"href\":\"http:\\\/\\\/shouji.baidu.com\\\/map\\\/\",\"stat_code\":\"296\",\"style\":\"1\",\"show_prom\":\"0\"}],\"banner\":[{\"type\":\"image\",\"title\":\"LBD\\u53d1\\u5e03\\u4f1a\\u4e13\\u9898\",\"pic_url\":\"http:\\\/\\\/map.baidu.com\\\/fwmap\\\/upload\\\/r\\\/image\\\/2012-10-15\\\/54d0e1dfabdf0ade5832b236e429dafb.jpg\",\"href\":\"http:\\\/\\\/map.baidu.com\\\/zt\\\/open\\\/\",\"stat_code\":\"265\",\"style\":\"1\",\"show_prom\":\"0\"}],\"richbanner\":[],\"top_html\":\"\",\"bottom_html\":\"\",\"banner_html\":\"\"}},\"result\":{\"jump_back\":0,\"qid\":\"\",\"time\":0,\"type\":1},\"current_city\":{\"code\":131,\"sup\":1,\"sup_bus\":1,\"sup_business_area\":1,\"sup_lukuang\":1,\"sup_subway\":1,\"type\":2,\"up_province_name\":\"\\u5317\\u4eac\\u5e02\"},\"hot_city\":[\"\\u5317\\u4eac\\u5e02|131\",\"\\u4e0a\\u6d77\\u5e02|289\",\"\\u5e7f\\u5dde\\u5e02|257\",\"\\u6df1\\u5733\\u5e02|340\",\"\\u6210\\u90fd\\u5e02|75\",\"\\u5929\\u6d25\\u5e02|332\",\"\\u5357\\u4eac\\u5e02|315\",\"\\u676d\\u5dde\\u5e02|179\",\"\\u6b66\\u6c49\\u5e02|218\",\"\\u91cd\\u5e86\\u5e02|132\"]}","loopindex":-1};</script>
+</head>
+<body onResize="mapResize()" style="overflow:auto">
+<div id="searchWrapper" style="position:relative;">
+	
+    
+    <div id="hd">
+			<div class="wp" >
+				<div class="hdc cl">
+					<!--{eval $mnid = getcurrentnav();}-->
+                    <div class="eis_hd_left z">
+						<h2><!--{if !isset($_G['setting']['navlogos'][$mnid])}--><a href="./" title="$_G['setting']['bbname']">{$_G['style']['boardlogo']}</a><!--{else}-->$_G['setting']['navlogos'][$mnid]<!--{/if}--></h2>
+                    
+                    	<div class="z eis_sch_user">
+                    
+						<!--{if $_G['uid']}-->
+					<div id="um">
+						
+						<p class="y">
+							<strong class=""><a href="home.php?mod=space&uid=$_G[uid]" target="_blank" title="{lang visit_my_space}" id="eis_us" onMouseOver="showMenu({'ctrlid':'eis_us','pos':'34!','ctrlclass':'a','duration':2});">{$_G[member][username]}</a></strong>
+                            <span class="pipe">|</span>
+                            
+							<!--{if $_G['group']['allowinvisible']}-->
+							<span id="loginstatus">
+								<a id="loginstatusid" href="member.php?mod=switchstatus" title="{lang login_switch_invisible_mode}" onClick="ajaxget(this.href, 'loginstatus');return false;" class="xi2"></a>
+							</span>
+                            <span class="pipe">|</span>
+                            <!--{/if}-->
+                            
+							<!--{hook/global_usernav_extra1}-->
+							<!--{hook/global_usernav_extra4}-->
+							<!--{hook/global_usernav_extra2}-->
+                            
+							<a href="member.php?mod=logging&action=logout&formhash={FORMHASH}">{lang logout}</a>
+							<span class="pipe" style="margin-right:-5px">|</span>
+							<!--{hook/global_usernav_extra3}-->
+							<!--{eval $upgradecredit = $_G['uid'] && $_G['group']['grouptype'] == 'member' && $_G['group']['groupcreditslower'] != 999999999 ? $_G['group']['groupcreditslower'] - $_G['member']['credits'] : false;}-->
+							<a href="home.php?mod=spacecp&ac=credit&showcredit=1" id="extcreditmenu"{if !$_G[setting][bbclosed]} onMouseOver="delayShow(this, showCreditmenu);" class="showmenu"{/if}>{lang credits}: $_G[member][credits]</a>
+							
+						</p>
+                        <div class="avt y"><a href="home.php?mod=space&uid=$_G[uid]"><!--{avatar($_G[uid],small)}--></a></div>
+					</div>
+					<!--{elseif !empty($_G['cookie']['loginuser'])}-->
+					<p>
+						<strong><a id="loginuser" class="noborder"><!--{echo dhtmlspecialchars($_G['cookie']['loginuser'])}--></a></strong>
+						<a href="member.php?mod=logging&action=login" onClick="showWindow('login', this.href)">{lang activation}</a>
+						<a href="member.php?mod=logging&action=logout&formhash={FORMHASH}">{lang logout}</a>
+					</p>
+					<!--{elseif !$_G[connectguest]}-->
+						<!--{template member/login_simple}-->
+					<!--{else}-->
+					<div id="um">
+						
+						<p class="y">
+							<strong class="z">{$_G[member][username]}</strong>
+							<!--{hook/global_usernav_extra1}-->
+							<span class="pipe">|</span><a href="member.php?mod=logging&action=logout&formhash={FORMHASH}">{lang logout}</a>
+							<a href="home.php?mod=spacecp&ac=credit&showcredit=1">{lang credits}: 0</a>
+							<span class="pipe">|</span>{lang usergroup}: $_G[group][grouptitle]
+						</p>
+                        <div class="avt y"><!--{avatar(0,small)}--></div>
+					</div>
+					<!--{/if}-->
+                    
+                    	<!--{subtemplate common/pubsearchform}-->
+  
+                    </div>
+                    
+                    	<div class="dottom cl">
+                        
+                           <div class="gonggao1">
+                              <div class="content01">
+                                 <div class="title_g">
+                                 活动公告
+                                 </div>
+                                 <div class="ggdiv">
+                                   <ul class="gg_nr">
+                                     {if !empty($activitys)}
+                                     <!--{loop $activitys $key $value}-->
+                                      <li>
+                                      <a href="thread-{$value[tid]}-1-1.html">{$value[subject]}</a> <span style="float:right;">{$value[name]}</span>
+                                      </li>
+                                     
+                                    <!--{/loop}-->   
+                                    {/if}
+                                   </ul>
+                                 </div>
+                              </div>
+                              <!--<img src="{IMGDIR}/pic03.gif" height="98" width="145" border="0" id="eis_img001"/>-->
+                           </div>
+              
+                           
+                           <div class="gonggao">
+                             <div class="content02">
+                                <div class="title_k">
+                                 出行导航
+                                </div>
+                                <div class="search_box" style=" width:524px; margin:0px auto">
+                                   
+                                    <form id="form1" name="fmwd" onSubmit="window.qSearch && qSearch(this,'loc','',{from:'button'});return false"  style="display:none">
+                                      <div class="search_input" style=" position:relative;  padding-top:24px; padding-bottom:5px;background-position:0px 24px"><span class="input_span1" id="PoiSearchSpan">
+                                        <input type="text" name="word" class="input1" maxlength="256" id="PoiSearch"autocomplete="off">
+                                        <span class="smp_poi_btn" title="常用地点" onclick="SmpMgr.openList('PoiSearch', event)"></span></span>
+                                        <input type="hidden" name="ft" value="tab">
+                                        <ul class="tab" style="position:absolute; top:0px; left:0px;">
+                                          <li id="tab1" class="on" onClick="switchTab(1,'','',{from:'button'});addStat(STAT_INDEX_ONSEA)">搜索</li>
+                                          <li id="tab2" onClick="switchTab(2,'','',{from:'button'});switchTabQuery(2);addStat(STAT_INDEX_ONBUS)" onmouseover="this.className='other_on'" onmouseout="this.className=''">公交</li>
+                                          <li id="tab3" onClick="switchTab(3,'','',{from:'button'});switchTabQuery(3);addStat(STAT_INDEX_ONNAV)" onmouseover="this.className='other_on'" onmouseout="this.className=''">驾车</li>
+                                        </ul>
+                                      </div>
+                                      <div class="search_input1"><span class="input_span" style="padding-top:24px ;padding-bottom:5px; background-position:right 24px">
+                                        <input value="搜索" id="poiSearchBtn" title="" type="submit" onmouseout="this.className=''" onmousedown="this.className='down'" onmouseup="this.className=''">
+                                        </span></div>
+                                    </form>
+                                    <form id="form2" name="fmbus" onSubmit="window.qSearch && qSearch(this,'bt','',{from:'button'});return false" style="display:none">
+                                      <div class="search_input"  style=" position:relative;  padding-top:24px;  padding-bottom:5px;  background-position:0px 24px"><span class="input_span2" id="BusSearchStaSpan">
+                                        <input type="text" name="word_from" class="input2 input_start" maxlength="256" id="BusSearchSta"autocomplete="off" _from="start">
+                                        <span class="smp_navs_btn" title="常用地点" onclick="SmpMgr.openList('BusSearchSta', event)"></span></span><span class="return_icon" id="busReturnIcon" title="切换起终点"></span><span class="input_span3" id="BusSearchEndSpan">
+                                        <input type="text" name="word_to" class="input3 input_end" maxlength="256" id="BusSearchEnd"autocomplete="off" _from="end">
+                                        <span class="smp_nave_btn" title="常用地点" onclick="SmpMgr.openList('BusSearchEnd', event)"></span></span>
+                                        <ul class="tab" style="position:absolute; top:0px; left:0px;">
+                                          <li id="tab1" onClick="switchTab(1,'','',{from:'button'});addStat(STAT_INDEX_ONSEA)" onmouseover="this.className='other_on'" onmouseout="this.className=''">搜索</li>
+                                          <li id="tab2" class="on" onClick="switchTab(2,'','',{from:'button'});switchTabQuery(2);addStat(STAT_INDEX_ONBUS)">公交</li>
+                                          <li id="tab3" onClick="switchTab(3,'','',{from:'button'});switchTabQuery(3);addStat(STAT_INDEX_ONNAV)" onmouseover="this.className='other_on'" onmouseout="this.className=''">驾车</li>
+                                        </ul>
+                                      </div>
+                                      <div class="search_input1"><span class="input_span" style="padding-top:24px;background-position:right 24px">
+                                        <input value="搜索" id="busSearchBtn" title="" type="submit" onmouseout="this.className=''" onmousedown="this.className='down'" onmouseup="this.className=''">
+                                        </span></div>
+                                    </form>
+                                    
+                                    
+                                    
+                                    <form id="form3" name="fmnav" onSubmit="window.qSearch && qSearch(this,'nav','',{from:'button'});return false">
+                                      <div class="search_input"  style=" position:relative;  padding-top:24px;  padding-bottom:5px;  background-position:0px 24px"><span class="input_span2" id="DriveSearchStaSpan">
+                                      
+                                      
+                                      
+                                        <input type="text" name="word_from" class="input2 input_start" maxlength="256" id="DriveSearchSta" autocomplete="off" _from="start" value="">
+                                        <span class="smp_navs_btn" title="常用地点" onclick="SmpMgr.openList('DriveSearchSta', event)"></span></span><span class="return_icon" id="navReturnIcon" title="切换起终点"></span><span class="input_span3" id="DriveSearchEndSpan">
+                                        
+                                        
+                                        <input type="text" name="word_to" class="input3 input_end" maxlength="256" id="DriveSearchEnd" autocomplete="off" _from="end" value="">
+                                        <span class="smp_nave_btn" title="常用地点" onclick="SmpMgr.openList('DriveSearchEnd', event)"></span></span>
+                                        
+                                      </div>
+                                      
+                                      <div><span style=" position:relative;top:23px; left:2px;">
+                                        <input value="" class="daohang_btn" id="driveSearchBtn" title="" type="submit">
+                                        </span></div>
+                                       <div>
+                                        
+                                       </div> 
+                                    </form>
+                                  
+                                  </div>
+                                <script language="javascript" type="text/javascript">
+								function objselect(c,a,t){
+									var where=new Array(35);where[1]=[['东城'],['西城'],['崇文'],['宣武'],['朝阳'],['丰台'],['石景山'],['海淀'],['门头沟'],['房山'],['通州'],['顺义'],['昌平'],['大兴'],['平谷'],['怀柔'],['密云'],['延庆']];where[2]=[['黄浦'],['卢湾'],['徐汇'],['长宁'],['静安'],['普陀'],['闸北'],['虹口'],['杨浦'],['闵行'],['宝山'],['嘉定'],['浦东'],['金山'],['松江'],['青浦'],['南汇'],['奉贤'],['崇明']];where[3]=[['和平'],['东丽'],['河东'],['西青'],['河西'],['津南'],['南开'],['北辰'],['河北'],['武清'],['红挢'],['塘沽'],['汉沽'],['大港'],['宁河'],['静海'],['宝坻'],['蓟县']];where[4]=[['万州'],['涪陵'],['渝中'],['大渡口'],['江北'],['沙坪坝'],['九龙坡'],['南岸'],['北碚'],['万盛'],['双挢'],['渝北'],['巴南'],['黔江'],['长寿'],['綦江'],['潼南'],['铜梁'],['大足'],['荣昌'],['壁山'],['梁平'],['城口'],['丰都'],['垫江'],['武隆'],['忠县'],['开县'],['云阳'],['奉节'],['巫山'],['巫溪'],['石柱'],['秀山'],['酉阳'],['彭水'],['江津'],['合川'],['永川'],['南川']];where[5]=[['石家庄'],['邯郸'],['邢台'],['保定'],['张家口'],['承德'],['廊坊'],['唐山'],['秦皇岛'],['沧州'],['衡水']];where[6]=[['太原'],['大同'],['阳泉'],['长治'],['晋城'],['朔州'],['吕梁'],['忻州'],['晋中'],['临汾'],['运城']];where[7]=[['呼和浩特'],['包头'],['乌海'],['赤峰'],['呼伦贝尔盟'],['阿拉善盟'],['哲里木盟'],['兴安盟'],['乌兰察布盟'],['锡林郭勒盟'],['巴彦淖尔盟'],['伊克昭盟']];where[8]=[['沈阳'],['大连'],['鞍山'],['抚顺'],['本溪'],['丹东'],['锦州'],['营口'],['阜新'],['辽阳'],['盘锦'],['铁岭'],['朝阳'],['葫芦岛']];where[9]=[['长春'],['吉林'],['四平'],['辽源'],['通化'],['白山'],['松原'],['白城'],['延边']];where[10]=[['哈尔滨'],['齐齐哈尔'],['牡丹江'],['佳木斯'],['大庆'],['绥化'],['鹤岗'],['鸡西'],['黑河'],['双鸭山'],['伊春'],['七台河'],['大兴安岭']];where[11]=[['南京'],['镇江'],['苏州'],['南通'],['扬州'],['盐城'],['徐州'],['连云港'],['常州'],['无锡'],['宿迁'],['泰州'],['淮安']];where[12]=[['杭州'],['宁波'],['温州'],['嘉兴'],['湖州'],['绍兴'],['金华'],['衢州'],['舟山'],['台州'],['丽水']];where[13]=[['合肥'],['芜湖'],['蚌埠'],['马鞍山'],['淮北'],['铜陵'],['安庆'],['黄山'],['滁州'],['宿州'],['池州'],['淮南'],['巢湖'],['阜阳'],['六安'],['宣城'],['亳州']];where[14]=[['福州'],['厦门'],['莆田'],['三明'],['泉州'],['漳州'],['南平'],['龙岩'],['宁德']];where[15]=[['南昌市'],['景德镇'],['九江'],['鹰潭'],['萍乡'],['新馀'],['赣州'],['吉安'],['宜春'],['抚州'],['上饶']];where[16]=[['济南'],['青岛'],['淄博'],['枣庄'],['东营'],['烟台'],['潍坊'],['济宁'],['泰安'],['威海'],['日照'],['莱芜'],['临沂'],['德州'],['聊城'],['滨州'],['菏泽']];where[17]=[['郑州'],['开封'],['洛阳'],['平顶山'],['安阳'],['鹤壁'],['新乡'],['焦作'],['濮阳'],['许昌'],['漯河'],['三门峡'],['南阳'],['商丘'],['信阳'],['周口'],['驻马店'],['济源']];where[18]=[['武汉'],['宜昌'],['荆州'],['襄樊'],['黄石'],['荆门'],['黄冈'],['十堰'],['恩施'],['潜江'],['天门'],['仙桃'],['随州'],['咸宁'],['孝感'],['鄂州']];where[19]=[['长沙'],['常德'],['株洲'],['湘潭'],['衡阳'],['岳阳'],['邵阳'],['益阳'],['娄底'],['怀化'],['郴州'],['永州'],['湘西'],['张家界']];where[20]=[['广州'],['深圳'],['珠海'],['汕头'],['东莞'],['中山'],['佛山'],['韶关'],['江门'],['湛江'],['茂名'],['肇庆'],['惠州'],['梅州'],['汕尾'],['河源'],['阳江'],['清远'],['潮州'],['揭阳'],['云浮']];where[21]=[['南宁'],['柳州'],['桂林'],['梧州'],['北海'],['防城港'],['钦州'],['贵港'],['玉林'],['南宁地区'],['柳州地区'],['贺州'],['百色'],['河池']];where[22]=[['海口'],['三亚']];where[23]=[['成都'],['绵阳'],['德阳'],['自贡'],['攀枝花'],['广元'],['内江'],['乐山'],['南充'],['宜宾'],['广安'],['达川'],['雅安'],['眉山'],['甘孜'],['凉山'],['泸州']];where[24]=[['贵阳'],['六盘水'],['遵义'],['安顺'],['铜仁'],['黔西南'],['毕节'],['黔东南'],['黔南']];where[25]=[['昆明'],['大理'],['曲靖'],['玉溪'],['昭通'],['楚雄'],['红河'],['文山'],['思茅'],['西双版纳'],['保山'],['德宏'],['丽江'],['怒江'],['迪庆'],['临沧']];where[26]=[['拉萨'],['日喀则'],['山南'],['林芝'],['昌都'],['阿里'],['那曲']];where[27]=[['西安'],['宝鸡'],['咸阳'],['铜川'],['渭南'],['延安'],['榆林'],['汉中'],['安康'],['商洛']];where[28]=[['兰州'],['嘉峪关'],['金昌'],['白银'],['天水'],['酒泉'],['张掖'],['武威'],['定西'],['陇南'],['平凉'],['庆阳'],['临夏'],['甘南']];where[29]=[['银川'],['石嘴山'],['吴忠'],['固原']];where[30]=[['西宁'],['海东'],['海南'],['海北'],['黄南'],['玉树'],['果洛'],['海西']];where[31]=[['乌鲁木齐'],['石河子'],['克拉玛依'],['伊犁'],['巴音郭勒'],['昌吉'],['克孜勒苏柯尔克孜'],['博尔塔拉'],['吐鲁番'],['哈密'],['喀什'],['和田'],['阿克苏']];where[34]=[['台北'],['高雄'],['台中'],['台南'],['屏东'],['南投'],['云林'],['新竹'],['彰化'],['苗栗'],['嘉义'],['花莲'],['桃园'],['宜兰'],['基隆'],['台东'],['金门'],['马祖'],['澎湖']]; 
+									
+									var Obj1= 'objselectoptions'+t;
+									var objselectoptions=document.getElementById(Obj1);
+									var Obj2 = 'Objselect'+t;
+									var Objselect=document.getElementById(Obj2);
+									Objselect.value=a;
+									D="<select name=\"\" onChange=\"objoptions(this.value,'"+a+"','"+t+"')\">";
+									D+="<option value=\"选择城市\">选择城市</option>";
+									for(i=0;i<where[c].length;i++){D+="<option value=\""+where[c][i]+"\">"+where[c][i]+"</option>"}
+									objselectoptions.innerHTML=D;
+									}
+							  
+								function objoptions(c,a,t){
+									var Obj3 = 'Objselect'+t;
+									var Objselect = document.getElementById(Obj3);
+									Objselect.value=a+c;
+								}
+								</script>
+                                <script type="text/javascript">
+								var ac = new BMap.Autocomplete( 
+									{"input" : "suggestId"
+									,"location" : ""
+								});
+								
+								ac.addEventListener("onhighlight", function(e) {  //鼠标放在下拉列表上的事件
+								var str = "";
+									var _value = e.fromitem.value;
+									var value = "";
+									if (e.fromitem.index > -1) {
+										value = _value.province +  _value.city +  _value.district +  _value.street +  _value.business;
+									}    
+									str = "FromItem<br />index = " + e.fromitem.index + "<br />value = " + value;
+									
+									value = "";
+									if (e.toitem.index > -1) {
+										_value = e.toitem.value;
+										value = _value.province +  _value.city +  _value.district +  _value.street +  _value.business;
+									}    
+									str += "<br />ToItem<br />index = " + e.toitem.index + "<br />value = " + value;
+									document.getElementById("Objselect0").innerHTML = str;
+								});
+								
+								var myValue;
+								ac.addEventListener("onconfirm", function(e) {    //鼠标点击下拉列表后的事件
+								var _value = e.item.value;
+									myValue = _value.province +  _value.city +  _value.district +  _value.street +  _value.business;
+									document.getElementById("Objselect0").innerHTML ="onconfirm<br />index = " + e.item.index + "<br />myValue = " + myValue;
+								});
+								</script>
+                                
+                              </div>
+                              
+                           </div>
+                         </div>
+                        
+                    </div>
+                    
+                    <div class="eis_hd_right y" style="width:200px; height:260px;border-bottom:1px solid #CCC;">
+                    	<!--<img src="{IMGDIR}/weather.jpg">-->
+                        <!--<iframe src="http://www.7stk.com/1/6/200904.htm" width="380" height="70" frameborder="0" marginwidth="0" marginheight="0" scrolling="no" name="I2" align="middle" style=" margin-top:10px; padding-bottom:10px; border-bottom:1px solid #C7CEDE"></iframe>
+						<iframe src="http://www.7stk.com/1/6/200905.htm" width="380" height="70" frameborder="0" marginwidth="0" marginheight="0" scrolling="no" name="I2" align="middle" style="margin-left:-50px; border-bottom:1px solid #C7CEDE; padding-bottom:10px; margin-top:10px"></iframe>-->
+                        <!--<IFRAME id="tianqi8_wetherinfo" name="tianqi8_wetherinfo" src="http://tq.ss256.com/code/freeweather6.htm?id=&fcolor=&imgurl=tb/tbs/tb5&bimg=&bcolor=&fsize=" frameBorder=0 width=260 height=195 ALIGN=CENTER MARGINWIDTH=0 MARGINHEIGHT=0 HSPACE=0 VSPACE=0 SCROLLING=NO allowtransparency=true></IFRAME>-->
+                        <iframe src="http://www.thinkpage.cn/weather/weather.aspx?uid=&cid=101010100&l=zh-CHS&p=CMA&a=0&u=C&s=5&m=1&x=1&d=2&fc=&bgc=&bc=C6C6C6&ti=1&in=1&li=2&ct=iframe" frameborder="0" scrolling="no" width="200" height="300" allowTransparency="true"></iframe>
+                        <!--<IFRAME id="tianqi8_wetherinfo" name="tianqi8_wetherinfo" src="http://tq.ss256.com/code/freeweather12.htm?id=&fcolor=&imgurl=tb/tbb/tb1&bimg=&bcolor=&fsize=12" frameBorder=0 width=180 height=320 ALIGN=CENTER MARGINWIDTH=0 MARGINHEIGHT=0 HSPACE=0 VSPACE=0 SCROLLING=NO allowtransparency=true style="*+margin-right:45px;"></IFRAME>-->
+                        <!--<IFRAME id="tianqi8_wetherinfo" name="tianqi8_wetherinfo" src="http://tq.ss256.com/code/freeweather13.htm?id=&fcolor=&imgurl=tb/tbb/tb1&bimg=&bcolor=&fsize=" frameBorder=0 width=300 height=292 ALIGN=CENTER MARGINWIDTH=0 MARGINHEIGHT=0 HSPACE=0 VSPACE=0 SCROLLING=NO allowtransparency=true></IFRAME>-->
+                    </div>
+				</div>
+				
+                <div style="display:none">
+				<div id="nv">
+					<a href="javascript:;" id="qmenu" onMouseOver="showMenu({'ctrlid':'qmenu','pos':'34!','ctrlclass':'a','duration':2});">{lang my_nav}</a>
+					<ul>
+						<!--{loop $_G['setting']['navs'] $nav}-->
+							<!--{if $nav['available'] && (!$nav['level'] || ($nav['level'] == 1 && $_G['uid']) || ($nav['level'] == 2 && $_G['adminid'] > 0) || ($nav['level'] == 3 && $_G['adminid'] == 1))}--><li {if $mnid == $nav[navid]}class="a" {/if}$nav[nav]></li><!--{/if}-->
+						<!--{/loop}-->
+					</ul>
+					<!--{hook/global_nav_extra}-->
+				</div>
+				<!--{if !empty($_G['setting']['plugins']['jsmenu'])}-->
+					<ul class="p_pop h_pop" id="plugin_menu" style="display: none">
+					<!--{loop $_G['setting']['plugins']['jsmenu'] $module}-->
+						 <!--{if !$module['adminid'] || ($module['adminid'] && $_G['adminid'] > 0 && $module['adminid'] >= $_G['adminid'])}-->
+						 <li>$module[url]</li>
+						 <!--{/if}-->
+					<!--{/loop}-->
+					</ul>
+				<!--{/if}-->
+				$_G[setting][menunavs]
+				<div id="mu" class="cl">
+				<!--{if $_G['setting']['subnavs']}-->
+					<!--{loop $_G[setting][subnavs] $navid $subnav}-->
+						<!--{if $_G['setting']['navsubhover'] || $mnid == $navid}-->
+						<ul class="cl {if $mnid == $navid}current{/if}" id="snav_$navid" style="display:{if $mnid != $navid}none{/if}">
+						$subnav
+						</ul>
+						<!--{/if}-->
+					<!--{/loop}-->
+				<!--{/if}-->
+				</div>
+                </div>
+				<!--{ad/subnavbanner/a_mu}-->
+				
+			
+		</div>
+</div>
+		<!--{hook/global_header}-->
+    
+  
+  
+  <div id="declare" style="display:none"></div>
+  
+  <div id="user_info">
+    <div id="login_user_info" style="display:none"></div>
+    <div id="logout_user_info" style="display:none">
+      
+    </div>
+  </div>
+</div>
+
+
+<div id="tools" align="center" style="width:690px; position:relative;left:220px; overflow:hidden">
+  <div class="tools_l" id="citytools">
+    <div id="selCity">
+      <div class="sel_container"><a href="javascript:void(0)" id="curCity" class="curcity-expand" title="修改城市" onClick="selectCity(this, {styleSwitch:true});return false">北京市</a></div>
+      <font id="GR_Select" style="display:none"></font><font id="supBus" style="display:none;color:#e60000;position:absolute;*top:5px;padding-left:20px;font-size:14px"></font></div>
+    <div id="tools_search" style="display:none;">
+      <form onSubmit="toolbarSubmit();return false" name="tsform">
+        <div class="tstext">
+          <input type="text" maxlength="256" id="ToolPoiSearch" autocomplete="off" class="tools_search_input">
+        </div>
+        <div class="tsbutton">
+          <input type="button" value="搜索" onmouseover="this.className='tools_search_submit tools_search_submit_over'" onmouseout="this.className='tools_search_submit'" onmousedown="this.className='tools_search_submit tools_search_submit_down'" onClick="toolbarSubmit()" class="tools_search_submit"/>
+        </div>
+      </form>
+    </div>
+  </div>
+  
+  
+  <div id="tool_container" class="tools_r">
+    <div class="tools_r_con" id="tool_container_con">
+      <div class="span_l sehinv_icon" id="tool_sehInView"><span class="span_r"><b></b>视野内搜索</span></div>
+      <div class="span_l traf_icon" id="tool_tarffic"><span class="span_r"><b></b>路况信息</span></div>
+      <div class="span_l tool_icon" id="tool_tollCon"><span class="span_r"><b class="tool_icon2"></b><span>工具</span><b class="tool_icon1"></b></span>
+        <div class="tool_box" id="tools_box" style="top:-2000px;"><span class="measure" id="measure"><b></b>测距</span><span class="capwrap" id="capwrap"><b></b>截图</span><span class="signwrap" id="signwrap"><b></b>标记</span><span class="link" id="link"><b></b>分享</span><a class="print" id="print" target="Print"><b></b>打印</a></div>
+      </div>
+      <div class="span_l full_icon" id="tool_fullScr"><span class="span_r"><b></b><span id="tool_fullScrF">全屏</span></span></div>
+    </div>
+  </div>
+  <div id="MapInfoNav" class="tools_r">
+    <div class="span_l fav_icon" id="favBtn" ><span class="span_r">线路</span></div>
+    <div class="span_l subway_icon" id="specialBtn" style="display:none"><span class="span_r"><b></b><span id="specInner"></span></span></div>
+    <div class="span_l box_icon" id="boxBtn"><span class="span_r"><b></b><span id="boxInner"></span></span></div>
+    <em style="position:absolute;top:-8px;left:55px;z-index:300001;" id="favBtn_icon"></em></div>
+</div>
+<div id="wrapper" align="center" style="width:1000px; position:relative;left:220px; overflow:hidden">
+  <div id="MapHolder"></div>
+  <div id="MapInfoCon">
+    <div id="ToolsCon">
+      <div class='toolsTitle'>
+        <div class='titleL' id="ToolsTitle"></div>
+        <div class='titleR' id="ToolsCloseBtn"></div>
+      </div>
+      <div id='toolsContent' class='toolsContent'></div>
+    </div>
+    <div id="MapInfo"></div>
+  </div>
+  <div id="shad">
+    <div id="shad_v"></div>
+    <div id="shad_h"></div>
+    <div id="MapInfoTab" class="mapinfo_but" title="收起左栏">
+      <div class="mapinfo_but_con">
+        <div class="mapinfo_but_div"><span class="mapinfo_but_span"></span></div>
+      </div>
+    </div>
+  </div>
+</div>
+<iframe id="wHistory" name="wHistory" style="width:100%;display:none" src="about:blank"></iframe>
+<form method="get" target="wHistory" name="fmHistory" action="./template/eis_y_car/map/history.html">
+  <input type="hidden" name="url" />
+</form>
+<img id="statImg" src="./template/eis_y_car/map/img/transparent.gif" style="display:none" />
+<div id="monitor" class="monitor"></div>
+</body>
+<script>with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://img.baidu.com/hunter/map.js?st='+~(new Date()/864e5)];</script><script type="text/javascript" src='./template/eis_y_car/map/init.js?v=201210111817'></script><script type="text/javascript">var srUrl = {bmap  : './template/eis_y_car/map/bmap.js?v=201210111817',bctrl : './template/eis_y_car/map/bctrl.js?v=201210111817',bpack : './template/eis_y_car/map/bpack.js?v=201210111817'};Monitor.gp(PDC.DICT.INDEX_TILES_LOAD).start_send();scriptRequest(srUrl.bmap,function() {Monitor.gp(PDC.DICT.INDEX_TILES_LOAD).transfer_time();loadBody();AsynLoader.get(srUrl.bctrl);AsynLoader.get(srUrl.bpack);},null, null, true);</script>
+</html>
+
+<!--{subtemplate common/footer}-->
+
+
+

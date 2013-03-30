@@ -98,10 +98,10 @@ class plugin_ljdaka {
 		$sql="select count(*) from ".DB::table('plugin_daka')." where uid=$uid and curdate()=FROM_UNIXTIME(timestamp,'%Y-%m-%d')";
 		$check=DB::result_first($sql);
 		//debug(!empty($xianshi));
-		//   £¨¿ª¹Ø´ò¿ªÇÒÃ»ÓÐÇ©µ½¹ý²¢ÇÒuidÊÇ·ñ´æÔÚ£©    ||  £¨¿ª¹Ø´ò¿ªÇÒuidÊÇ·ñ´æÔÚ£©
+		//   ï¿½ï¿½ï¿½ï¿½ï¿½Ø´ï¿½ï¿½ï¿½Ã»ï¿½ï¿½Ç©ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½uidï¿½Ç·ï¿½ï¿½ï¿½Ú£ï¿½    ||  ï¿½ï¿½ï¿½ï¿½ï¿½Ø´ï¿½ï¿½ï¿½uidï¿½Ç·ï¿½ï¿½ï¿½Ú£ï¿½
 		if(($weizhi==6&&$uid)){
 			if($check&&empty($xianshi)){
-				
+                            include template('ljdaka:daka_disabled');
 			}else{
 				include template('ljdaka:daka');
 			}

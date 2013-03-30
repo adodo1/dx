@@ -7,7 +7,7 @@ var disablepostctrl = parseInt('{$_G['group']['disablepostctrl']}');
 <div id="f_pst" class="pl{if empty($_GET[from])} bm bmw{/if}">
 <form method="post" autocomplete="off" id="fastpostform" action="forum.php?mod=post&action=reply&fid=$_G[fid]&tid=$_G[tid]&extra=$_GET[extra]&replysubmit=yes{if $_GET['ordertype'] != 1}&infloat=yes&handlekey=fastpost{/if}{if $_GET[from]}&from=$_GET[from]{/if}"{if $_GET['ordertype'] != 1} onSubmit="return fastpostvalidate(this)"{/if}>
 	<!--{if empty($_GET[from])}-->
-	<table cellspacing="0" cellpadding="0">
+	<table cellspacing="0" cellpadding="0" height="340">
 		<tr>
 			<td class="pls">
 				<!--{if $_G['uid']}--><div class="avatar"><!--{echo avatar($_G['uid'])}--></div><!--{/if}-->
@@ -34,9 +34,9 @@ var disablepostctrl = parseInt('{$_G['group']['disablepostctrl']}');
 	<!--{/if}-->
 
 	<div class="cl">
-		<!--{if empty($_GET[from]) && $_G[setting][fastsmilies]}--><div id="fastsmiliesdiv" class="y"><div id="fastsmiliesdiv_data"><div id="fastsmilies"></div></div></div><!--{/if}-->
-		<div{if empty($_GET[from]) && $_G[setting][fastsmilies]} class="hasfsl"{/if} id="fastposteditor">
-			<div class="tedt{if !($_G[forum_thread][special] == 5 && empty($firststand))} mtn{/if}">
+
+		<div{if empty($_GET[from]) && $_G[setting][fastsmilies]} class="hasfsl"{/if} id="fastposteditor" style="margin-right:0px;">
+			<div class="tedt{if !($_G[forum_thread][special] == 5 && empty($firststand))} mtn{/if}" style="height:300px;">
 				<div class="bar">
 					<span class="y">
 						<!--{hook/viewthread_fastpost_func_extra}-->

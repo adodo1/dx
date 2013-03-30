@@ -26,9 +26,9 @@
             <th>
                 置顶区
             </th>
-            <td class="by">{lang author}</td>
-            <td class="num">点击/回复</td>
-            <td class="by">{lang lastpost}</td>
+            <td class="by"><strong>{lang author}</strong></td>
+            <td class="num"><strong>点击/回复</strong></td>
+            <td class="by"><strong>{lang lastpost}</strong></td>
         </tr>
     </tbody>
     <!--{if (!$simplestyle || !$_G['forum']['allowside'] && $page == 1) && !empty($announcement)}-->
@@ -56,9 +56,9 @@
                     <td>&nbsp;</td>
                     <!--{/if}-->
                     <th><strong>板块主题</strong></th>
-                    <td class="by">{lang author}</td>
-                    <td class="num">点击/回复</td>
-                    <td class="by">{lang lastpost}</td>
+                    <td class="by"><strong>{lang author}</strong></td>
+                    <td class="num"><strong>回复/查看</strong></td>
+                    <td class="by"><strong>{lang lastpost}</strong></td>
                 </tr>
             </tbody>
         <!--{/if}-->
@@ -74,9 +74,9 @@
                         <td class="o">&nbsp;</td>
                         <!--{/if}-->
                         <th><strong>本版置顶</strong></th>
-                        <td class="by">{lang author}</td>
-                        <td class="num">点击/回复</td>
-                        <td class="by">{lang lastpost}</td>
+                        <td class="by"><strong>{lang author}</strong></td>
+                        <td class="num"><strong>回复/查看</strong></td>
+                        <td class="by"><strong>{lang lastpost}</strong></td>
                     </tr>
                 </tbody>
                 <!--{elseif $thread['displayorder'] == 2}-->
@@ -87,9 +87,9 @@
                         <td class="o">&nbsp;</td>
                         <!--{/if}-->
                         <th><strong>分区置顶</strong></th>
-                        <td class="by">{lang author}</td>
-                        <td class="num">点击/回复</td>
-                        <td class="by">{lang lastpost}</td>
+                        <td class="by"><strong>{lang author}</strong></td>
+                        <td class="num"><strong>回复/查看</strong></td>
+                        <td class="by"><strong>{lang lastpost}</strong></td>
                     </tr>
                 </tbody>
                 <!--{elseif $thread['displayorder'] == 3}-->
@@ -100,9 +100,9 @@
                         <td class="o">&nbsp;</td>
                         <!--{/if}-->
                         <th><strong>全区置顶</strong></th>
-                        <td class="by">{lang author}</td>
-                        <td class="num">点击/回复</td>
-                        <td class="by">{lang lastpost}</td>
+                        <td class="by"><strong>{lang author}</strong></td>
+                        <td class="num"><strong>回复/查看</strong></td>
+                        <td class="by"><strong>{lang lastpost}</strong></td>
                     </tr>
                 </tbody>
                 <!--{/if}-->
@@ -207,12 +207,12 @@
                         <!--{/if}-->
                     <!--{/if}-->
                     </cite>
-                    <em>$thread[dateline]</em>
+                    <em>{eval echo date('Y-m-d H:i',$thread[dbdateline])}</em>
                 </td>
                 <td class="num"><a class="lit" id="replies">$thread[replies]</a>/<a>$thread[views]</a></td>
                 <td class="by">
                     <cite><!--{if $thread['lastposter']}--><a href="{if $thread[digest] != -2}home.php?mod=space&username=$thread[lastposterenc]{else}forum.php?mod=viewthread&tid=$thread[tid]&amp;page={echo max(1, $thread[pages]);}{/if}">$thread[lastposter]</a><!--{else}-->{lang anonymous}<!--{/if}--></cite>
-                    <em><a style="font-family:Arial,Helvetica,sans-serif;font-size:12px;" href="{if $thread[digest] != -2}forum.php?mod=redirect&tid=$thread[tid]&goto=lastpost$highlight#lastpost{else}forum.php?mod=viewthread&tid=$thread[tid]&amp;page={echo max(1, $thread[pages]);}{/if}">$thread[lastpost]</a></em>
+                    <em><a style="font-family:Arial,Helvetica,sans-serif;font-size:12px;" href="{if $thread[digest] != -2}forum.php?mod=redirect&tid=$thread[tid]&goto=lastpost$highlight#lastpost{else}forum.php?mod=viewthread&tid=$thread[tid]&amp;page={echo max(1, $thread[pages]);}{/if}">{eval echo date('Y-m-d H:i',$thread[dblastpost])}</a></em>
                 </td>
             </tr>
         </tbody>
